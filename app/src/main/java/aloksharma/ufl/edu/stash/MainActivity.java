@@ -40,17 +40,18 @@ public class MainActivity extends Activity {
 
             //Post Data
             List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
-            nameValuePair.add(new BasicNameValuePair("client_id ", "test_id"));
-            nameValuePair.add(new BasicNameValuePair("secret", "test_secret"));
+            nameValuePair.add(new BasicNameValuePair("client_id", getString(R.string.plaid_client_id)));
+            nameValuePair.add(new BasicNameValuePair("secret", getString(R.string.plaid_secret)));
             nameValuePair.add(new BasicNameValuePair("username", "plaid_test"));
             nameValuePair.add(new BasicNameValuePair("password", "plaid_good"));
-            nameValuePair.add(new BasicNameValuePair("type", "bofa"));
+            nameValuePair.add(new BasicNameValuePair("type", "wells"));
 
 
             //Encoding POST data
             try {
-                httpPost.setHeader("Content-type", "application/json");
-                httpPost.setHeader("Accept", "application/json");
+//                httpPost.setHeader("Content-type"
+//                        , "application/json");
+//                httpPost.setHeader("Accept", "application/json");
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
             } catch (UnsupportedEncodingException e) {
                 // log exception
