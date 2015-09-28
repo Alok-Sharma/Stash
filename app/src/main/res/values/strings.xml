@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Stash</string>
     <string name="action_settings">Settings</string>
+    <string name="plaid_url">https://tartan.plaid.com/auth</string>
+    <string name="bank_test_username">plaid_test</string>
+    <string name="bank_test_password">plaid_good</string>
 </resources>
