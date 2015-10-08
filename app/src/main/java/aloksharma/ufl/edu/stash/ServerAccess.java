@@ -98,7 +98,6 @@ public class ServerAccess extends IntentService {
         postArgs.add(new BasicNameValuePair("username", username));
         postArgs.add(new BasicNameValuePair("password", password));
         postArgs.add(new BasicNameValuePair("type", bankName.toString()));
-
         return plaidPostRequest(plaidUrl, postArgs);
     }
 
