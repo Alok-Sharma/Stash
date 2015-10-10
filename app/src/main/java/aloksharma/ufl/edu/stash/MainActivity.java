@@ -12,6 +12,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
+        serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
         this.startService(serverIntent);
     }
 }
