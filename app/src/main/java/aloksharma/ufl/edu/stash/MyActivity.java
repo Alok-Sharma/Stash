@@ -67,14 +67,15 @@ public class MyActivity extends Activity {
 
         //Attaching Data to that intent//
         /*************************************************************/
-        addstash_intent.putExtra(StashName, message_stashname);
-        addstash_intent.putExtra(StashTargetDate, message_targetdate);
-        addstash_intent.putExtra(StashGoal, message_goal);
-        addstash_intent.putExtra(ServerAction, ADD_STASH);
+        addstash_intent.putExtra("StashName", message_stashname);
+        addstash_intent.putExtra("StashTargetDate", message_targetdate);
+        addstash_intent.putExtra("StashGoal", message_goal);
+        addstash_intent.putExtra("server_action", ServerAccess.ServerAction.ADD_STASH.toString());
 
         //Launching that intent//
         /*************************************************************/
-        startActivity(addstash_intent);
+        //startActivity(addstash_intent);
+        this.startService(addstash_intent);
 
     }
 }

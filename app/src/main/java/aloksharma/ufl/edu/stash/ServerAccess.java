@@ -57,7 +57,7 @@ public class ServerAccess extends IntentService {
                 String StashGoal = incomingIntent.getStringExtra("StashGoal");
 
                 //Push data to your function
-
+                //The function would talk to Parse and Save data in the Parse server
 
             case ADD_USER:
             case GET_BALANCE:
