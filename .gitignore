@@ -34,6 +34,6 @@ proguard/
 .DS_Store
 /build
 /captures
-
+.idea/workspace.xml
 #API Keys
 app/src/main/res/values/keys.xml
