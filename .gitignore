@@ -28,7 +28,7 @@ proguard/
 
 #Defaults
 /local.properties
-.idea/workspace.xml
+/.idea/workspace.xml
 .idea/libraries
 *.iml
 .DS_Store
