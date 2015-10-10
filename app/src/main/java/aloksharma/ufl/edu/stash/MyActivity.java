@@ -3,15 +3,15 @@ package aloksharma.ufl.edu.stash;
 /**
  * Created by amazon on 10/7/15.
  */
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-public class MyActivity extends AppCompatActivity {
+public class MyActivity extends Activity {
 
     public final static String EXTRA_MESSAGE = "aloksharma.ufl.edu.stash.MESSAGE";
 
@@ -67,9 +67,9 @@ public class MyActivity extends AppCompatActivity {
 
         //Attaching Data to that intent//
         /*************************************************************/
-        addstash_intent.putExtra(STASHNAME, message_stashname);
-        addstash_intent.putExtra(STASHTARGETDATE, message_targetdate);
-        addstash_intent.putExtra(STASHGOAL, message_goal);
+        addstash_intent.putExtra(StashName, message_stashname);
+        addstash_intent.putExtra(StashTargetDate, message_targetdate);
+        addstash_intent.putExtra(StashGoal, message_goal);
         addstash_intent.putExtra(ServerAction, ADD_STASH);
 
         //Launching that intent//

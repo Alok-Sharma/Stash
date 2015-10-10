@@ -51,6 +51,14 @@ public class ServerAccess extends IntentService {
 
         switch (serverAction) {
             case ADD_STASH:
+                //Pulling the data from the incoming intent
+                String StashName = incomingIntent.getStringExtra("StashName");
+                String StashTargetDate = incomingIntent.getStringExtra("StashTargetDate");
+                String StashGoal = incomingIntent.getStringExtra("StashGoal");
+
+                //Push data to your function
+
+
             case ADD_USER:
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if username/password is available in the intent.
