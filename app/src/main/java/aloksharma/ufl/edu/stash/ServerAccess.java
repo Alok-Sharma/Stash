@@ -101,6 +101,11 @@ public class ServerAccess extends IntentService {
         return plaidPostRequest(plaidUrl, postArgs);
     }
 
+
+    public void AddStash(){
+        //Stub to get the Parse user object.
+    }
+
     /**
      * Returns the List of Plaid access tokens for the current user.
      * @return List<String> of access tokens.

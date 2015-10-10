@@ -45,14 +45,36 @@ public class MyActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Called when the user clicks the Send button */
-    public void sendMessage(View view) {
-        // Do something in response to button
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        EditText editText = (EditText) findViewById(R.id.edit_message);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+    /** Called when the user clicks the Create Stash button */
+    public void CreateStash(View view) {
+
+        //Getting all user inputs in variable//
+        /***********************************************************************/
+        EditText stashname = (EditText) findViewById(R.id.edit_stashname);  //reading the user input for stash name i.e. edit_stashname
+        EditText targetdate = (EditText) findViewById(R.id.edit_targetdate);  //reading the user input for stash targetdate i.e. edit_targetdate
+        EditText goal = (EditText) findViewById(R.id.edit_goal);  //reading the user input for stash goal value i.e. edit_goal
+
+
+        String message_stashname = stashname.getText().toString();
+        String message_targetdate = targetdate.getText().toString();
+        String message_goal = goal.getText().toString();
+        /***********************************************************************/
+
+        //Create an intent
+        //Intent addstash_intent = new Intent(this, DisplayMessageActivity.class);
+        Intent addstash_intent = new Intent(this, ServerAccess.class);
+
+
+        //Attaching Data to that intent//
+        /*************************************************************/
+        addstash_intent.putExtra(STASHNAME, message_stashname);
+        addstash_intent.putExtra(STASHTARGETDATE, message_targetdate);
+        addstash_intent.putExtra(STASHGOAL, message_goal);
+        addstash_intent.putExtra(ServerAction, ADD_STASH);
+
+        //Launching that intent//
+        /*************************************************************/
+        startActivity(addstash_intent);
 
     }
 }
