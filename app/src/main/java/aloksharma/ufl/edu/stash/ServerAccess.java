@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.apache.http.HttpResponse;
@@ -57,6 +58,8 @@ public class ServerAccess extends IntentService {
                 String StashGoal = incomingIntent.getStringExtra("StashGoal");
 
                 //Push data to your function
+                addStash(StashName, StashTargetDate, StashGoal);
+
                 //The function would talk to Parse and Save data in the Parse server
 
             case ADD_USER:
@@ -110,8 +113,23 @@ public class ServerAccess extends IntentService {
     }
 
 
-    public void AddStash(){
-        //Stub to get the Parse user object.
+    public void addStash(String StashName, String StashTargetDate, String StashGoal){
+        //Stub to create Stash
+        Log.d("CreateStashLog1",StashName);
+        Log.d("CreateStashLog2",StashTargetDate);
+        Log.d("CreateStashLog3",StashGoal);
+
+        //Send to parse
+        ParseObject Stash = new ParseObject("Stash");
+        Stash.put("StashName", StashName);
+        Stash.put("StashTargetDate", StashTargetDate);
+        Stash.put("StashGoal", StashGoal);
+        Stash.saveInBackground();
+
+        //Link a Parse User Object with other objects    //Read up on the way parse does it
+
+        //ParseUser.getCurrentUser();
+
     }
 
     /**
