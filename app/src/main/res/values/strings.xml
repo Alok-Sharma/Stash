@@ -4,4 +4,13 @@
     <string name="plaid_url">https://tartan.plaid.com/auth</string>
     <string name="bank_test_username">plaid_test</string>
     <string name="bank_test_password">plaid_good</string>
+    <string name="title_activity_fgsign_in">FGSignIn</string>
+
+    <string name="hello_world">Hello world!</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_app_id">910390052375280</string>
+    <string name="plaid_client_id" />
+    <string name="plaid_secret" />
 </resources>
