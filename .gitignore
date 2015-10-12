@@ -28,12 +28,11 @@ proguard/
 
 #Defaults
 /local.properties
-/.idea/workspace.xml
+.idea/workspace.xml
 .idea/libraries
-*.iml
 .DS_Store
 /build
 /captures
-.idea/workspace.xml
+
 #API Keys
 app/src/main/res/values/keys.xml
