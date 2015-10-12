@@ -4,8 +4,13 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.apache.http.HttpResponse;
@@ -120,15 +125,48 @@ public class ServerAccess extends IntentService {
         Log.d("CreateStashLog3",StashGoal);
 
         //Send to parse
-        ParseObject Stash = new ParseObject("Stash");
+        final ParseObject Stash = new ParseObject("Stash");
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
-        Stash.saveInBackground();
+
 
         //Link a Parse User Object with other objects    //Read up on the way parse does it
 
-        //ParseUser.getCurrentUser();
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        Stash.put("user", ParseUser.getCurrentUser());     //create a user relation with the current user
+
+        Stash.saveInBackground();
+
+        ParseRelation<ParseObject> relation = currentUser.getRelation("user");
+
+        // Create query for objects of type "Post"
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
+
+        // Restrict to cases where the user is the current user.
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+
+        // Run the query
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> StashList, ParseException e) {
+                if (e == null) {
+                    // If there are results, update the list of posts
+                    // and notify the adapter
+
+                    for (ParseObject Stash : StashList) {
+                        String val = Stash.getString("StashGoal");
+                        Log.d("Value",val);
+                    }
+                }
+                else {
+                    Log.d("Post retrieval", "Error: " + e.getMessage());
+                }
+            }
+
+        });
 
     }
 

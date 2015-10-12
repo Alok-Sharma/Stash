@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.parse.ParseUser;
+
 public class MyActivity extends Activity {
 
     public final static String EXTRA_MESSAGE = "aloksharma.ufl.edu.stash.MESSAGE";
@@ -20,6 +22,7 @@ public class MyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
     }
 
     @Override
