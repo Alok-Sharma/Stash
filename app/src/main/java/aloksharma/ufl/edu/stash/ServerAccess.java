@@ -34,7 +34,8 @@ public class ServerAccess extends IntentService {
     }
 
     public enum BankName {
-        amex, bofa, capone360, schwab, chase, citi, fidelity, nfcu, pnc, svb, suntrust,
+        amex, bofa, capone360, schwab, chase, citi, fidelity, nfcu, pnc,
+        svb, suntrust,
         td, us, usaa, wells
     }
 
@@ -53,19 +54,25 @@ public class ServerAccess extends IntentService {
             case ADD_STASH:
             case ADD_USER:
             case GET_BALANCE:
-                //Make appropriate getBankBalance call depending if username/password is available in the intent.
-                String bankUsername = incomingIntent.getStringExtra("bankUsername");
-                if(bankUsername == null) {
+                //Make appropriate getBankBalance call depending if
+                // username/password is available in the intent.
+                String bankUsername = incomingIntent.getStringExtra
+                        ("bankUsername");
+                if (bankUsername == null) {
                     //no username, password. Use access token.
-                    String testToken = getAccessTokenList().get(0);  //only getting 1 banks balance for now.
+                    String testToken = getAccessTokenList().get(0);  //only
+                    // getting 1 banks balance for now.
                     Double balance = getBankBalance(testToken);
                     Log.d("StashLog", "balance: " + balance);
                     outgoingIntent.putExtra("balance", balance);
                 } else {
                     //found a username, password.
-                    String bankPassword = incomingIntent.getStringExtra("bankPassword");
-                    String bankName = incomingIntent.getStringExtra("bankName");
-                    Double balance = getBankBalance(bankUsername, bankPassword, BankName.valueOf(bankName));
+                    String bankPassword = incomingIntent.getStringExtra
+                            ("bankPassword");
+                    String bankName = incomingIntent.getStringExtra
+                            ("bankName");
+                    Double balance = getBankBalance(bankUsername,
+                            bankPassword, BankName.valueOf(bankName));
                     Log.d("StashLog", "balance: " + balance);
                     outgoingIntent.putExtra("balance", balance);
                 }
@@ -92,7 +99,8 @@ public class ServerAccess extends IntentService {
         return plaidPostRequest(plaidUrl, postArgs);
     }
 
-    private Double getBankBalance(String username, String password, BankName bankName) {
+    private Double getBankBalance(String username, String password, BankName
+            bankName) {
         List<NameValuePair> postArgs = new ArrayList();
         String plaidUrl = getString(R.string.plaid_url);
         postArgs.add(new BasicNameValuePair("username", username));
@@ -104,35 +112,42 @@ public class ServerAccess extends IntentService {
 
     /**
      * Returns the List of Plaid access tokens for the current user.
+     *
      * @return List<String> of access tokens.
      */
     private List<String> getAccessTokenList() {
         if (ParseUser.getCurrentUser() != null) {
             //we have the user object.
-            List<String> accessTokens = ParseUser.getCurrentUser().getList("access_tokens");
+            List<String> accessTokens = ParseUser.getCurrentUser().getList
+                    ("access_tokens");
             Log.d("StashLog", "got access tokens" + accessTokens);
             return accessTokens;
         } else {
-            //current user is null. This shouldn't happen if the user was logged in successfully.
+            //current user is null. This shouldn't happen if the user was
+            // logged in successfully.
             Log.d("StashLog", "current user was null");
         }
         return null;
     }
 
     /**
-     * Executes a POST to the plaid /auth endpoint, and fetches the users bank balance.
+     * Executes a POST to the plaid /auth endpoint, and fetches the users
+     * bank balance.
      *
      * @param plaidUrl The Plaid url to send the request to
      * @param postArgs The POST arguments
      * @return Double Users Bank balance.
      */
-    private Double plaidPostRequest(String plaidUrl, List<NameValuePair> postArgs) {
+    private Double plaidPostRequest(String plaidUrl, List<NameValuePair>
+            postArgs) {
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(plaidUrl);
 
         //Post Data
-        postArgs.add(new BasicNameValuePair("client_id", getString(R.string.plaid_client_id)));
-        postArgs.add(new BasicNameValuePair("secret", getString(R.string.plaid_secret)));
+        postArgs.add(new BasicNameValuePair("client_id", getString(R.string
+                .plaid_client_id)));
+        postArgs.add(new BasicNameValuePair("secret", getString(R.string
+                .plaid_secret)));
 
         //Encoding POST data
         try {
@@ -150,12 +165,15 @@ public class ServerAccess extends IntentService {
             Log.d("StashLog", "PLAID RESPONSE: " + responseString);
 
             //fetch the access_token and store it on parse.
-            String access_token = jObject.getString("access_token"); //currentUser must not be null.
-            ParseUser.getCurrentUser().addUnique("access_tokens", access_token);
+            String access_token = jObject.getString("access_token");
+            //currentUser must not be null.
+            ParseUser.getCurrentUser().addUnique("access_tokens",
+                    access_token);
             ParseUser.getCurrentUser().pinInBackground();
             ParseUser.getCurrentUser().saveInBackground();
 
-            double balance = jObject.getJSONArray("accounts").getJSONObject(0).getJSONObject("balance").getDouble("available");
+            double balance = jObject.getJSONArray("accounts").getJSONObject
+                    (0).getJSONObject("balance").getDouble("available");
             return balance;
         } catch (ClientProtocolException e) {
             e.printStackTrace();

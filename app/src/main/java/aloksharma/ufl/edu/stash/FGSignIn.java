@@ -31,7 +31,6 @@ import java.util.List;
 
 public class FGSignIn extends Activity {
 
-
     LoginButton fbLoginButton;
     EditText fbUsername, fbEmailID;
     ParseUser parseUser;
@@ -47,9 +46,6 @@ public class FGSignIn extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fgsign_in);
-
-        Parse.initialize(this);
-        ParseFacebookUtils.initialize(this);
 
         fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
 
