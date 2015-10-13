@@ -10,7 +10,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="app_id">fb-blah</string>
     <string name="plaid_client_id_test"/>
     <string name="plaid_secret_test"/>
     <string name="parse_applicationId_test">blah</string>

@@ -29,6 +29,7 @@ proguard/
 #Defaults
 /local.properties
 .idea/workspace.xml
+.idea/encodings.xml
 .idea/libraries
 .DS_Store
 /build
