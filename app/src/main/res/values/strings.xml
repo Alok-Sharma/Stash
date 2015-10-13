@@ -4,6 +4,7 @@
     <string name="plaid_url">https://tartan.plaid.com/auth</string>
     <string name="bank_test_username">plaid_test</string>
     <string name="bank_test_password">plaid_good</string>
+
     <string name="title_activity_fgsign_in">FGSignIn</string>
 
     <string name="hello_world">Hello world!</string>
@@ -14,4 +15,12 @@
     <string name="plaid_secret_test"/>
     <string name="parse_applicationId_test">blah</string>
     <string name="parse_clientKey_test">blah</string>
+
+
+
+    <string name="button_send">Send</string>
+    <string name="user_entry">Please Enter Your Name</string>
+    <string name="button_text">Press Me</string>
+    <string name="title_activity_display_message">My Message</string>
+
 </resources>
