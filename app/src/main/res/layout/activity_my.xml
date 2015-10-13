@@ -10,7 +10,9 @@
         android:orientation="vertical">
 
 
-        <EditText android:id="@+id/edit_message"
+
+        <EditText android:id="@+id/edit_stashname"
+
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_below = "@+id/edit_message"
+
+            android:layout_below = "@+id/edit_stashname"
+
             android:layout_gravity="center"
             android:hint="Target Date"
             android:inputType="textMultiLine"/>
@@ -46,7 +50,9 @@
             android:layout_gravity="center"
             android:layout_below = "@id/edit_goal"
             android:text="Create Stash"
-            android:onClick="sendMessage" />
+
+            android:onClick="CreateStash" />
+
 
     </LinearLayout>
 

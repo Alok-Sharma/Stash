@@ -4,7 +4,13 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.apache.http.HttpResponse;
@@ -52,6 +58,16 @@ public class ServerAccess extends IntentService {
 
         switch (serverAction) {
             case ADD_STASH:
+                //Pulling the data from the incoming intent
+                String StashName = incomingIntent.getStringExtra("StashName");
+                String StashTargetDate = incomingIntent.getStringExtra("StashTargetDate");
+                String StashGoal = incomingIntent.getStringExtra("StashGoal");
+
+                //Push data to your function
+                addStash(StashName, StashTargetDate, StashGoal);
+
+                //The function would talk to Parse and Save data in the Parse server
+
             case ADD_USER:
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
@@ -107,6 +123,59 @@ public class ServerAccess extends IntentService {
         postArgs.add(new BasicNameValuePair("password", password));
         postArgs.add(new BasicNameValuePair("type", bankName.toString()));
         return plaidPostRequest(plaidUrl, postArgs);
+    }
+
+
+    public void addStash(String StashName, String StashTargetDate, String StashGoal){
+        //Stub to create Stash
+        Log.d("CreateStashLog1",StashName);
+        Log.d("CreateStashLog2",StashTargetDate);
+        Log.d("CreateStashLog3",StashGoal);
+
+        //Send to parse
+        final ParseObject Stash = new ParseObject("Stash");
+        Stash.put("StashName", StashName);
+        Stash.put("StashTargetDate", StashTargetDate);
+        Stash.put("StashGoal", StashGoal);
+
+
+        //Link a Parse User Object with other objects    //Read up on the way parse does it
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        Stash.put("user", ParseUser.getCurrentUser());     //create a user relation with the current user
+
+        Stash.saveInBackground();
+
+        ParseRelation<ParseObject> relation = currentUser.getRelation("user");
+
+        // Create query for objects of type "Post"
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
+
+        // Restrict to cases where the user is the current user.
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+
+        // Run the query
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> StashList, ParseException e) {
+                if (e == null) {
+                    // If there are results, update the list of posts
+                    // and notify the adapter
+
+                    for (ParseObject Stash : StashList) {
+                        String val = Stash.getString("StashGoal");
+                        Log.d("Value",val);
+                    }
+                }
+                else {
+                    Log.d("Post retrieval", "Error: " + e.getMessage());
+                }
+            }
+
+        });
+
     }
 
     /**
