@@ -7,11 +7,13 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -67,6 +69,8 @@ public class ServerAccess extends IntentService {
                 addStash(StashName, StashTargetDate, StashGoal);
 
                 //The function would talk to Parse and Save data in the Parse server
+
+                break;
 
             case ADD_USER:
             case GET_BALANCE:
@@ -132,11 +136,17 @@ public class ServerAccess extends IntentService {
         Log.d("CreateStashLog2",StashTargetDate);
         Log.d("CreateStashLog3",StashGoal);
 
+
         //Send to parse
+
         final ParseObject Stash = new ParseObject("Stash");
+
+
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
+
+
 
 
         //Link a Parse User Object with other objects    //Read up on the way parse does it
@@ -145,9 +155,24 @@ public class ServerAccess extends IntentService {
 
         Stash.put("user", ParseUser.getCurrentUser());     //create a user relation with the current user
 
-        Stash.saveInBackground();
+        //Stash.saveInBackground();
 
-        ParseRelation<ParseObject> relation = currentUser.getRelation("user");
+        Stash.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.i("Success","11");
+
+                } else {
+                    Log.i("Fail", "22");
+                }
+            }
+
+        });
+       //Add Stash Should end here
+
+       //View Stash should begin here, in other words, populating the list of Stash ; that query should be via a button
 
         // Create query for objects of type "Post"
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
@@ -155,8 +180,10 @@ public class ServerAccess extends IntentService {
         // Restrict to cases where the user is the current user.
         query.whereEqualTo("user", ParseUser.getCurrentUser());
 
+
+        final ArrayList Stash_List = new ArrayList();
         // Run the query
-        query.findInBackground(new FindCallback<ParseObject>() {
+        query.findInBackground(new FindCallback<ParseObject>() {                //Ideally should be called on click event such as View Stash
 
             @Override
             public void done(List<ParseObject> StashList, ParseException e) {
@@ -165,17 +192,22 @@ public class ServerAccess extends IntentService {
                     // and notify the adapter
 
                     for (ParseObject Stash : StashList) {
-                        String val = Stash.getString("StashGoal");
-                        Log.d("Value",val);
+                        String val = Stash.getString("StashName");
+                        Stash_List.add(val);
+                        Log.i("CreateStashLog4", val);
                     }
-                }
-                else {
-                    Log.d("Post retrieval", "Error: " + e.getMessage());
+                } else {
+                    Log.i("CreateStashLog5", "Error: " + e.getMessage());
                 }
             }
 
         });
-
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.i("CreateStashLog6", Stash_List.size()+"");
     }
 
     /**
