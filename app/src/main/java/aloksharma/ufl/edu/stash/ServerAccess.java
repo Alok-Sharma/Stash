@@ -68,9 +68,7 @@ public class ServerAccess extends IntentService {
                 //Push data to your function
                 addStash(StashName, StashTargetDate, StashGoal);
 
-                //The function would talk to Parse and Save data in the Parse server
-
-                break;
+               break;
 
             case ADD_USER:
             case GET_BALANCE:
@@ -129,28 +127,22 @@ public class ServerAccess extends IntentService {
         return plaidPostRequest(plaidUrl, postArgs);
     }
 
-
+   /******************Add Stash Functionality******************************************/
     public void addStash(String StashName, String StashTargetDate, String StashGoal){
         //Stub to create Stash
         Log.d("CreateStashLog1",StashName);
         Log.d("CreateStashLog2",StashTargetDate);
         Log.d("CreateStashLog3",StashGoal);
 
-
-        //Send to parse
-
+        //Send to Parse Database
         final ParseObject Stash = new ParseObject("Stash");
-
 
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
 
 
-
-
-        //Link a Parse User Object with other objects    //Read up on the way parse does it
-
+        //Link the ParseUser object with the Stash object
         ParseUser currentUser = ParseUser.getCurrentUser();
 
         Stash.put("user", ParseUser.getCurrentUser());     //create a user relation with the current user
@@ -170,9 +162,11 @@ public class ServerAccess extends IntentService {
             }
 
         });
-       //Add Stash Should end here
+        /******************End of Add Stash Functionality******************************************/
 
-       //View Stash should begin here, in other words, populating the list of Stash ; that query should be via a button
+
+        /******************My Stashes Functionality******************************************/
+       //Populating the list of Stash Fields; that query should be via a button
 
         // Create query for objects of type "Post"
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
@@ -195,6 +189,8 @@ public class ServerAccess extends IntentService {
                         String val = Stash.getString("StashName");
                         Stash_List.add(val);
                         Log.i("CreateStashLog4", val);
+                        /**Removes All Stashes for this user**///
+                        //Stash.deleteInBackground();
                     }
                 } else {
                     Log.i("CreateStashLog5", "Error: " + e.getMessage());
@@ -207,8 +203,24 @@ public class ServerAccess extends IntentService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.i("CreateStashLog6", Stash_List.size()+"");
+        //Log.i("CreateStashLog6", Stash_List.size()+"");
+        //removeStash(Stash);                 //Removes the object Stash
     }
+    /******************End of My Stashes Functionality******************************************/
+
+
+
+
+    /******************Remove Stash Functionality*********************************************/
+    public void removeStash(ParseObject Stash){
+
+        Stash.deleteInBackground();
+
+    }
+    /******************End of Remove Stash Functionality*********************************************/
+
+
+
 
     /**
      * Returns the List of Plaid access tokens for the current user.
