@@ -6,10 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.parse.ParseUser;
 
 public class MainActivity extends Activity {
 
@@ -18,7 +19,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
@@ -45,8 +45,8 @@ public class MainActivity extends Activity {
             switch (responseAction) {
                 case GET_BALANCE:
                     Double balance = intent.getDoubleExtra("balance", -1.0);
-                    TextView balanceText = (TextView)findViewById(R.id.mainTextView);
-                    balanceText.setText("Alok, your balance is: " + balance);
+                    //TextView balanceText = (TextView)findViewById(R.id.mainTextView);
+                    //balanceText.setText("Alok, your balance is: " + balance);
             }
         }
     }

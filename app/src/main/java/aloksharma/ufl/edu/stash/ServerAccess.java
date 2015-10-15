@@ -4,8 +4,16 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
+import com.parse.FindCallback;
+import com.parse.ParseACL;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -52,6 +60,16 @@ public class ServerAccess extends IntentService {
 
         switch (serverAction) {
             case ADD_STASH:
+                //Pulling the data from the incoming intent
+                String StashName = incomingIntent.getStringExtra("StashName");
+                String StashTargetDate = incomingIntent.getStringExtra("StashTargetDate");
+                String StashGoal = incomingIntent.getStringExtra("StashGoal");
+
+                //Push data to your function
+                addStash(StashName, StashTargetDate, StashGoal);
+
+               break;
+
             case ADD_USER:
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
@@ -106,9 +124,103 @@ public class ServerAccess extends IntentService {
         postArgs.add(new BasicNameValuePair("username", username));
         postArgs.add(new BasicNameValuePair("password", password));
         postArgs.add(new BasicNameValuePair("type", bankName.toString()));
-
         return plaidPostRequest(plaidUrl, postArgs);
     }
+
+   /******************Add Stash Functionality******************************************/
+    public void addStash(String StashName, String StashTargetDate, String StashGoal){
+        //Stub to create Stash
+        Log.d("CreateStashLog1",StashName);
+        Log.d("CreateStashLog2",StashTargetDate);
+        Log.d("CreateStashLog3",StashGoal);
+
+        //Send to Parse Database
+        final ParseObject Stash = new ParseObject("Stash");
+
+        Stash.put("StashName", StashName);
+        Stash.put("StashTargetDate", StashTargetDate);
+        Stash.put("StashGoal", StashGoal);
+
+
+        //Link the ParseUser object with the Stash object
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        Stash.put("user", ParseUser.getCurrentUser());     //create a user relation with the current user
+
+        //Stash.saveInBackground();
+
+        Stash.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.i("Success","11");
+
+                } else {
+                    Log.i("Fail", "22");
+                }
+            }
+
+        });
+        /******************End of Add Stash Functionality******************************************/
+
+
+        /******************My Stashes Functionality******************************************/
+       //Populating the list of Stash Fields; that query should be via a button
+
+        // Create query for objects of type "Post"
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
+
+        // Restrict to cases where the user is the current user.
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+
+
+        final ArrayList Stash_List = new ArrayList();
+        // Run the query
+        query.findInBackground(new FindCallback<ParseObject>() {                //Ideally should be called on click event such as View Stash
+
+            @Override
+            public void done(List<ParseObject> StashList, ParseException e) {
+                if (e == null) {
+                    // If there are results, update the list of posts
+                    // and notify the adapter
+
+                    for (ParseObject Stash : StashList) {
+                        String val = Stash.getString("StashName");
+                        Stash_List.add(val);
+                        Log.i("CreateStashLog4", val);
+                        /**Removes All Stashes for this user**///
+                        //Stash.deleteInBackground();
+                    }
+                } else {
+                    Log.i("CreateStashLog5", "Error: " + e.getMessage());
+                }
+            }
+
+        });
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //Log.i("CreateStashLog6", Stash_List.size()+"");
+        //removeStash(Stash);                 //Removes the object Stash
+    }
+    /******************End of My Stashes Functionality******************************************/
+
+
+
+
+    /******************Remove Stash Functionality*********************************************/
+    public void removeStash(ParseObject Stash){
+
+        Stash.deleteInBackground();
+
+    }
+    /******************End of Remove Stash Functionality*********************************************/
+
+
+
 
     /**
      * Returns the List of Plaid access tokens for the current user.
