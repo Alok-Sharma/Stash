@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.facebook.android.crypto.keychain.SharedPrefsBackedKeyChain;
+import com.facebook.crypto.Crypto;
+import com.facebook.crypto.Entity;
+import com.facebook.crypto.util.SystemNativeCryptoLibrary;
 import com.parse.ParseUser;
 
 import org.apache.http.HttpResponse;
@@ -23,11 +27,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alok on 9/26/2015.
  */
 public class ServerAccess extends IntentService {
+
+    Crypto crypto;
 
     public enum ServerAction {
         ADD_USER, GET_USER, ADD_STASH, GET_BALANCE, GET_ACCESS_TOKEN
@@ -41,6 +48,7 @@ public class ServerAccess extends IntentService {
 
     public ServerAccess() {
         super("ServerAccess");
+        crypto = new Crypto(new SharedPrefsBackedKeyChain(App.getContext()), new SystemNativeCryptoLibrary());
     }
 
     @Override
@@ -60,11 +68,17 @@ public class ServerAccess extends IntentService {
                         ("bankUsername");
                 if (bankUsername == null) {
                     //no username, password. Use access token.
-                    String testToken = getAccessTokenList().get(0);  //only
-                    // getting 1 banks balance for now.
-                    Double balance = getBankBalance(testToken);
-                    Log.d("StashLog", "balance: " + balance);
-                    outgoingIntent.putExtra("balance", balance);
+                    Map<String, byte[]> accessTokens = getAccessTokenMap();
+                    try {
+                        byte[] encryptedFetch = accessTokens.get("wells");
+                        byte[] decryptedFetch = crypto.decrypt(encryptedFetch, new Entity("password")); //TODO: use the users password to encrypt and decrypt.
+                        String accessToken = new String(decryptedFetch);
+                        Double balance = getBankBalance(accessToken);
+                        Log.d("StashLog", "balance: " + balance);
+                        outgoingIntent.putExtra("balance", balance);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     //found a username, password.
                     String bankPassword = incomingIntent.getStringExtra
@@ -111,23 +125,38 @@ public class ServerAccess extends IntentService {
     }
 
     /**
-     * Returns the List of Plaid access tokens for the current user.
-     *
-     * @return List<String> of access tokens.
+     * Returns the Map of the Bank access tokens. This map has a key of the bank name
+     * and the values are the encrypted access tokens.
+     * @return Map<String, byte[]> of access tokens.
      */
-    private List<String> getAccessTokenList() {
-        if (ParseUser.getCurrentUser() != null) {
-            //we have the user object.
-            List<String> accessTokens = ParseUser.getCurrentUser().getList
-                    ("access_tokens");
-            Log.d("StashLog", "got access tokens" + accessTokens);
-            return accessTokens;
-        } else {
-            //current user is null. This shouldn't happen if the user was
-            // logged in successfully.
-            Log.d("StashLog", "current user was null");
+    private Map<String, byte[]> getAccessTokenMap() {
+        try {
+            if (ParseUser.getCurrentUser() != null) {
+                Map<String, byte[]> accessTokens = ParseUser.getCurrentUser().getMap("BankMap");
+                return accessTokens;
+            }else{
+                //current user is null. This shouldn't happen if the user was
+                // logged in successfully.
+                Log.d("StashLog", "current user was null");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
         return null;
+    }
+
+    private void addAccessToken() {
+//        String input = "test_wells";
+//        try {
+//            byte[] encryptedInput = crypto.encrypt(input.getBytes(), new Entity("password"));
+//            Log.d("nikita", "byte: " + encryptedInput);
+//            Map<String, byte[]> bankMap = new HashMap<>();
+//            bankMap.put("wells", encryptedInput);
+//            ParseUser.getCurrentUser().put("BankMap", bankMap);
+//            ParseUser.getCurrentUser().save();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
