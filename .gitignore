@@ -41,8 +41,8 @@ proguard/
 .idea/vcs.xml
 app/app.iml
 
+
 .DS_Store
-/build
 /captures
 
 #API Keys
