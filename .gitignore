@@ -41,6 +41,7 @@ proguard/
 .idea/vcs.xml
 app/app.iml
 
+
 .DS_Store
 /captures
 
