@@ -16,6 +16,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +124,6 @@ public class ServerAccess extends IntentService {
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
-
 
         //Link the ParseUser object with the Stash object
         ParseUser currentUser = ParseUser.getCurrentUser();
