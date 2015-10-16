@@ -31,6 +31,16 @@ proguard/
 .idea/workspace.xml
 .idea/encodings.xml
 .idea/libraries
+.idea/.name
+.idea/compiler.xml
+.idea/copyright/profiles_settings.xml
+.idea/gradle.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/runConfigurations.xml
+.idea/vcs.xml
+app/app.iml
+
 .DS_Store
 /build
 /captures
