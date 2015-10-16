@@ -55,10 +55,10 @@ public class PlaidHelper {
      * and the values are the encrypted access tokens.
      * @return Map<String, byte[]> of access tokens.
      */
-    Map<String, byte[]> getAccessTokenMap() {
+    Map<String, String> getAccessTokenMap() {
         try {
             if (ParseUser.getCurrentUser() != null) {
-                Map<String, byte[]> accessTokens = ParseUser.getCurrentUser().getMap("BankMap");
+                Map<String, String> accessTokens = ParseUser.getCurrentUser().getMap("BankMap");
                 return accessTokens;
             }else{
                 //current user is null. This shouldn't happen if the user was

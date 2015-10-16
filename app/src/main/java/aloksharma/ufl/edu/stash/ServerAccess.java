@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.facebook.android.crypto.keychain.SharedPrefsBackedKeyChain;
 import com.facebook.crypto.Crypto;
-import com.facebook.crypto.Entity;
 import com.facebook.crypto.util.SystemNativeCryptoLibrary;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -15,10 +14,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,11 +69,9 @@ public class ServerAccess extends IntentService {
                         ("bankUsername");
                 if (bankUsername == null) {
                     //no username, password. Use access token.
-                    Map<String, byte[]> accessTokens = plaidHelper.getAccessTokenMap();
+                    Map<String, String> accessTokens = plaidHelper.getAccessTokenMap();
                     try {
-                        byte[] encryptedFetch = accessTokens.get("wells");
-                        byte[] decryptedFetch = crypto.decrypt(encryptedFetch, new Entity("password")); //TODO: use the users password to encrypt and decrypt.
-                        String accessToken = new String(decryptedFetch);
+                        String accessToken = accessTokens.get("wells");
                         Double balance = plaidHelper.getBankBalance(accessToken);
                         Log.d("StashLog", "balance: " + balance);
                         outgoingIntent.putExtra("balance", balance);
