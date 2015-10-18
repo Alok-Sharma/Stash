@@ -47,13 +47,34 @@
                 android:layout_centerHorizontal="true"
                 android:paddingTop="5dp"
                 android:text="To Save"
+                android:id="@+id/homeTextView"
                 android:layout_below="@+id/toSaveAmount"
                 android:textColor="#ffffff"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
+
         </RelativeLayout>
 
     </com.github.glomadrian.dashedcircularprogress.DashedCircularProgress>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/logoutButton"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/logout"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="93dp"
+        android:layout_height="93dp"
+        android:id="@+id/addStashButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_add_circle_black_24dp"/>
+
 
 </RelativeLayout>
