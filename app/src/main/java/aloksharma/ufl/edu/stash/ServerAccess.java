@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.facebook.android.crypto.keychain.SharedPrefsBackedKeyChain;
-import com.facebook.crypto.Crypto;
-import com.facebook.crypto.util.SystemNativeCryptoLibrary;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -24,8 +21,6 @@ import java.util.Map;
  */
 public class ServerAccess extends IntentService {
 
-    Crypto crypto;
-
     public enum ServerAction {
         ADD_USER, GET_USER, ADD_STASH, GET_BALANCE, GET_ACCESS_TOKEN
     }
@@ -38,7 +33,6 @@ public class ServerAccess extends IntentService {
 
     public ServerAccess() {
         super("ServerAccess");
-        crypto = new Crypto(new SharedPrefsBackedKeyChain(App.getContext()), new SystemNativeCryptoLibrary());
     }
 
     @Override
@@ -53,7 +47,7 @@ public class ServerAccess extends IntentService {
                 //Pulling the data from the incoming intent
                 String StashName = incomingIntent.getStringExtra("StashName");
                 String StashTargetDate = incomingIntent.getStringExtra("StashTargetDate");
-                String StashGoal = incomingIntent.getStringExtra("StashGoal");
+                int StashGoal = incomingIntent.getIntExtra("StashGoal", 0);
 
                 //Push data to your function
                 addStash(StashName, StashTargetDate, StashGoal);
@@ -105,11 +99,11 @@ public class ServerAccess extends IntentService {
     }
 
    /******************Add Stash Functionality******************************************/
-    public void addStash(String StashName, String StashTargetDate, String StashGoal){
+    public void addStash(String StashName, String StashTargetDate, int StashGoal){
         //Stub to create Stash
         Log.d("CreateStashLog1",StashName);
         Log.d("CreateStashLog2",StashTargetDate);
-        Log.d("CreateStashLog3",StashGoal);
+        Log.d("CreateStashLog3", "" + StashGoal);
 
         //Send to Parse Database
         final ParseObject Stash = new ParseObject("Stash");
@@ -194,18 +188,4 @@ public class ServerAccess extends IntentService {
 
     }
     /******************End of Remove Stash Functionality*********************************************/
-
-//    private void addAccessToken() {
-//        String input = "test_wells";
-//        try {
-//            byte[] encryptedInput = crypto.encrypt(input.getBytes(), new Entity("password"));
-//            Log.d("nikita", "byte: " + encryptedInput);
-//            Map<String, byte[]> bankMap = new HashMap<>();
-//            bankMap.put("wells", encryptedInput);
-//            ParseUser.getCurrentUser().put("BankMap", bankMap);
-//            ParseUser.getCurrentUser().save();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
