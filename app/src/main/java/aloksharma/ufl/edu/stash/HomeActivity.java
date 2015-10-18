@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.glomadrian.dashedcircularprogress.DashedCircularProgress;
@@ -20,15 +23,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements View.OnClickListener{
 
     private DashedCircularProgress dashedCircularProgress;
+    ImageButton logoutButton;
+    ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        logoutButton = (ImageButton) findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(this);
+        addStashButton = (ImageButton) findViewById(R.id.addStashButton);
+        addStashButton.setOnClickListener(this);
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
@@ -82,6 +92,20 @@ public class HomeActivity extends Activity {
 //                    TextView balanceText = (TextView)findViewById(R.id.mainTextView);
 //                    balanceText.setText("Alok, your balance is: " + balance);
             }
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.logoutButton:
+                ParseUser.logOutInBackground();
+                startActivity(new Intent(this,LoginActivity.class));
+                break;
+            case R.id.addStashButton:
+                startActivity(new Intent(this,MyActivity.class));
+                break;
         }
     }
 }
