@@ -1,69 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="aloksharma.ufl.edu.stash"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="aloksharma.ufl.edu.stash" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".HomeActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".MyActivity"
             android:label="@string/app_name" >
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-        <!--<activity-->
+        <!-- <activity -->
 
-            <!--android:name=".MyActivity"-->
-            <!--android:label="@string/app_name" >-->
-           <!--&lt;!&ndash; <intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter> &ndash;&gt;-->
-        <!--</activity>-->
+        <!-- android:name=".MyActivity" -->
+        <!-- android:label="@string/app_name" > -->
+        <!-- &lt;!&ndash; <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> &ndash;&gt; -->
+        <!-- </activity> -->
         <activity
-
             android:name=".DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
             android:parentActivityName=".MyActivity" >
         </activity>
+
         <service
             android:name=".ServerAccess"
-            android:exported="false">
+            android:exported="false" >
         </service>
 
         <activity
             android:name=".FGSignIn"
-            android:label="@string/title_activity_fgsign_in">
+            android:label="@string/title_activity_fgsign_in" >
         </activity>
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id"/>
+            android:value="@string/app_id" />
+
+        <activity
+            android:name=".AccountActivity"
+            android:label="@string/title_activity_account_activity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

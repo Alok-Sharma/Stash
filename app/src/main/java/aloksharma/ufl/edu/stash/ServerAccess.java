@@ -61,6 +61,7 @@ public class ServerAccess extends IntentService {
                break;
 
             case ADD_USER:
+            //GET_BALANCE creates a new bank account if the incoming intent has username, password and bank name.
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
                 // username/password is available in the intent.

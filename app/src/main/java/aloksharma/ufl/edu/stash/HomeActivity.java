@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.TextView;
 
+import com.parse.ParseUser;
+
 
 public class HomeActivity extends Activity {
 
@@ -16,6 +18,8 @@ public class HomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
