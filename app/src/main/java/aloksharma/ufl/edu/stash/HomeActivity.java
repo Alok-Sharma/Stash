@@ -9,13 +9,26 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.TextView;
 
+import com.github.glomadrian.dashedcircularprogress.DashedCircularProgress;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class HomeActivity extends Activity {
 
+    private DashedCircularProgress dashedCircularProgress;
+    int savedAmount = 0;
+    int toSaveAmount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
@@ -25,6 +38,30 @@ public class HomeActivity extends Activity {
         serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
         ServiceBroadcastReceiver serviceListener = new ServiceBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
+
+        dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
+        dashedCircularProgress.reset();
+
+        ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
+        stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        final ArrayList<ParseObject> stashList = new ArrayList<>();
+
+        stashQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> stashList, ParseException e) {
+                for (ParseObject stash : stashList) {
+                    toSaveAmount = toSaveAmount + stash.getInt("StashGoal");
+                    TextView toSaveText = (TextView)findViewById(R.id.toSaveAmount);
+                    toSaveText.setText("$" + toSaveAmount);
+                    savedAmount = savedAmount + stash.getInt("StashValue");
+                    stashList.add(stash);
+                }
+                dashedCircularProgress.setMax(toSaveAmount);
+                dashedCircularProgress.setValue(savedAmount);
+            }
+        });
+
+
     }
 
     /**
@@ -42,8 +79,8 @@ public class HomeActivity extends Activity {
             switch (responseAction) {
                 case GET_BALANCE:
                     Double balance = intent.getDoubleExtra("balance", -1.0);
-                    TextView balanceText = (TextView)findViewById(R.id.mainTextView);
-                    balanceText.setText("Alok, your balance is: " + balance);
+//                    TextView balanceText = (TextView)findViewById(R.id.mainTextView);
+//                    balanceText.setText("Alok, your balance is: " + balance);
             }
         }
     }

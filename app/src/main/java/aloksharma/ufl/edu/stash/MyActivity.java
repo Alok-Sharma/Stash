@@ -67,7 +67,7 @@ public class MyActivity extends Activity {
 
         String message_stashname = stashname.getText().toString();
         String message_targetdate = targetdate.getText().toString();
-        String message_goal = goal.getText().toString();
+        int message_goal = Integer.parseInt(goal.getText().toString());
         /***********************************************************************/
 
         //Create an intent
