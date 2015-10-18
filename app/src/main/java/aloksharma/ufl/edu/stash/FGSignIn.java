@@ -36,6 +36,8 @@ public class FGSignIn extends Activity {
     ParseUser parseUser;
     String name = null, email = null;
 
+    Intent homeActivity;
+
     public static final List<String> permissionList = new ArrayList<String>
             () {{
             add("public_profile");
@@ -46,6 +48,13 @@ public class FGSignIn extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fgsign_in);
+
+        homeActivity = new Intent(this, HomeActivity.class);
+
+        if(ParseUser.getCurrentUser() != null){
+            startActivity(homeActivity);
+            finish();
+        }
 
         fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
 
@@ -67,7 +76,11 @@ public class FGSignIn extends Activity {
                                 } else {
                                     Log.d("StashFBLogin", "User FB login " +
                                             "successful");
+                                    user.saveInBackground();
+                                    user.pinInBackground();
                                     getUserDetailsFromParse(user);
+                                    startActivity(homeActivity);
+                                    finish();
                                 }
                             }
                         });
@@ -90,6 +103,8 @@ public class FGSignIn extends Activity {
                             name = response.getJSONObject().getString("name");
                             fbUsername.setText(name);
                             saveNewUser();
+                            startActivity(homeActivity);
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -105,16 +120,14 @@ public class FGSignIn extends Activity {
         parseUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Toast.makeText(FGSignIn.this, "New user:" + name
-                        + " Signed up", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FGSignIn.this, "SignIn Successful", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void getUserDetailsFromParse(ParseUser user) {
         parseUser = ParseUser.getCurrentUser();
-        Toast.makeText(FGSignIn.this, "Welcome back " + parseUser
-                .getUsername(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(FGSignIn.this, "Welcome back to Stash!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -123,15 +136,6 @@ public class FGSignIn extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
-
-    public void fetchExistingUser() {
-        Intent serverIntent = new Intent(getApplicationContext(),
-                ServerAccess.class);
-        serverIntent.putExtra("server_action", ServerAccess.ServerAction
-                .GET_USER.toString());
-        getApplicationContext().startService(serverIntent);
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
