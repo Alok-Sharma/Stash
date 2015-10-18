@@ -11,21 +11,24 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.widget.LoginButton;
-import com.parse.Parse;
+
 import com.parse.ParseFacebookUtils;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+
 import org.json.JSONException;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 
@@ -46,12 +49,18 @@ public class FGSignIn extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fgsign_in);
 
         homeActivity = new Intent(this, HomeActivity.class);
 
-        if(ParseUser.getCurrentUser() != null){
+//        Log.d("Priti", FacebookSdk.getApplicationSignature
+//                (getApplicationContext()));
+
+        if (ParseUser.getCurrentUser() != null) {
+            parseUser = ParseUser.getCurrentUser();
+            Log.d("StashFBLogin", "got it before fbButton pressed");
             startActivity(homeActivity);
             finish();
         }
@@ -61,34 +70,40 @@ public class FGSignIn extends Activity {
         fbLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseFacebookUtils.logInWithReadPermissionsInBackground
-                        (FGSignIn.this, permissionList, new LogInCallback() {
-                            @Override
-                            public void done(ParseUser user, ParseException
-                                    err) {
-                                if (user == null) {
-                                    Log.d("StashFBLogin", "Login Cancelled " +
-                                            "by user");
-                                } else if (user.isNew()) {
-                                    Log.d("StashFBLogin", "User FB signup " +
-                                            "successful");
-                                    getUserDetailsFromFB();
-                                } else {
-                                    Log.d("StashFBLogin", "User FB login " +
-                                            "successful");
-                                    user.saveInBackground();
-                                    user.pinInBackground();
-                                    getUserDetailsFromParse(user);
-                                    startActivity(homeActivity);
-                                    finish();
-                                }
-                            }
-                        });
+                loginWithFB();
             }
         });
     }
 
+    public void loginWithFB() {
+        ParseFacebookUtils.logInWithReadPermissionsInBackground
+                (FGSignIn.this, permissionList, new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException
+                            err) {
+                        if (user == null) {
+                            Log.d("StashFBLogin", "Login Cancelled " +
+                                    "by user");
+                        } else if (user.isNew()) {
+                            Log.d("StashFBLogin", "User FB signup " +
+                                    "successful");
+                            getUserDetailsFromFB();
+                        } else {
+                            Log.d("StashFBLogin", "User FB login " +
+                                    "successful");
+                            user.saveInBackground();
+                            user.pinInBackground();
+                            getUserDetailsFromParse(user);
+                        }
+                        if (err != null) {
+                            Log.d("priti1", err.getMessage());
+                        }
+                    }
+                });
+    }
+
     private void getUserDetailsFromFB() {
+        Log.d("StashFBLogin", "inside getUserDetailsFromFB ");
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me",
@@ -97,37 +112,52 @@ public class FGSignIn extends Activity {
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
                         try {
+                            Log.d("json", response.toString());
                             email = response.getJSONObject().getString
                                     ("email");
                             fbEmailID.setText(email);
                             name = response.getJSONObject().getString("name");
                             fbUsername.setText(name);
                             saveNewUser();
-                            startActivity(homeActivity);
-                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 }
         ).executeAsync();
+
+//        ProfilePhotoAsync profilePhotoAsync = new ProfilePhotoAsync
+// (mFbProfile);
+//        profilePhotoAsync.execute();
     }
 
     private void saveNewUser() {
         parseUser = ParseUser.getCurrentUser();
         parseUser.setUsername(name);
         parseUser.setEmail(email);
+        Log.d("StashFBLogin", "inside saveNewUser ");
+
         parseUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Toast.makeText(FGSignIn.this, "SignIn Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FGSignIn.this, "SignIn Successful", Toast
+                        .LENGTH_SHORT).show();
+                Log.d("StashFBLogin", "saved new user to parse");
+                startActivity(homeActivity);
+                finish();
             }
         });
     }
 
     private void getUserDetailsFromParse(ParseUser user) {
         parseUser = ParseUser.getCurrentUser();
-        Toast.makeText(FGSignIn.this, "Welcome back to Stash!", Toast.LENGTH_SHORT).show();
+        Log.d("StashFBLogin", "inside getUserDetailsFromParse, email: " +
+                parseUser.getEmail());
+        Toast.makeText(FGSignIn.this, "Welcome back to Stash!", Toast
+                .LENGTH_SHORT).show();
+        Log.d("StashFBLogin", "logged in existing user using parse");
+        startActivity(homeActivity);
+        finish();
     }
 
     @Override
@@ -148,9 +178,16 @@ public class FGSignIn extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
         // Logs 'install' and 'app activate' App Events.
         AppEventsLogger.activateApp(this);
+//        if (ParseUser.getCurrentUser() != null) {
+//            parseUser = ParseUser.getCurrentUser();
+//            Log.d("StashFBLogin", "got it before fbButton pressed");
+//            startActivity(homeActivity);
+//            finish();
+//        }
+
+
     }
 
     @Override
