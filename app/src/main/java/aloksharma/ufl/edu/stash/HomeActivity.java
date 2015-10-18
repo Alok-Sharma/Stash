@@ -48,8 +48,8 @@ public class HomeActivity extends Activity {
 
         stashQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
-            public void done(List<ParseObject> stashList, ParseException e) {
-                for (ParseObject stash : stashList) {
+            public void done(List<ParseObject> stashes, ParseException e) {
+                for (ParseObject stash : stashes) {
                     toSaveAmount = toSaveAmount + stash.getInt("StashGoal");
                     TextView toSaveText = (TextView)findViewById(R.id.toSaveAmount);
                     toSaveText.setText("$" + toSaveAmount);
