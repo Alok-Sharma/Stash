@@ -23,5 +23,7 @@
     <string name="user_entry">Please Enter Your Name</string>
     <string name="button_text">Press Me</string>
     <string name="title_activity_display_message">My Message</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
 
 </resources>
