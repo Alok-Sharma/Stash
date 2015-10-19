@@ -67,7 +67,7 @@ public class FGSignIn extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fgsign_in);
+        setContentView(R.layout.activity_login);
 
         homeActivity = new Intent(this, HomeActivity.class);
 
