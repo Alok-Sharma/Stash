@@ -2,6 +2,10 @@ package aloksharma.ufl.edu.stash;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,22 +15,33 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
+import com.facebook.Profile;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.widget.LoginButton;
 
+import com.parse.GetCallback;
 import com.parse.ParseFacebookUtils;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import org.json.JSONException;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -35,9 +50,10 @@ import java.util.List;
 public class FGSignIn extends Activity {
 
     LoginButton fbLoginButton;
-    EditText fbUsername, fbEmailID;
     ParseUser parseUser;
+    Profile mFbProfile;
     String name = null, email = null;
+    CircleImageView mProfileImage;
 
     Intent homeActivity;
 
@@ -55,15 +71,13 @@ public class FGSignIn extends Activity {
 
         homeActivity = new Intent(this, HomeActivity.class);
 
-//        Log.d("Priti", FacebookSdk.getApplicationSignature
-//                (getApplicationContext()));
-
         if (ParseUser.getCurrentUser() != null) {
             parseUser = ParseUser.getCurrentUser();
             Log.d("StashFBLogin", "got it before fbButton pressed");
             startActivity(homeActivity);
             finish();
         }
+        mProfileImage = (CircleImageView) findViewById(R.id.profile_image);
 
         fbLoginButton = (LoginButton) findViewById(R.id.fb_login_button);
 
@@ -82,18 +96,17 @@ public class FGSignIn extends Activity {
                     public void done(ParseUser user, ParseException
                             err) {
                         if (user == null) {
-                            Log.d("StashFBLogin", "Login Cancelled " +
-                                    "by user");
+                            Log.d("StashFBLogin", "Login Cancelled by user");
                         } else if (user.isNew()) {
-                            Log.d("StashFBLogin", "User FB signup " +
-                                    "successful");
+                            Log.d("StashFBLogin", "User FB signup successful");
                             getUserDetailsFromFB();
+                            startActivity(homeActivity);
+                            finish();
                         } else {
-                            Log.d("StashFBLogin", "User FB login " +
-                                    "successful");
+                            Log.d("StashFBLogin", "User FB login successful");
                             user.saveInBackground();
                             user.pinInBackground();
-                            getUserDetailsFromParse(user);
+                            getUserDetailsFromParse();
                         }
                         if (err != null) {
                             Log.d("priti1", err.getMessage());
@@ -111,48 +124,104 @@ public class FGSignIn extends Activity {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
+
+                        Log.d("json", response.toString());
                         try {
-                            Log.d("json", response.toString());
+                            name = response.getJSONObject().getString("name");
                             email = response.getJSONObject().getString
                                     ("email");
-                            fbEmailID.setText(email);
-                            name = response.getJSONObject().getString("name");
-                            fbUsername.setText(name);
                             saveNewUser();
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.d("StashFBLogin", e.getMessage());
                         }
+
+
                     }
                 }
         ).executeAsync();
 
-//        ProfilePhotoAsync profilePhotoAsync = new ProfilePhotoAsync
-// (mFbProfile);
-//        profilePhotoAsync.execute();
+        mFbProfile = Profile.getCurrentProfile();
+
+        ProfilePhotoAsync profilePhotoAsync = new ProfilePhotoAsync(mFbProfile);
+        profilePhotoAsync.execute();
+
     }
 
     private void saveNewUser() {
         parseUser = ParseUser.getCurrentUser();
-        parseUser.setUsername(name);
-        parseUser.setEmail(email);
-        Log.d("StashFBLogin", "inside saveNewUser ");
 
-        parseUser.saveInBackground(new SaveCallback() {
+        if (name != null) parseUser.setUsername(name);
+        if (email != null) parseUser.setEmail(email);
+        parseUser.put("firstName", mFbProfile.getFirstName());
+        Log.d("first name", mFbProfile.getFirstName());
+        parseUser.put("lastName", mFbProfile.getLastName());
+        Log.d("last name", mFbProfile.getLastName());
+
+
+        Log.d("objectID", parseUser.getObjectId());
+        //Saving profile photo as a ParseFile
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Bitmap bitmap = ((BitmapDrawable) mProfileImage.getDrawable()).getBitmap();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        byte[] data = stream.toByteArray();
+        String thumbName = parseUser.getUsername().replaceAll("\\s+", "");
+        final ParseFile parseFile = new ParseFile(thumbName + "_thumb.jpg", data);
+
+        parseFile.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Toast.makeText(FGSignIn.this, "SignIn Successful", Toast
-                        .LENGTH_SHORT).show();
-                Log.d("StashFBLogin", "saved new user to parse");
-                startActivity(homeActivity);
-                finish();
+                parseUser.put("profileThumb", parseFile);
+
+                //Finally save all the user details
+                parseUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Toast.makeText(FGSignIn.this, "New user:" + name + "" +
+                                " Signed up", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
+
+//        ParseQuery<ParseObject> userTableQuery = ParseQuery.getQuery("User");
+//        userTableQuery.getInBackground(parseUser.getObjectId(), new
+//                GetCallback<ParseObject>() {
+//                    public void done(ParseObject userTableObject,
+//                                     ParseException
+//                                             e) {
+//                        if (e == null) {
+//                            userTableObject.put("firstName", mFbProfile
+//                                    .getFirstName());
+//                            userTableObject.put("lastName", mFbProfile
+//                                    .getLastName());
+//                            if (email != null)
+//                                userTableObject.put("email", email);
+////                            userTableObject.put("profileThumb", parseFile);
+//                        } else {
+//                            Log.d("StashFBLogin", e.getMessage());
+//                        }
+//                    }
+//                });
+
+
+        Log.d("StashFBLogin", "leaving saveNewUser ");
+
     }
 
-    private void getUserDetailsFromParse(ParseUser user) {
+    private void getUserDetailsFromParse() {
         parseUser = ParseUser.getCurrentUser();
-        Log.d("StashFBLogin", "inside getUserDetailsFromParse, email: " +
-                parseUser.getEmail());
+        //Fetch profile photo
+        try {
+            ParseFile parseFile = parseUser.getParseFile("profileThumb");
+            byte[] data = parseFile.getData();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data
+                    .length);
+            mProfileImage.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Toast.makeText(FGSignIn.this, "Welcome back to Stash!", Toast
                 .LENGTH_SHORT).show();
         Log.d("StashFBLogin", "logged in existing user using parse");
@@ -169,8 +238,6 @@ public class FGSignIn extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is
-        // present.
         getMenuInflater().inflate(R.menu.menu_fgsign_in, menu);
         return true;
     }
@@ -178,38 +245,62 @@ public class FGSignIn extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Logs 'install' and 'app activate' App Events.
         AppEventsLogger.activateApp(this);
-//        if (ParseUser.getCurrentUser() != null) {
-//            parseUser = ParseUser.getCurrentUser();
-//            Log.d("StashFBLogin", "got it before fbButton pressed");
-//            startActivity(homeActivity);
-//            finish();
-//        }
-
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
+    class ProfilePhotoAsync extends AsyncTask<String, String, String> {
+        Profile profile;
+        public Bitmap bitmap;
+
+        public ProfilePhotoAsync(Profile profile) {
+            this.profile = profile;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            // Fetching data from URI and storing in bitmap
+            bitmap = DownloadImageBitmap(profile.getProfilePictureUri(200,
+                    200).toString());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            mProfileImage.setImageBitmap(bitmap);
+        }
+
+        public Bitmap DownloadImageBitmap(String url) {
+            Bitmap bm = null;
+            try {
+                URL aURL = new URL(url);
+                URLConnection conn = aURL.openConnection();
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                BufferedInputStream bis = new BufferedInputStream(is);
+                bm = BitmapFactory.decodeStream(bis);
+                bis.close();
+                is.close();
+            } catch (IOException e) {
+                Log.e("IMAGE", "Error getting bitmap", e);
+            }
+            return bm;
+        }
+    }
+
 }

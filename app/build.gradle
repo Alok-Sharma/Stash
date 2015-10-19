@@ -47,4 +47,5 @@ dependencies {
     compile 'com.facebook.conceal:conceal:1.0.1@aar'
     compile 'com.android.support:support-v4:21.+'
     compile 'com.github.glomadrian:dashed-circular-progress:1fe8b13942'
+    compile 'de.hdodenhof:circleimageview:1.2.1'
 }
