@@ -11,26 +11,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name=".HomeActivity"
             android:label="@string/app_name" >
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN"/> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
-            <!-- </intent-filter> -->
         </activity>
+
         <activity
             android:name=".MyActivity"
             android:label="@string/app_name" >
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
+
         <activity
             android:name=".DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
@@ -46,6 +37,7 @@
             android:name=".FGSignIn"
             android:label="@string/app_name" >
         </activity>
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -58,7 +50,7 @@
 
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
