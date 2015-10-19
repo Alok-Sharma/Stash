@@ -15,10 +15,6 @@
     <string name="plaid_secret_test"/>
     <string name="parse_applicationId_test">blah</string>
     <string name="parse_clientKey_test">blah</string>
-
-
-
-
     <string name="button_send">Send</string>
     <string name="user_entry">Please Enter Your Name</string>
     <string name="button_text">Press Me</string>
