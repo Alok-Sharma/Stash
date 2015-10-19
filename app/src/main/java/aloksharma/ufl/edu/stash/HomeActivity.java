@@ -26,6 +26,8 @@ import java.util.List;
 public class HomeActivity extends Activity implements View.OnClickListener{
 
     private DashedCircularProgress dashedCircularProgress;
+    private DashedCircularProgress circularProgressStash1;
+    private DashedCircularProgress circularProgressStash2;
     ImageButton logoutButton;
     ImageButton addStashButton;
     int savedAmount = 0;
@@ -51,6 +53,10 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 
         dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
         dashedCircularProgress.reset();
+        circularProgressStash1 = (DashedCircularProgress)findViewById(R.id.stash1Progress);
+        circularProgressStash1.reset();
+        circularProgressStash2 = (DashedCircularProgress)findViewById(R.id.stash2Progress);
+        circularProgressStash2.reset();
 
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
@@ -61,13 +67,33 @@ public class HomeActivity extends Activity implements View.OnClickListener{
             public void done(List<ParseObject> stashes, ParseException e) {
                 for (ParseObject stash : stashes) {
                     toSaveAmount = toSaveAmount + stash.getInt("StashGoal");
-                    TextView toSaveText = (TextView)findViewById(R.id.toSaveAmount);
+                    TextView toSaveText = (TextView) findViewById(R.id.toSaveAmount);
                     toSaveText.setText("$" + toSaveAmount);
                     savedAmount = savedAmount + stash.getInt("StashValue");
                     stashList.add(stash);
                 }
                 dashedCircularProgress.setMax(toSaveAmount);
                 dashedCircularProgress.setValue(savedAmount);
+
+                if(stashList.size()>=1) {
+                    TextView stash1Name = (TextView) findViewById(R.id.stash1Name);
+                    stash1Name.setText(stashList.get(stashList.size() - 1).getString("StashName"));
+                    circularProgressStash1.setMax(100);
+                    int stash1pct = Math.round(((stashList.get(stashList.size() - 1).getInt("StashGoal")) * 100)/toSaveAmount);
+                    circularProgressStash1.setValue(stash1pct);
+                    TextView stash1Percentage = (TextView) findViewById(R.id.stash1Percentage);
+                    stash1Percentage.setText(Integer.toString(stash1pct) + "%");
+                }
+
+                if(stashList.size()>=2) {
+                    TextView stash2Name = (TextView) findViewById(R.id.stash2Name);
+                    stash2Name.setText(stashList.get(stashList.size() - 2).getString("StashName"));
+                    circularProgressStash2.setMax(100);
+                    int stash2pct = Math.round(((stashList.get(stashList.size() - 2).getInt("StashGoal")) * 100)/toSaveAmount);
+                    circularProgressStash2.setValue(stash2pct);
+                    TextView stash2Percentage = (TextView) findViewById(R.id.stash2Percentage);
+                    stash2Percentage.setText(Integer.toString(stash2pct) + "%");
+                }
             }
         });
 
