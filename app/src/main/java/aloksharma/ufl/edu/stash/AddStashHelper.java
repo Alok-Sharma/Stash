@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 
 
-public class DisplayMessageActivity extends Activity {
+public class AddStashHelper extends Activity {
 
 
     public final static String EXTRA_MESSAGE = "aloksharma.ufl.edu.stash.MESSAGE";
@@ -24,7 +24,7 @@ public class DisplayMessageActivity extends Activity {
 
         //Get the message from the intent
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
+        String message = intent.getStringExtra(AddStash.EXTRA_MESSAGE);
 
         //Log.i("debug", "made it to new class");
 
