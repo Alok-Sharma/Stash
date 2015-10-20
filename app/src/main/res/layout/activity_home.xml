@@ -58,108 +58,12 @@
 
     </com.github.glomadrian.dashedcircularprogress.DashedCircularProgress>
 
-    <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="75dp"
-        android:id="@+id/logoutButton"
-        android:src="@drawable/_logouticon"
-        android:scaleType="fitCenter"
-        android:background="#69B6B1"
-        android:layout_alignParentTop="true"
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/stashListView"
+        android:layout_below="@+id/simple"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
-    <ImageButton
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:id="@+id/addStashButton"
-        android:src="@drawable/_addstashicon"
-        android:scaleType="fitCenter"
-        android:layout_alignParentTop="true"
-        android:background="#69B6B1"
-        android:layout_toRightOf="@+id/mainTextView"
-        android:layout_toEndOf="@+id/mainTextView" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_below="@+id/simple"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:weightSum="1"
-        android:id="@+id/linearLayout">
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.50">
-            <com.github.glomadrian.dashedcircularprogress.DashedCircularProgress
-                android:id="@+id/stash1Progress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                custom:external_color="#69B6B1"
-                custom:base_color="#6effffff"
-                custom:min="0"
-                custom:max="999"
-                custom:progress_color="#EE4266"
-                custom:duration="3500"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:id="@+id/stash1Percentage"
-                    android:layout_gravity="center" />
-            </com.github.glomadrian.dashedcircularprogress.DashedCircularProgress>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/stash1Name"
-                android:layout_gravity="center_horizontal|bottom" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.50">
-            <com.github.glomadrian.dashedcircularprogress.DashedCircularProgress
-                android:id="@+id/stash2Progress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                custom:external_color="#69B6B1"
-                custom:base_color="#6effffff"
-                custom:min="0"
-                custom:max="999"
-                custom:progress_color="#EE4266"
-                custom:duration="3500"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:id="@+id/stash2Percentage"
-                    android:layout_gravity="center" />
-            </com.github.glomadrian.dashedcircularprogress.DashedCircularProgress>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/stash2Name"
-                android:layout_gravity="center_horizontal|bottom" />
-        </FrameLayout>
-    </LinearLayout>
-
 
 </RelativeLayout>
