@@ -8,8 +8,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.glomadrian.dashedcircularprogress.DashedCircularProgress;
@@ -23,12 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends Activity implements View.OnClickListener{
+public class HomeActivity extends Activity{
 
     private DashedCircularProgress dashedCircularProgress;
-	private DashedCircularProgress circularProgressStash1;
-    private DashedCircularProgress circularProgressStash2;
-    ImageButton logoutButton;
+    private ListView stashListView;
     ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
@@ -36,10 +36,13 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-		logoutButton = (ImageButton) findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(this);
         addStashButton = (ImageButton) findViewById(R.id.addStashButton);
-        addStashButton.setOnClickListener(this);
+        addStashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, MyActivity.class));
+            }
+        });
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
@@ -52,14 +55,11 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 
         dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
         dashedCircularProgress.reset();
-		circularProgressStash1 = (DashedCircularProgress)findViewById(R.id.stash1Progress);
-        circularProgressStash1.reset();
-        circularProgressStash2 = (DashedCircularProgress)findViewById(R.id.stash2Progress);
-        circularProgressStash2.reset();
 
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
         final ArrayList<ParseObject> stashList = new ArrayList<>();
+        final ArrayList<String> stashNameList = new ArrayList<>();
 
         stashQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -70,28 +70,15 @@ public class HomeActivity extends Activity implements View.OnClickListener{
                     toSaveText.setText("$" + toSaveAmount);
                     savedAmount = savedAmount + stash.getInt("StashValue");
                     stashList.add(stash);
+                    int stashDifferential = stash.getInt("StashGoal")-stash.getInt("StashValue");
+                    stashNameList.add(stash.getString("StashName")+" :\t"+String.valueOf(stashDifferential)+"$ to save");
                 }
                 dashedCircularProgress.setMax(toSaveAmount);
                 dashedCircularProgress.setValue(savedAmount);
-				if(stashList.size()>=1) {
-                    TextView stash1Name = (TextView) findViewById(R.id.stash1Name);
-                    stash1Name.setText(stashList.get(stashList.size() - 1).getString("StashName"));
-                    circularProgressStash1.setMax(100);
-                    int stash1pct = Math.round(((stashList.get(stashList.size() - 1).getInt("StashGoal")) * 100)/toSaveAmount);
-                    circularProgressStash1.setValue(stash1pct);
-                    TextView stash1Percentage = (TextView) findViewById(R.id.stash1Percentage);
-                    stash1Percentage.setText(Integer.toString(stash1pct) + "%");
-                }
 
-                if(stashList.size()>=2) {
-                    TextView stash2Name = (TextView) findViewById(R.id.stash2Name);
-                    stash2Name.setText(stashList.get(stashList.size() - 2).getString("StashName"));
-                    circularProgressStash2.setMax(100);
-                    int stash2pct = Math.round(((stashList.get(stashList.size() - 2).getInt("StashGoal")) * 100)/toSaveAmount);
-                    circularProgressStash2.setValue(stash2pct);
-                    TextView stash2Percentage = (TextView) findViewById(R.id.stash2Percentage);
-                    stash2Percentage.setText(Integer.toString(stash2pct) + "%");
-                }
+                stashListView = (ListView) findViewById(R.id.stashListView);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HomeActivity.this,android.R.layout.simple_list_item_1,stashNameList);
+                stashListView.setAdapter(arrayAdapter);
             }
         });
 
@@ -116,18 +103,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 //                    TextView balanceText = (TextView)findViewById(R.id.mainTextView);
 //                    balanceText.setText("Alok, your balance is: " + balance);
             }
-        }
-    }
-	@Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.logoutButton:
-                ParseUser.logOutInBackground();
-                startActivity(new Intent(this,LoginActivity.class));
-                break;
-            case R.id.addStashButton:
-                startActivity(new Intent(this,MyActivity.class));
-                break;
         }
     }
 }
