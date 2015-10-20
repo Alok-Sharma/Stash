@@ -40,7 +40,7 @@ public class HomeActivity extends Activity{
         addStashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, MyActivity.class));
+                startActivity(new Intent(HomeActivity.this, AddStash.class));
             }
         });
 
