@@ -4,5 +4,6 @@
     <color name="ColorPrimary">#1FBCD2</color>
     <color name="ColorPrimaryDark">#1BACC0</color>
 
-
+    <color name="PrimaryColor">#2196F3</color>
+    <color name="PrimaryDarkColor">#1976D2</color>
 </resources> 
