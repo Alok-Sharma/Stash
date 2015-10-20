@@ -25,6 +25,7 @@
         custom:base_color="#6effffff"
         custom:min="0"
         custom:max="999"
+        custom:progress_icon="@drawable/transparenticon"
         custom:progress_color="#EE4266"
         custom:duration="3500"
         >
