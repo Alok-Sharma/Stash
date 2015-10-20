@@ -42,6 +42,7 @@ public class ServerAccess extends IntentService {
         Intent outgoingIntent = new Intent("server_response");
         outgoingIntent.putExtra("server_response", action);
 
+
         switch (serverAction) {
             case ADD_STASH:
                 String StashName = incomingIntent.getStringExtra("StashName");
@@ -50,8 +51,9 @@ public class ServerAccess extends IntentService {
 
                 //Push data to your function
                 addStash(StashName, StashTargetDate, StashGoal);
-                break;
-
+                Intent homeActivity = new Intent(this, HomeActivity.class);
+                homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeActivity);
             case ADD_USER:
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if

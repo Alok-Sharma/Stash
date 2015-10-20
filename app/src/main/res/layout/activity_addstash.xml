@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MyActivity"
+    tools:context=".AddStash"
     android:weightSum="1">
 
     <LinearLayout android:layout_width="match_parent"
@@ -11,14 +11,36 @@
         android:orientation="vertical"
         android:layout_weight="0.20">
 
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="#69B6B1"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:elevation="4dp"
+            android:paddingTop="24dp">
+
+              <TextView
+            android:text="Add Stash"
+            android:layout_gravity="center"
+                  android:textSize="40dp"
+            android:layout_marginTop="20dp"
+                  android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        </android.support.v7.widget.Toolbar>
+
+
         <EditText android:id="@+id/edit_stashname"
 
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="80dp"
             android:layout_gravity="center"
-            android:hint="Stash Name"
+            android:hint=" Stash Name "
+            android:background="#69B6B1"
             android:inputType="textMultiLine"/>
 
         <EditText android:id="@+id/edit_targetdate"
@@ -26,10 +48,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-
+            android:background="#69B6B1"
             android:layout_below = "@+id/edit_stashname"
             android:layout_gravity="center"
-            android:hint="Target Date"
+            android:hint=" Target Date "
             android:inputType="date"/>
 
         <EditText android:id="@+id/edit_goal"
@@ -38,16 +60,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
+            android:background="#69B6B1"
             android:layout_below = "@+id/edit_goal"
-            android:hint="Goal"
+            android:hint=" $ Goal "
             android:inputType="number"/>
 
         <Button android:id="@+id/button_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             android:layout_below = "@id/edit_goal"
-            android:text="Create Stash"
+            android:text=" Create Stash "
             android:onClick="CreateStash" />
 
     </LinearLayout>
