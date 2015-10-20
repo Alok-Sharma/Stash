@@ -58,6 +58,17 @@
 
     </com.github.glomadrian.dashedcircularprogress.DashedCircularProgress>
 
+    <ImageButton
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:id="@+id/addStashButton"
+        android:src="@drawable/_addstashicon"
+        android:scaleType="fitCenter"
+        android:background="#69B6B1"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/simple"
+        android:layout_toEndOf="@+id/simple" />
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
