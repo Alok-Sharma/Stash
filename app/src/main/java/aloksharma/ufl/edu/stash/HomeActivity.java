@@ -29,12 +29,20 @@ public class HomeActivity extends Activity{
 
     private DashedCircularProgress dashedCircularProgress;
     private ListView stashListView;
+    ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        addStashButton = (ImageButton) findViewById(R.id.addStashButton);
+        addStashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, MyActivity.class));
+            }
+        });
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
