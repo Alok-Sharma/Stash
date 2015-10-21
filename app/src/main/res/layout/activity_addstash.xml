@@ -35,22 +35,18 @@
         <EditText android:id="@+id/edit_stashname"
 
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
-            android:layout_gravity="center"
             android:hint=" Stash Name "
-            android:background="#69B6B1"
             android:inputType="textMultiLine"/>
 
         <EditText android:id="@+id/edit_targetdate"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="#69B6B1"
             android:layout_below = "@+id/edit_stashname"
-            android:layout_gravity="center"
             android:hint=" Target Date "
             android:inputType="date"/>
 
@@ -59,8 +55,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_gravity="center"
-            android:background="#69B6B1"
             android:layout_below = "@+id/edit_goal"
             android:hint=" $ Goal "
             android:inputType="number"/>
