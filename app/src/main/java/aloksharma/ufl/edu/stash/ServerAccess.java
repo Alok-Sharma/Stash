@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.facebook.android.crypto.keychain.SharedPrefsBackedKeyChain;
-import com.facebook.crypto.Crypto;
-import com.facebook.crypto.util.SystemNativeCryptoLibrary;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -24,8 +21,6 @@ import java.util.Map;
  */
 public class ServerAccess extends IntentService {
 
-    Crypto crypto;
-
     public enum ServerAction {
         ADD_USER, GET_USER, ADD_STASH, GET_BALANCE, GET_ACCESS_TOKEN
     }
@@ -38,7 +33,6 @@ public class ServerAccess extends IntentService {
 
     public ServerAccess() {
         super("ServerAccess");
-        crypto = new Crypto(new SharedPrefsBackedKeyChain(App.getContext()), new SystemNativeCryptoLibrary());
     }
 
     @Override
@@ -48,18 +42,18 @@ public class ServerAccess extends IntentService {
         Intent outgoingIntent = new Intent("server_response");
         outgoingIntent.putExtra("server_response", action);
 
+
         switch (serverAction) {
             case ADD_STASH:
-                //Pulling the data from the incoming intent
                 String StashName = incomingIntent.getStringExtra("StashName");
                 String StashTargetDate = incomingIntent.getStringExtra("StashTargetDate");
-                String StashGoal = incomingIntent.getStringExtra("StashGoal");
+                int StashGoal = incomingIntent.getIntExtra("StashGoal", 0);
 
                 //Push data to your function
                 addStash(StashName, StashTargetDate, StashGoal);
-
-               break;
-
+                Intent homeActivity = new Intent(this, HomeActivity.class);
+                homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeActivity);
             case ADD_USER:
             //GET_BALANCE creates a new bank account if the incoming intent has username, password and bank name.
             case GET_BALANCE:
@@ -105,33 +99,30 @@ public class ServerAccess extends IntentService {
         //Stub to get the Parse user object.
     }
 
-   /******************Add Stash Functionality******************************************/
-    public void addStash(String StashName, String StashTargetDate, String StashGoal){
+    /**
+     * Add Stash Functionality
+     */
+    public void addStash(String StashName, String StashTargetDate, int StashGoal) {
         //Stub to create Stash
-        Log.d("CreateStashLog1",StashName);
-        Log.d("CreateStashLog2",StashTargetDate);
-        Log.d("CreateStashLog3",StashGoal);
+        Log.d("CreateStashLog1", StashName);
+        Log.d("CreateStashLog2", StashTargetDate);
+        Log.d("CreateStashLog3", "" + StashGoal);
 
-        //Send to Parse Database
+        /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
-
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
 
-        //Link the ParseUser object with the Stash object
+        /*Link the ParseUser object with the Stash object*/
         ParseUser currentUser = ParseUser.getCurrentUser();
-
         Stash.put("user", ParseUser.getCurrentUser());     //create a user relation with the current user
-
-        //Stash.saveInBackground();
-
         Stash.saveInBackground(new SaveCallback() {
 
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Log.i("Success","11");
+                    Log.i("Success", "11");
 
                 } else {
                     Log.i("Fail", "22");
@@ -139,22 +130,18 @@ public class ServerAccess extends IntentService {
             }
 
         });
-        /******************End of Add Stash Functionality******************************************/
 
-
-        /******************My Stashes Functionality******************************************/
-       //Populating the list of Stash Fields; that query should be via a button
-
-        // Create query for objects of type "Post"
+        /**
+         * My Stashes Functionality - Populating the list of Stash Fields; that query should be via a button
+         */
+        /**Create query for objects of type "Stash"*/
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
 
-        // Restrict to cases where the user is the current user.
+        /**Restrict to cases where the user is the current user**/
         query.whereEqualTo("user", ParseUser.getCurrentUser());
 
-
         final ArrayList Stash_List = new ArrayList();
-        // Run the query
-        query.findInBackground(new FindCallback<ParseObject>() {                //Ideally should be called on click event such as View Stash
+        query.findInBackground(new FindCallback<ParseObject>() {
 
             @Override
             public void done(List<ParseObject> StashList, ParseException e) {
@@ -183,30 +170,13 @@ public class ServerAccess extends IntentService {
         //Log.i("CreateStashLog6", Stash_List.size()+"");
         //removeStash(Stash);                 //Removes the object Stash
     }
-    /******************End of My Stashes Functionality******************************************/
 
-
-
-
-    /******************Remove Stash Functionality*********************************************/
-    public void removeStash(ParseObject Stash){
+    /**
+     * Remove Stash Functionality
+     */
+    public void removeStash(ParseObject Stash) {
 
         Stash.deleteInBackground();
 
     }
-    /******************End of Remove Stash Functionality*********************************************/
-
-//    private void addAccessToken() {
-//        String input = "test_wells";
-//        try {
-//            byte[] encryptedInput = crypto.encrypt(input.getBytes(), new Entity("password"));
-//            Log.d("nikita", "byte: " + encryptedInput);
-//            Map<String, byte[]> bankMap = new HashMap<>();
-//            bankMap.put("wells", encryptedInput);
-//            ParseUser.getCurrentUser().put("BankMap", bankMap);
-//            ParseUser.getCurrentUser().save();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

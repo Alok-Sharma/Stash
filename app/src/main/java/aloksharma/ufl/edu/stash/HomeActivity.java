@@ -7,17 +7,41 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
+import com.github.glomadrian.dashedcircularprogress.DashedCircularProgress;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity{
 
+    private DashedCircularProgress dashedCircularProgress;
+    private ListView stashListView;
+    ImageButton addStashButton;
+    int savedAmount = 0;
+    int toSaveAmount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
+        addStashButton = (ImageButton) findViewById(R.id.addStashButton);
+        addStashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, AddStash.class));
+            }
+        });
 
         ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
 
@@ -29,6 +53,37 @@ public class HomeActivity extends Activity {
         serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
         ServiceBroadcastReceiver serviceListener = new ServiceBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
+
+        dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
+        dashedCircularProgress.reset();
+
+        ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
+        stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        final ArrayList<ParseObject> stashList = new ArrayList<>();
+        final ArrayList<String> stashNameList = new ArrayList<>();
+
+        stashQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> stashes, ParseException e) {
+                for (ParseObject stash : stashes) {
+                    toSaveAmount = toSaveAmount + stash.getInt("StashGoal");
+                    TextView toSaveText = (TextView)findViewById(R.id.toSaveAmount);
+                    toSaveText.setText("$" + toSaveAmount);
+                    savedAmount = savedAmount + stash.getInt("StashValue");
+                    stashList.add(stash);
+                    int stashDifferential = stash.getInt("StashGoal")-stash.getInt("StashValue");
+                    stashNameList.add(stash.getString("StashName")+" :\t"+String.valueOf(stashDifferential)+"$ to save");
+                }
+                dashedCircularProgress.setMax(toSaveAmount);
+                dashedCircularProgress.setValue(savedAmount);
+
+                stashListView = (ListView) findViewById(R.id.stashListView);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HomeActivity.this,android.R.layout.simple_list_item_1,stashNameList);
+                stashListView.setAdapter(arrayAdapter);
+            }
+        });
+
+
     }
 
     /**
@@ -46,8 +101,8 @@ public class HomeActivity extends Activity {
             switch (responseAction) {
                 case GET_BALANCE:
                     Double balance = intent.getDoubleExtra("balance", -1.0);
-                    TextView balanceText = (TextView)findViewById(R.id.mainTextView);
-                    balanceText.setText("Alok, your balance is: " + balance);
+//                    TextView balanceText = (TextView)findViewById(R.id.mainTextView);
+//                    balanceText.setText("Alok, your balance is: " + balance);
             }
         }
     }
