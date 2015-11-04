@@ -10,18 +10,15 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-
         android:theme="@style/AppTheme" >
         <activity
             android:name=".HomeActivity"
             android:label="@string/app_name" >
         </activity>
-
         <activity
             android:name=".AddStash"
             android:label="@string/app_name" >
         </activity>
-
         <activity
             android:name=".AddStashHelper"
             android:label="@string/title_activity_display_message"
@@ -39,7 +36,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -54,17 +51,18 @@
 
         <activity
             android:name=".AccountActivity"
-            android:label="@string/title_activity_account_activity">
+            android:label="@string/title_activity_account_activity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
+        </activity>
+        <activity android:name=".HoloCircularProgressBar" >
         </activity>
     </application>
 

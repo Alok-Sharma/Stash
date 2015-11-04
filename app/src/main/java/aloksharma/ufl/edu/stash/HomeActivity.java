@@ -26,7 +26,8 @@ import java.util.List;
 
 public class HomeActivity extends Activity{
 
-    private DashedCircularProgress dashedCircularProgress;
+    //private DashedCircularProgress dashedCircularProgress;
+    private HoloCircularProgressBar mainHoloCircularProgressBar;
     private ListView stashListView;
     ImageButton addStashButton;
     int savedAmount = 0;
@@ -43,7 +44,7 @@ public class HomeActivity extends Activity{
             }
         });
 
-        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
+        //ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
@@ -54,8 +55,9 @@ public class HomeActivity extends Activity{
         ServiceBroadcastReceiver serviceListener = new ServiceBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
 
-        dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
-        dashedCircularProgress.reset();
+        mainHoloCircularProgressBar = (HoloCircularProgressBar)findViewById(R.id.simple);
+        /*dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
+        dashedCircularProgress.reset();*/
 
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
@@ -74,12 +76,17 @@ public class HomeActivity extends Activity{
                     int stashDifferential = stash.getInt("StashGoal")-stash.getInt("StashValue");
                     stashNameList.add(stash.getString("StashName")+" :\t"+String.valueOf(stashDifferential)+"$ to save");
                 }
-                dashedCircularProgress.setMax(toSaveAmount);
+
+                float mainCircleProgress = (float)savedAmount/toSaveAmount;
+                mainHoloCircularProgressBar.setProgress(mainCircleProgress);
+                /*dashedCircularProgress.setMax(toSaveAmount);
                 dashedCircularProgress.setValue(savedAmount);
+
+
 
                 stashListView = (ListView) findViewById(R.id.stashListView);
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HomeActivity.this,android.R.layout.simple_list_item_1,stashNameList);
-                stashListView.setAdapter(arrayAdapter);
+                stashListView.setAdapter(arrayAdapter);*/
             }
         });
 
