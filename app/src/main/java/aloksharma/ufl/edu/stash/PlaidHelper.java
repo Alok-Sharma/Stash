@@ -31,6 +31,15 @@ public class PlaidHelper {
     Context context;
     PlaidHelper(Context context) {
         this.context = context;
+        try {
+            AesCbcWithIntegrity.SecretKeys keys = AesCbcWithIntegrity.generateKey();
+            AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = AesCbcWithIntegrity.encrypt("some test", keys);
+            //store or send to server
+            String ciphertextString = cipherTextIvMac.toString();
+            String plainText = AesCbcWithIntegrity.decryptString(cipherTextIvMac, keys);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     Double getBankBalance(String access_token) {
@@ -105,7 +114,7 @@ public class PlaidHelper {
             Log.d("StashLog", "PLAID RESPONSE: " + responseString);
 
             //fetch the access_token and store it on parse.
-            String access_token = jObject.getString("access_token");
+            String access_token = jObject.getString("access_token"); //TODO: Alok, change to BankMap
             //currentUser must not be null.
             ParseUser.getCurrentUser().addUnique("access_tokens",
                     access_token);
