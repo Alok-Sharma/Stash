@@ -46,11 +46,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="50dp"
+        android:textSize="60dp"
         android:id="@+id/toSaveAmount"
         android:textColor="#ffffff"
-        android:layout_marginBottom="120dp"
-        android:layout_alignBottom="@+id/simple"
+        android:layout_marginTop="66dp"
+        android:layout_below="@+id/addStashButton"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -60,6 +60,7 @@
         android:textSize="25dp"
         android:textColor="#ffffff"
         android:text="to save"
+        android:paddingTop="5dp"
         android:layout_alignTop="@+id/toSaveAmount"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="54dp" />
