@@ -8,11 +8,14 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.Parse;
 import com.parse.ParseUser;
 import com.github.glomadrian.dashedcircularprogress.DashedCircularProgress;
 import com.parse.FindCallback;
@@ -28,10 +31,13 @@ public class HomeActivity extends Activity{
 
     //private DashedCircularProgress dashedCircularProgress;
     private HoloCircularProgressBar mainHoloCircularProgressBar;
+    private GridView stashGridView;
     private ListView stashListView;
     ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
+    static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
+    static int saveAmount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +68,7 @@ public class HomeActivity extends Activity{
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
         final ArrayList<ParseObject> stashList = new ArrayList<>();
+
         final ArrayList<String> stashNameList = new ArrayList<>();
 
         stashQuery.findInBackground(new FindCallback<ParseObject>() {
@@ -77,8 +84,28 @@ public class HomeActivity extends Activity{
                     stashNameList.add(stash.getString("StashName")+" :\t"+String.valueOf(stashDifferential)+"$ to save");
                 }
 
+                gridObjectList = stashList;
+                saveAmount = toSaveAmount;
+
                 float mainCircleProgress = (float)savedAmount/toSaveAmount;
                 mainHoloCircularProgressBar.setProgress(mainCircleProgress);
+
+                stashGridView = (GridView) findViewById(R.id.stashGridView);
+                stashGridView.setAdapter(new ProgressBarAdapter(getApplicationContext()));
+
+                /*for(int i=0;i<stashList.size();i++){
+                    ViewGroup gridChild = (ViewGroup) stashGridView.getChildAt(i);
+                    int childSize = gridChild.getChildCount();
+                    for(int k = 0; k < childSize; k++) {
+                        if( gridChild.getChildAt(k) instanceof TextView) {
+                            gridChild.getChildAt(k).setVisibility(View.GONE);
+                        }
+                    }
+                }*/
+                //stashGridView.setNumColumns(stashList.size());
+
+               /* ArrayAdapter<ParseObject> arrayAdapter = new ArrayAdapter<ParseObject>(HomeActivity.this,R.layout.grid_items,stashList);
+                stashGridView.setAdapter(arrayAdapter);*/
                 /*dashedCircularProgress.setMax(toSaveAmount);
                 dashedCircularProgress.setValue(savedAmount);
 
@@ -92,6 +119,8 @@ public class HomeActivity extends Activity{
 
 
     }
+
+
 
     /**
      * The inner Broadcast receiver class that receives the responses from the ServerAccess class.

@@ -1,41 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#000000">
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="170dp" android:layout_height="170dp" android:background="#ffffff">
 
 
+    <!--<LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="170dp"
+        android:layout_height="12dp"></LinearLayout>-->
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000">
+        android:drawableTop="#000000">
 
         <aloksharma.ufl.edu.stash.HoloCircularProgressBar
             android:id="@+id/holoCircularProgressBar"
             android:layout_gravity="center"
-            android:layout_width="300dp"
-            android:layout_height="300dp"/>
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            custom:marker_visible="false"
+            custom:circle_progress_color="#FF2FE70E"
+            custom:progress_background_color="#FFACA9AC">
 
+        </aloksharma.ufl.edu.stash.HoloCircularProgressBar>
 
-
-        <TextView
+        <!--<TextView
             android:layout_width="188dp"
             android:layout_height="158dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="30dp"
+            android:textSize="15dp"
             android:textAlignment="center"
-            android:textColor="#FFFFFF"
+            android:textColor="#FF2FE70E"
             android:text="Medium Text"
             android:id="@+id/stashName"
-            android:layout_gravity="center_horizontal|bottom" />
+            android:layout_gravity="center_horizontal|bottom" />-->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="100dp"
+            android:textSize="25dp"
             android:text="25%"
-            android:textColor="#FFFFFF"
-            android:id="@+id/textView"
+            android:textColor="#FF2FE70E"
+            android:id="@+id/stashPercent"
             android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Stash Name"
+            android:textColor="#FF2FE70E"
+            android:paddingBottom="4dp"
+            android:id="@+id/stashName"
+            android:layout_gravity="center_horizontal|bottom" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/stashBorder"
+                android:background="#FF2FE70E"
+                android:layout_width="171dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_horizontal|top"></LinearLayout>
+        </FrameLayout>
     </FrameLayout>
 </LinearLayout>
