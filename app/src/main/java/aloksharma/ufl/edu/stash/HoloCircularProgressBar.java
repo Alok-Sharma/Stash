@@ -316,7 +316,8 @@ public class HoloCircularProgressBar extends View {
             mSquareRect.right = mThumbPosX + mThumbRadius / 3;
             mSquareRect.top = mThumbPosY - mThumbRadius / 3;
             mSquareRect.bottom = mThumbPosY + mThumbRadius / 3;
-            canvas.drawRect(mSquareRect, mThumbColorPaint);
+            canvas.drawRoundRect(mSquareRect,10,10,mThumbColorPaint);
+            //canvas.drawRect(mSquareRect, mThumbColorPaint);
             canvas.restore();
         }
     }
