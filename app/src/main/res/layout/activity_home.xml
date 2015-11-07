@@ -18,7 +18,7 @@
         android:layout_height="250dp"
         custom:thumb_visible="true"
         custom:marker_visible="false"
-        custom:circle_progress_color="#ee42dd"
+        custom:circle_progress_color="#E84079"
         android:layout_marginTop="58dp"
         android:layout_below="@+id/mainTextView"
         android:layout_centerHorizontal="true">
@@ -81,6 +81,7 @@
         android:numColumns="2"
         android:horizontalSpacing="1dp"
         android:verticalSpacing="1dp"/>
+
 
 </RelativeLayout>
 

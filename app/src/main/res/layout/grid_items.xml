@@ -3,12 +3,6 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="191dp" android:layout_height="195dp" android:background="@drawable/noise">
 
-
-    <!--<LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="170dp"
-        android:layout_height="12dp"></LinearLayout>-->
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,16 +19,6 @@
 
         </aloksharma.ufl.edu.stash.HoloCircularProgressBar>
 
-        <!--<TextView
-            android:layout_width="188dp"
-            android:layout_height="158dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="15dp"
-            android:textAlignment="center"
-            android:textColor="#FF2FE70E"
-            android:text="Medium Text"
-            android:id="@+id/stashName"
-            android:layout_gravity="center_horizontal|bottom" />-->
 
         <TextView
             android:layout_width="wrap_content"

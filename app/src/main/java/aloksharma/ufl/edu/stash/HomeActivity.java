@@ -29,7 +29,6 @@ import java.util.List;
 
 public class HomeActivity extends Activity{
 
-    //private DashedCircularProgress dashedCircularProgress;
     private HoloCircularProgressBar mainHoloCircularProgressBar;
     private GridView stashGridView;
     private ListView stashListView;
@@ -50,8 +49,6 @@ public class HomeActivity extends Activity{
             }
         });
 
-        //ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
-
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
         this.startService(serverIntent);
@@ -62,8 +59,6 @@ public class HomeActivity extends Activity{
         LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
 
         mainHoloCircularProgressBar = (HoloCircularProgressBar)findViewById(R.id.simple);
-        /*dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
-        dashedCircularProgress.reset();*/
 
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
@@ -92,28 +87,6 @@ public class HomeActivity extends Activity{
 
                 stashGridView = (GridView) findViewById(R.id.stashGridView);
                 stashGridView.setAdapter(new ProgressBarAdapter(getApplicationContext()));
-
-                /*for(int i=0;i<stashList.size();i++){
-                    ViewGroup gridChild = (ViewGroup) stashGridView.getChildAt(i);
-                    int childSize = gridChild.getChildCount();
-                    for(int k = 0; k < childSize; k++) {
-                        if( gridChild.getChildAt(k) instanceof TextView) {
-                            gridChild.getChildAt(k).setVisibility(View.GONE);
-                        }
-                    }
-                }*/
-                //stashGridView.setNumColumns(stashList.size());
-
-               /* ArrayAdapter<ParseObject> arrayAdapter = new ArrayAdapter<ParseObject>(HomeActivity.this,R.layout.grid_items,stashList);
-                stashGridView.setAdapter(arrayAdapter);*/
-                /*dashedCircularProgress.setMax(toSaveAmount);
-                dashedCircularProgress.setValue(savedAmount);
-
-
-
-                stashListView = (ListView) findViewById(R.id.stashListView);
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HomeActivity.this,android.R.layout.simple_list_item_1,stashNameList);
-                stashListView.setAdapter(arrayAdapter);*/
             }
         });
 
