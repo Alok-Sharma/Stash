@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class ProgressBarAdapter extends BaseAdapter {
 
     private Context mContext;
-    static int i = 1;
     static int colorCounter = -1;
     HomeActivity homeActivity = new HomeActivity();
 
@@ -52,57 +51,53 @@ public class ProgressBarAdapter extends BaseAdapter {
 
         if(convertView==null){
             grid = new View(mContext);
-            grid.setLayoutParams(new GridView.LayoutParams(85, 85));
-            grid.setScaleX(85);
-            grid.setScaleY(85);
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             grid=inflater.inflate(R.layout.grid_items, parent, false);
 
-            HoloCircularProgressBar holoCircularProgressBar = (HoloCircularProgressBar) grid.findViewById(R.id.holoCircularProgressBar);
-            int stashPercent = Math.round(((homeActivity.gridObjectList.get(homeActivity.gridObjectList.size() - i).getInt("StashGoal")) * 100) / homeActivity.saveAmount);
-            holoCircularProgressBar.setProgress((float) (homeActivity.gridObjectList.get(homeActivity.gridObjectList.size() - i).getInt("StashGoal")) / homeActivity.saveAmount);
-            TextView stashPercentage = (TextView) grid.findViewById(R.id.stashPercent);
-            stashPercentage.setText(stashPercent+"%");
-            TextView stashName = (TextView)grid.findViewById(R.id.stashName);
-            stashName.setText(homeActivity.gridObjectList.get(homeActivity.gridObjectList.size() - i).getString("StashName"));
-            ArrayList<Integer>  colorList = new ArrayList<Integer>();
-            colorList.add(-956847);
-            colorList.add(-347881);
-            colorList.add(-13738326);
-            colorList.add(-1556359);
-                if(colorCounter<3)
-                {
-                    colorCounter++;
-                }
-                else
-                {
-                    colorCounter = 0;
-                }
-            /*Random rand = new Random();
-            int r = rand.nextInt(255);
-            int g = rand.nextInt(255);
-            int b = rand.nextInt(255);
-            int randomColor = Color.rgb(r,g,b);*/
-            /*Collections.shuffle(colorList);*/
-            int randomColor = colorList.get(colorCounter);
-            holoCircularProgressBar.setProgressColor(randomColor);
-            stashName.setTextColor(randomColor);
-            stashPercentage.setTextColor(randomColor);
-            LinearLayout stashBorder = (LinearLayout)grid.findViewById(R.id.stashBorder);
-            stashBorder.setBackgroundColor(randomColor);
-
-            holoCircularProgressBar.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View arg0) {
-
-                }
-            });
-
-                i++;
         }else{
             grid = (View)convertView;
         }
+
+
+        HoloCircularProgressBar holoCircularProgressBar = (HoloCircularProgressBar) grid.findViewById(R.id.holoCircularProgressBar);
+        int stashPercent = Math.round(((homeActivity.gridObjectList.get(position).getInt("StashGoal")) * 100) / homeActivity.saveAmount);
+        holoCircularProgressBar.setProgress((float) (homeActivity.gridObjectList.get(position).getInt("StashGoal")) / homeActivity.saveAmount);
+        TextView stashPercentage = (TextView) grid.findViewById(R.id.stashPercent);
+        stashPercentage.setText(stashPercent + "%");
+        TextView stashName = (TextView) grid.findViewById(R.id.stashName);
+        stashName.setText(homeActivity.gridObjectList.get(position).getString("StashName"));
+        ArrayList<Integer> colorList = new ArrayList<Integer>();
+        colorList.add(-956847);
+        colorList.add(-347881);
+        colorList.add(-13738326);
+        colorList.add(-1556359);
+        if (colorCounter < 3) {
+            colorCounter++;
+        } else {
+            colorCounter = 0;
+        }
+        /*Random rand = new Random();
+        int r = rand.nextInt(255);
+        int g = rand.nextInt(255);
+        int b = rand.nextInt(255);
+        int randomColor = Color.rgb(r,g,b);*/
+        /*Collections.shuffle(colorList);*/
+        int randomColor = colorList.get(colorCounter);
+        holoCircularProgressBar.setProgressColor(randomColor);
+        stashName.setTextColor(randomColor);
+        stashPercentage.setTextColor(randomColor);
+        LinearLayout stashBorder = (LinearLayout) grid.findViewById(R.id.stashBorder);
+        stashBorder.setBackgroundColor(randomColor);
+
+        holoCircularProgressBar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+            }
+        });
+
+
 
         return grid;
     }
