@@ -9,17 +9,16 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.ParseUser;
 import com.github.glomadrian.dashedcircularprogress.DashedCircularProgress;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,8 @@ public class HomeActivity extends Activity{
                 startActivity(new Intent(HomeActivity.this, AddStash.class));
             }
         });
+
+        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
