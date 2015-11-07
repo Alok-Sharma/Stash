@@ -16,7 +16,7 @@ public class AccountActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_activity);
-        ParseUser.logInInBackground("nikita","nikita");
+        ParseUser.logInInBackground("nikita","nikita"); //logging in in the background to Parse
 
         final Intent serverIntent = new Intent(this, ServerAccess.class);
 
@@ -26,12 +26,13 @@ public class AccountActivity extends ActionBarActivity {
                 EditText bankUsername = (EditText) findViewById(R.id.bankUsername);
                 EditText bankPassword = (EditText) findViewById(R.id.bankPassword);
                 Spinner bankNamesList = (Spinner) findViewById(R.id.bankNamesList);
+                String bank = bankNamesList.getSelectedItem().toString();
 
 
                 serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
                 serverIntent.putExtra("bankUsername", bankUsername.getText().toString());
                 serverIntent.putExtra("bankPassword", bankPassword.getText().toString());
-                serverIntent.putExtra("bankName", "wells");
+                serverIntent.putExtra("bankName", bank);
                 startService(serverIntent);
 
             }

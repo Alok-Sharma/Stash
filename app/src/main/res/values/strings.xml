@@ -23,4 +23,23 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
 
+    <!-- Names of Banks to be displayed in dropdown/spinner -->
+    <string-array name="bank_names">
+        <item>American Express</item>
+        <item>Bank of America</item>
+        <item>Capital One 360</item>
+        <item>Charles Schwab</item>
+        <item>Chase</item>
+        <item>Citi</item>
+        <item>Fidelity</item>
+        <item>Navy Federal Credit Union</item>
+        <item>PNC</item>
+        <item>Silicon Valley Bank</item>
+        <item>SunTrust</item>
+        <item>TD Bank</item>
+        <item>US Bank</item>
+        <item>USAA</item>
+        <item>Wells Fargo</item>
+    </string-array>
+
 </resources>
