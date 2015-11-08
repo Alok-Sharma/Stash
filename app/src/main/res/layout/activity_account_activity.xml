@@ -28,6 +28,7 @@
                 android:id="@+id/bankUsername"
                 android:layout_marginTop="74dp"
                 android:layout_alignParentTop="true"
+                android:hint="Username"
                 android:layout_alignLeft="@+id/bankPassword"
                 android:layout_alignStart="@+id/bankPassword" />
 
@@ -40,6 +41,7 @@
                 android:layout_marginTop="49dp"
                 android:layout_below="@+id/bankUsername"
                 android:layout_alignParentLeft="true"
+                android:hint="Password"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp" />
@@ -50,8 +52,10 @@
                 android:id="@+id/bankNamesList"
                 android:layout_marginTop="44dp"
                 android:layout_below="@+id/bankPassword"
+                android:hint="Select Bank"
                 android:layout_alignLeft="@+id/bankPassword"
                 android:layout_alignStart="@+id/bankPassword"
+                android:entries="@array/bank_names"
                 android:spinnerMode="dropdown" />
 
             <Button
