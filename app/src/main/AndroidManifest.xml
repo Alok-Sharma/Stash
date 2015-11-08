@@ -35,8 +35,8 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -52,11 +52,7 @@
         <activity
             android:name=".AccountActivity"
             android:label="@string/title_activity_account_activity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -65,6 +61,15 @@
         <activity android:name=".HoloCircularProgressBar" >
         </activity>
         <activity android:name=".ProgressBarAdapter" >
+        </activity>
+        <activity
+            android:name=".DrawerActivity"
+            android:label="@string/title_activity_drawer" >
+        </activity>
+        <activity
+            android:name=".testing"
+            android:label="@string/title_activity_testing"
+            >
         </activity>
     </application>
 
