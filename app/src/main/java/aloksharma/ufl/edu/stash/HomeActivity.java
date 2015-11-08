@@ -31,6 +31,7 @@ public class HomeActivity extends Activity{
     ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

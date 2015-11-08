@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,11 +114,24 @@ public class PlaidHelper {
             JSONObject jObject = new JSONObject(responseString);
             Log.d("StashLog", "PLAID RESPONSE: " + responseString);
 
-            //fetch the access_token and store it on parse.
+            //fetch the access_token and bank name and store it on parse.
             String access_token = jObject.getString("access_token"); //TODO: Alok, change to BankMap
+            String bankName = jObject.getJSONArray("accounts").getJSONObject(0).getString("institution_type");
+
             //currentUser must not be null.
-            ParseUser.getCurrentUser().addUnique("access_tokens",
-                    access_token);
+//            ParseUser.getCurrentUser().addUnique("access_tokens",
+//                    access_token);
+
+            ParseUser.getCurrentUser().pinInBackground();
+            ParseUser.getCurrentUser().saveInBackground();
+
+            Map<String, String> bankMap = getAccessTokenMap();
+            if(bankMap == null) {
+                bankMap = new HashMap<>();
+            }
+            bankMap.put(bankName, access_token);
+            ParseUser.getCurrentUser().put("BankMap", bankMap);
+
             ParseUser.getCurrentUser().pinInBackground();
             ParseUser.getCurrentUser().saveInBackground();
 
