@@ -12,16 +12,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rowIcon"
-
-        android:src="@drawable/ic_drawer"/>
+        android:paddingLeft="8dp"
+        android:src="@drawable/ic_action_image_dehaze"
+        android:layout_gravity="center"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingLeft="8dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAlignment="center"
         android:text="Medium Text"
-        android:id="@+id/rowText" />
+        android:id="@+id/rowText"
+        android:fontFamily="sans-serif"
+        android:textColor="#444444"/>
 
 </LinearLayout>

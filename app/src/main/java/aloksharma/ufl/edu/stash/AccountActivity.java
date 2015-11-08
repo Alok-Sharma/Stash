@@ -1,5 +1,6 @@
 package aloksharma.ufl.edu.stash;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -12,13 +13,15 @@ import com.parse.ParseUser;
 
 import java.util.HashMap;
 
-public class AccountActivity extends ActionBarActivity {
+public class AccountActivity extends DrawerActivity {
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account_activity);
-        ParseUser.logInInBackground("nikita","nikita"); //logging in in the background to Parse
+        super.onCreate(savedInstanceState, R.layout.activity_account_activity);
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_account_activity);
+        ParseUser.logInInBackground("nikita","nikita");
 
         final Intent serverIntent = new Intent(this, ServerAccess.class);
 

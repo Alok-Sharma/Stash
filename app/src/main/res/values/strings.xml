@@ -5,7 +5,6 @@
     <string name="bank_test_username">plaid_test</string>
     <string name="bank_test_password">plaid_good</string>
 
-    <string name="title_activity_fgsign_in">FGSignIn</string>
 
     <string name="hello_world">Hello world!</string>
 
@@ -13,8 +12,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="plaid_client_id_test"/>
     <string name="plaid_secret_test"/>
-    <string name="parse_applicationId_test">blah</string>
-    <string name="parse_clientKey_test">blah</string>
     <string name="button_send">Send</string>
     <string name="user_entry">Please Enter Your Name</string>
     <string name="button_text">Press Me</string>
@@ -22,6 +19,10 @@
     <string name="title_activity_account_activity">account_activity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="openDrawer">Drawer Open</string>
+    <string name="closeDrawer">Drawer Close</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="title_activity_testing">testing</string>
 
     <!-- Names of Banks to be displayed in dropdown/spinner -->
     <string-array name="bank_names">

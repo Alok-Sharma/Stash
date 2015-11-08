@@ -1,5 +1,6 @@
 package aloksharma.ufl.edu.stash;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends Activity{
+public class HomeActivity extends DrawerActivity{
 
     private HoloCircularProgressBar mainHoloCircularProgressBar;
     private GridView stashGridView;
@@ -35,12 +36,18 @@ public class HomeActivity extends Activity{
     ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
+<<<<<<< 78d5c580005ceb2fbc58fcc6ec821e127d912b65
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
+=======
+    @SuppressLint("MissingSuperCall")
+>>>>>>> Drawer->Home, Bank Accounts: Integration
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        super.onCreate(savedInstanceState, R.layout.activity_home);
+
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_home);
         addStashButton = (ImageButton) findViewById(R.id.addStashButton);
         addStashButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +56,11 @@ public class HomeActivity extends Activity{
             }
         });
 
+<<<<<<< 78d5c580005ceb2fbc58fcc6ec821e127d912b65
+=======
+//        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
+
+>>>>>>> Drawer->Home, Bank Accounts: Integration
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
         this.startService(serverIntent);
