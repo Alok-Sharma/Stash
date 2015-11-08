@@ -21,7 +21,7 @@ public class AccountActivity extends DrawerActivity {
         super.onCreate(savedInstanceState, R.layout.activity_account_activity);
 //        super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_account_activity);
-        ParseUser.logInInBackground("nikita","nikita");
+//        ParseUser.logInInBackground("nikita","nikita");
 
         final Intent serverIntent = new Intent(this, ServerAccess.class);
 

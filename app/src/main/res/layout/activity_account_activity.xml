@@ -1,9 +1,8 @@
-<?xml version = "1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
 
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/DrawerLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="7dp">
@@ -27,45 +26,6 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             tools:context="aloksharma.ufl.edu.stash.AccountActivity">
 
-<<<<<<< 78d5c580005ceb2fbc58fcc6ec821e127d912b65
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/bankUsername"
-                android:layout_marginTop="74dp"
-                android:layout_alignParentTop="true"
-                android:hint="Username"
-                android:layout_alignLeft="@+id/bankPassword"
-                android:layout_alignStart="@+id/bankPassword" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/bankPassword"
-                android:layout_marginTop="49dp"
-                android:layout_below="@+id/bankUsername"
-                android:layout_alignParentLeft="true"
-                android:hint="Password"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp" />
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/bankNamesList"
-                android:layout_marginTop="44dp"
-                android:layout_below="@+id/bankPassword"
-                android:hint="Select Bank"
-                android:layout_alignLeft="@+id/bankPassword"
-                android:layout_alignStart="@+id/bankPassword"
-                android:entries="@array/bank_names"
-                android:spinnerMode="dropdown" />
-=======
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -88,8 +48,8 @@
                         android:layout_alignStart="@+id/bankPassword"
                         android:layout_marginTop="74dp"
                         android:ems="10"
-                        android:inputType="textPersonName" />
->>>>>>> Drawer->Home, Bank Accounts: Integration
+                        android:hint="Username"
+                        android:inputType="textPersonName"/>
 
                     <EditText
                         android:id="@+id/bankPassword"
@@ -102,7 +62,8 @@
                         android:layout_marginStart="32dp"
                         android:layout_marginTop="49dp"
                         android:ems="10"
-                        android:inputType="textPassword" />
+                        android:hint="Password"
+                        android:inputType="textPassword"/>
 
                     <Spinner
                         android:id="@+id/bankNamesList"
@@ -112,7 +73,9 @@
                         android:layout_alignStart="@+id/bankPassword"
                         android:layout_below="@+id/bankPassword"
                         android:layout_marginTop="44dp"
-                        android:spinnerMode="dropdown" />
+                        android:entries="@array/bank_names"
+                        android:hint="Select Bank"
+                        android:spinnerMode="dropdown"/>
 
                     <Button
                         android:id="@+id/add_account_btn"
@@ -122,8 +85,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_alignRight="@+id/bankPassword"
                         android:layout_marginBottom="55dp"
-                        android:text="Add Account" />
-
+                        android:text="Add Account"/>
                 </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>

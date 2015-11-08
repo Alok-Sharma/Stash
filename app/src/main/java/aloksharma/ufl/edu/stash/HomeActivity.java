@@ -36,12 +36,11 @@ public class HomeActivity extends DrawerActivity{
     ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
-<<<<<<< 78d5c580005ceb2fbc58fcc6ec821e127d912b65
+
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
-=======
+
     @SuppressLint("MissingSuperCall")
->>>>>>> Drawer->Home, Bank Accounts: Integration
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_home);
@@ -56,11 +55,6 @@ public class HomeActivity extends DrawerActivity{
             }
         });
 
-<<<<<<< 78d5c580005ceb2fbc58fcc6ec821e127d912b65
-=======
-//        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
-
->>>>>>> Drawer->Home, Bank Accounts: Integration
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
         this.startService(serverIntent);
