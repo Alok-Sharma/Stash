@@ -17,7 +17,7 @@
         </activity>
         <activity
             android:name=".AddStash"
-            android:label="@string/app_name" >
+            android:label="@string/title_activity_addstash" >
         </activity>
         <activity
             android:name=".AddStashHelper"
