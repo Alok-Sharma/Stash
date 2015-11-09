@@ -25,6 +25,11 @@
             android:parentActivityName=".AddStash" >
         </activity>
 
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile" >
+        </activity>
+
         <service
             android:name=".ServerAccess"
             android:exported="false" >
