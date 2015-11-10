@@ -1,8 +1,10 @@
 package aloksharma.ufl.edu.stash;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.parse.ParseUser;
 
 import org.apache.http.HttpResponse;
@@ -19,6 +21,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,19 +31,34 @@ import java.util.Map;
  * Created by Alok on 10/15/2015.
  */
 public class PlaidHelper {
-
     Context context;
+    Gson gson = new Gson();
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor sharedPrefEditor;
+
     PlaidHelper(Context context) {
         this.context = context;
-        try {
-            AesCbcWithIntegrity.SecretKeys keys = AesCbcWithIntegrity.generateKey();
-            AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = AesCbcWithIntegrity.encrypt("some test", keys);
-            //store or send to server
-            String ciphertextString = cipherTextIvMac.toString();
-            String plainText = AesCbcWithIntegrity.decryptString(cipherTextIvMac, keys);
+        sharedPref = context.getSharedPreferences("keyStore", 0);
+    }
+
+    AesCbcWithIntegrity.SecretKeys generateNewKeys() {
+        AesCbcWithIntegrity.SecretKeys keys = null;
+        try{
+            keys = AesCbcWithIntegrity.generateKey();
+            String jsonKeys = gson.toJson(keys); // myObject - instance of MyObject
+            sharedPrefEditor.putString("keys", jsonKeys);
+            sharedPrefEditor.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return keys;
+    }
+
+    AesCbcWithIntegrity.SecretKeys fetchExistingKeys() {
+        Gson gson = new Gson();
+        String json = sharedPref.getString("keys", "");
+        AesCbcWithIntegrity.SecretKeys keys = gson.fromJson(json, AesCbcWithIntegrity.SecretKeys.class);
+        return keys;
     }
 
     Double getBankBalance(String access_token) {
@@ -48,16 +66,18 @@ public class PlaidHelper {
         String plaidUrl = context.getString(R.string.plaid_url) + "/get";
         postArgs.add(new BasicNameValuePair("access_token", access_token));
 
-        return plaidPostRequest(plaidUrl, postArgs);
+        return plaidPostRequest(plaidUrl, postArgs, fetchExistingKeys());
     }
 
     Double getBankBalance(String username, String password, ServerAccess.BankName bankName) {
         List<NameValuePair> postArgs = new ArrayList();
         String plaidUrl = context.getString(R.string.plaid_url);
+
         postArgs.add(new BasicNameValuePair("username", username));
         postArgs.add(new BasicNameValuePair("password", password));
         postArgs.add(new BasicNameValuePair("type", bankName.toString()));
-        return plaidPostRequest(plaidUrl, postArgs);
+
+        return plaidPostRequest(plaidUrl, postArgs, generateNewKeys());
     }
 
     /**
@@ -66,13 +86,22 @@ public class PlaidHelper {
      * @return Map<String, byte[]> of access tokens.
      */
     Map<String, String> getAccessTokenMap() {
+        Map<String, String> accessTokens = new HashMap<>();
         try {
             if (ParseUser.getCurrentUser() != null) {
-                Map<String, String> accessTokens = ParseUser.getCurrentUser().getMap("BankMap");
+                Map<String, String> accessTokensEncrypted = ParseUser.getCurrentUser().getMap("BankMap");
+
+                for(Map.Entry<String, String> bankEntry : accessTokensEncrypted.entrySet()) {
+                    AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = new AesCbcWithIntegrity.CipherTextIvMac(bankEntry.getValue());
+                    String accessToken = AesCbcWithIntegrity.decryptString(cipherTextIvMac, fetchExistingKeys());
+                    String bankName = bankEntry.getKey();
+                    accessTokens.put(bankName, accessToken);
+                }
+
                 return accessTokens;
             }else{
                 //current user is null. This shouldn't happen if the user was
-                // logged in successfully.
+            // logged in successfully.
                 Log.d("StashLog", "current user was null");
             }
         }catch(Exception e){
@@ -89,7 +118,7 @@ public class PlaidHelper {
      * @param postArgs The POST arguments
      * @return Double Users Bank balance.
      */
-    Double plaidPostRequest(String plaidUrl, List<NameValuePair> postArgs) {
+    Double plaidPostRequest(String plaidUrl, List<NameValuePair> postArgs, AesCbcWithIntegrity.SecretKeys keys) {
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(plaidUrl);
 
@@ -114,13 +143,12 @@ public class PlaidHelper {
             JSONObject jObject = new JSONObject(responseString);
             Log.d("StashLog", "PLAID RESPONSE: " + responseString);
 
-            //fetch the access_token and bank name and store it on parse.
-            String access_token = jObject.getString("access_token"); //TODO: Alok, change to BankMap
-            String bankName = jObject.getJSONArray("accounts").getJSONObject(0).getString("institution_type");
+            //fetch the access_token and bank name and store it on parse. Encrypt access token.
+            String access_token = jObject.getString("access_token");
+            AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = AesCbcWithIntegrity.encrypt(access_token, keys);
+            String access_token_encrypted = cipherTextIvMac.toString();
 
-            //currentUser must not be null.
-//            ParseUser.getCurrentUser().addUnique("access_tokens",
-//                    access_token);
+            String bankName = jObject.getJSONArray("accounts").getJSONObject(0).getString("institution_type");
 
             ParseUser.getCurrentUser().pinInBackground();
             ParseUser.getCurrentUser().saveInBackground();
@@ -129,7 +157,7 @@ public class PlaidHelper {
             if(bankMap == null) {
                 bankMap = new HashMap<>();
             }
-            bankMap.put(bankName, access_token);
+            bankMap.put(bankName, access_token_encrypted);
             ParseUser.getCurrentUser().put("BankMap", bankMap);
 
             ParseUser.getCurrentUser().pinInBackground();
@@ -144,9 +172,9 @@ public class PlaidHelper {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
         }
         return null;
     }
-
-
 }

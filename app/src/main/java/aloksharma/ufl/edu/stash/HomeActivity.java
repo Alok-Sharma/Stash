@@ -83,8 +83,6 @@ public class HomeActivity extends Activity{
                 stashListView.setAdapter(arrayAdapter);
             }
         });
-
-
     }
 
     /**
