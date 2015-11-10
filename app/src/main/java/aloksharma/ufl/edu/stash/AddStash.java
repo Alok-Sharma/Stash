@@ -14,10 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import java.util.Calendar;
 
 public class AddStash extends DrawerActivity {
 
@@ -28,7 +28,10 @@ public class AddStash extends DrawerActivity {
     EditText stashname;
     ImageButton datepicker_button;
     EditText goal;
-    int year, month, day;
+    final Calendar calendar = Calendar.getInstance();
+    int year = calendar.get(Calendar.YEAR);
+    int month = calendar.get(Calendar.MONTH);
+    int day = calendar.get(Calendar.DAY_OF_MONTH);
     static final int DIALOG_ID = 0;
 
     @SuppressLint("MissingSuperCall")
