@@ -53,8 +53,8 @@
                 android:scaleType="fitCenter"
                 android:background="#69B6B1"
                 android:layout_below="@+id/mainTextView"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_toRightOf="@+id/simple"
+                android:layout_toEndOf="@+id/simple" />
 
             <TextView
                 android:layout_width="wrap_content"

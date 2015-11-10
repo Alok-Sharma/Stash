@@ -31,6 +31,7 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/values-v21'] } }
 }
 
 repositories {
@@ -49,4 +50,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.android.support:design:22.2.0'
 }

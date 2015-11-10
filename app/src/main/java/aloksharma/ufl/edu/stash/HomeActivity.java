@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -33,12 +35,14 @@ public class HomeActivity extends DrawerActivity{
     private HoloCircularProgressBar mainHoloCircularProgressBar;
     private GridView stashGridView;
     private ListView stashListView;
+    private Toolbar toolbar;
     ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
 
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
+    static String stashName;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -93,6 +97,19 @@ public class HomeActivity extends DrawerActivity{
 
                 stashGridView = (GridView) findViewById(R.id.stashGridView);
                 stashGridView.setAdapter(new ProgressBarAdapter(getApplicationContext()));
+
+               stashGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View v,
+                                            int position, long id) {
+                        stashName = gridObjectList.get(position).getString("StashName");
+                        Intent i = new Intent(getApplicationContext(), ViewStashActivity.class);
+                        startActivity(i);
+                        /*Toast.makeText(
+                                getApplicationContext(),
+                                ((TextView) v.findViewById(R.id.grid_item_label))
+                                        .getText(), Toast.LENGTH_SHORT).show();*/
+                    }
+                });
             }
         });
 
