@@ -4,17 +4,13 @@
     <string name="plaid_url">https://tartan.plaid.com/auth</string>
     <string name="bank_test_username">plaid_test</string>
     <string name="bank_test_password">plaid_good</string>
-
     <string name="title_activity_fgsign_in">FGSignIn</string>
-
+    <string name="title_activity_addstash">Add Stash</string>
     <string name="hello_world">Hello world!</string>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="plaid_client_id_test"/>
     <string name="plaid_secret_test"/>
-    <string name="parse_applicationId_test">blah</string>
-    <string name="parse_clientKey_test">blah</string>
     <string name="button_send">Send</string>
     <string name="user_entry">Please Enter Your Name</string>
     <string name="button_text">Press Me</string>
@@ -22,5 +18,28 @@
     <string name="title_activity_account_activity">account_activity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="openDrawer">Drawer Open</string>
+    <string name="closeDrawer">Drawer Close</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="title_activity_testing">testing</string>
+
+    <!-- Names of Banks to be displayed in dropdown/spinner -->
+    <string-array name="bank_names">
+        <item>American Express</item>
+        <item>Bank of America</item>
+        <item>Capital One</item>
+        <item>Charles Schwab</item>
+        <item>Chase</item>
+        <item>Citi</item>
+        <item>Fidelity</item>
+        <item>Navy Federal Credit Union</item>
+        <item>PNC</item>
+        <item>Silicon Valley Bank</item>
+        <item>SunTrust</item>
+        <item>TD Bank</item>
+        <item>US Bank</item>
+        <item>USAA</item>
+        <item>Wells Fargo</item>
+    </string-array>
 
 </resources>

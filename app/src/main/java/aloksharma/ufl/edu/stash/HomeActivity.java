@@ -1,5 +1,6 @@
 package aloksharma.ufl.edu.stash;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,11 +9,14 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.Parse;
 import com.parse.ParseUser;
 import com.github.glomadrian.dashedcircularprogress.DashedCircularProgress;
 import com.parse.FindCallback;
@@ -24,18 +28,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends Activity{
+public class HomeActivity extends DrawerActivity{
 
-    private DashedCircularProgress dashedCircularProgress;
+    private HoloCircularProgressBar mainHoloCircularProgressBar;
+    private GridView stashGridView;
     private ListView stashListView;
     ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
 
+    static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
+    static int saveAmount;
+
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        super.onCreate(savedInstanceState, R.layout.activity_home);
+
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_home);
         addStashButton = (ImageButton) findViewById(R.id.addStashButton);
         addStashButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,8 +54,6 @@ public class HomeActivity extends Activity{
                 startActivity(new Intent(HomeActivity.this, AddStash.class));
             }
         });
-
-        ParseUser.logInInBackground("alok.sharma127@gmail.com", "aloksharma");
 
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
@@ -55,12 +64,12 @@ public class HomeActivity extends Activity{
         ServiceBroadcastReceiver serviceListener = new ServiceBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
 
-        dashedCircularProgress = (DashedCircularProgress)findViewById(R.id.simple);
-        dashedCircularProgress.reset();
+        mainHoloCircularProgressBar = (HoloCircularProgressBar)findViewById(R.id.simple);
 
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
         final ArrayList<ParseObject> stashList = new ArrayList<>();
+
         final ArrayList<String> stashNameList = new ArrayList<>();
 
         stashQuery.findInBackground(new FindCallback<ParseObject>() {
@@ -75,15 +84,20 @@ public class HomeActivity extends Activity{
                     int stashDifferential = stash.getInt("StashGoal")-stash.getInt("StashValue");
                     stashNameList.add(stash.getString("StashName")+" :\t"+String.valueOf(stashDifferential)+"$ to save");
                 }
-                dashedCircularProgress.setMax(toSaveAmount);
-                dashedCircularProgress.setValue(savedAmount);
 
-                stashListView = (ListView) findViewById(R.id.stashListView);
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(HomeActivity.this,android.R.layout.simple_list_item_1,stashNameList);
-                stashListView.setAdapter(arrayAdapter);
+                gridObjectList = stashList;
+                saveAmount = toSaveAmount;
+
+                float mainCircleProgress = (float)savedAmount/toSaveAmount;
+                mainHoloCircularProgressBar.setProgress(mainCircleProgress);
+
+                stashGridView = (GridView) findViewById(R.id.stashGridView);
+                stashGridView.setAdapter(new ProgressBarAdapter(getApplicationContext()));
             }
         });
     }
+
+
 
     /**
      * The inner Broadcast receiver class that receives the responses from the ServerAccess class.
