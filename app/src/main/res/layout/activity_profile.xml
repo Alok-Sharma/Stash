@@ -19,7 +19,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="35dp">
 
             <TextView
                 android:text=" NAME"
@@ -52,7 +53,8 @@
                 android:textColorHint="#000000"
                 android:layout_toEndOf="@+id/textview_changepassword"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textStyle="normal" />
 
             <TextView
                 android:text="EMAIL"
@@ -74,17 +76,20 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint=" johndoe@gmail.com "
-                android:inputType="textEmailAddress"
+                android:inputType="textAutoComplete|textAutoCorrect|textEmailAddress"
+                android:editable="true"
                 android:gravity="right"
                 android:paddingBottom="40dp"
                 android:layout_below="@+id/edit_name"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_toEndOf="@+id/textview_changepassword"
-                android:textStyle="normal"
                 android:textColorHint="#000000"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textStyle="normal"
+                android:autoText="true"
+                android:autoLink="email" />
 
 
             <TextView
@@ -102,7 +107,7 @@
             <EditText android:id="@+id/edit_changepassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:inputType="textWebPassword|textPassword"
                 android:ems="10"
                 android:autoText="false"
                 android:paddingBottom="40dp"
@@ -111,7 +116,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_toEndOf="@+id/textview_changepassword"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textStyle="normal"
+                android:textIsSelectable="false"
+                android:textAlignment="viewEnd"
+                android:gravity="right" />
 
             <TextView
                 android:text="NOTIFICATIONS"
@@ -119,13 +128,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textview_notifications"
-
                 android:padding="10dp"
                 android:textStyle="bold"
                 android:layout_below="@+id/edit_changepassword"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
-            </RelativeLayout>
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/switch1"
+                android:layout_alignBottom="@+id/textview_notifications"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:checked="true"
+                android:layout_toRightOf="@+id/textview_notifications"
+                android:clickable="true" />
+
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
