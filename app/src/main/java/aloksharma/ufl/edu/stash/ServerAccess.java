@@ -64,14 +64,19 @@ public class ServerAccess extends IntentService {
                         ("bankUsername");
                 if (bankUsername == null) {
                     //no username, password. Use access token.
-                    Map<String, String> accessTokens = plaidHelper.getAccessTokenMap();
-                    try {
-                        String accessToken = accessTokens.get("wells");
-                        Double balance = plaidHelper.getBankBalance(accessToken);
-                        Log.d("StashLog", "balance: " + balance);
-                        outgoingIntent.putExtra("balance", balance);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    Map<String, String> accessTokens = plaidHelper.getAccessTokenMapDecrypted();
+                    if(accessTokens == null) {
+                        // no banks associated yet.
+                        outgoingIntent.putExtra("error", "no_bank");
+                    } else{
+                        try {
+                            String accessToken = accessTokens.get("wells");
+                            Double balance = plaidHelper.getBankBalance(accessToken);
+                            Log.d("StashLog", "balance: " + balance);
+                            outgoingIntent.putExtra("balance", balance);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 } else {
                     //found a username, password.
