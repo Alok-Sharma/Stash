@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,12 +28,17 @@ public class HomeActivity extends DrawerActivity{
 
     private HoloCircularProgressBar mainHoloCircularProgressBar;
     private GridView stashGridView;
-    ImageButton addStashButton;
     int savedAmount = 0;
     int toSaveAmount = 0;
 
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
+    static String stashName;
+    static String moneyGoalsGoalValue;
+    static String moneyGoalsMonthlySavings;
+    static String moneyGoalsPercentage;
+    static String moneyGoalsToSaveAmount;
+    static float moneyGoalsProgressBar;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -48,18 +53,13 @@ public class HomeActivity extends DrawerActivity{
 
 //        super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_home);
-        addStashButton = (ImageButton) findViewById(R.id.addStashButton);
-        addStashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, AddStash.class));
-            }
-        });
 
+        //Start the service and get the balance.
         Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
         this.startService(serverIntent);
 
+        //Register to listen for the services response.
         IntentFilter serviceFilter = new IntentFilter("server_response");
         serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
         ServiceBroadcastReceiver serviceListener = new ServiceBroadcastReceiver();
@@ -100,6 +100,26 @@ public class HomeActivity extends DrawerActivity{
 
                 stashGridView = (GridView) findViewById(R.id.stashGridView);
                 stashGridView.setAdapter(new ProgressBarAdapter(getApplicationContext()));
+
+               stashGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View v,
+                                            int position, long id) {
+                        stashName = gridObjectList.get(position).getString("StashName");
+
+                        moneyGoalsGoalValue = "$"+gridObjectList.get(position).getInt("StashGoal");
+                        moneyGoalsMonthlySavings = "$"+String.valueOf(Math.round(((float) gridObjectList.get(position).getInt("StashGoal")/12)*100.0)/100.0)+"/month";
+                        moneyGoalsProgressBar =  (float) (gridObjectList.get(position).getInt("StashGoal")) / saveAmount;
+                        moneyGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashGoal"))) * 100) / saveAmount)+"%";
+                        moneyGoalsToSaveAmount = "$"+saveAmount;
+
+                        Intent i = new Intent(getApplicationContext(), ViewStashActivity.class);
+                        startActivity(i);
+                        /*Toast.makeText(
+                                getApplicationContext(),
+                                ((TextView) v.findViewById(R.id.grid_item_label))
+                                        .getText(), Toast.LENGTH_SHORT).show();*/
+                    }
+                });
             }
         });
     }
@@ -121,6 +141,11 @@ public class HomeActivity extends DrawerActivity{
             switch (responseAction) {
                 case GET_BALANCE:
                     Double balance = intent.getDoubleExtra("balance", -1.0);
+                    Double effectiveBalance = balance - savedAmount;
+
+                    TextView effectiveBalanceView = (TextView)findViewById(R.id.effectiveBalance);
+                    effectiveBalanceView.setText("Effective Balance: $" + effectiveBalance);
+
                     String error = intent.getStringExtra("error");
                     if(error != null && error.equals("no_bank")) {
                         Toast.makeText(context, "Please add at least one bank account from the menu.", Toast.LENGTH_LONG).show();

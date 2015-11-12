@@ -65,16 +65,11 @@ public class DrawerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
-
         mRecyclerView.setHasFixedSize(true);
-
         mAdapter = new CustomAdapter(TITLES, ICONS, NAME, EMAIL, bitmap);
-
         mRecyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(this);
-
         mRecyclerView.setLayoutManager(mLayoutManager);
-
 
         final GestureDetector mGestureDetector = new GestureDetector
                 (DrawerActivity.this, new GestureDetector
@@ -97,7 +92,6 @@ public class DrawerActivity extends AppCompatActivity {
                 View child = recyclerView.findChildViewUnder(motionEvent
                         .getX(), motionEvent.getY());
 
-
                 if (child != null && mGestureDetector.onTouchEvent
                         (motionEvent)) {
                     Drawer.closeDrawers();
@@ -115,7 +109,6 @@ public class DrawerActivity extends AppCompatActivity {
                             fromPosition = 2;
                             navigateTo = new Intent(DrawerActivity.this, AccountActivity.class);
                             startActivity(navigateTo);
-                            finish();
                         }
                     }
                     if (recyclerView.getChildPosition(child) == 3) {
@@ -124,7 +117,6 @@ public class DrawerActivity extends AppCompatActivity {
                             fromPosition = 3;
                             navigateTo = new Intent(DrawerActivity.this, AddStash.class);
                             startActivity(navigateTo);
-                            finish();
                         }
                     }
                     if (recyclerView.getChildPosition(child) == 4) {
@@ -134,14 +126,10 @@ public class DrawerActivity extends AppCompatActivity {
                             currentUser.logOut();
                             navigateTo = new Intent(DrawerActivity.this, LoginActivity.class);
                             startActivity(navigateTo);
-                            finish();
                         }
                     }
-
                     return true;
-
                 }
-
                 return false;
             }
 
@@ -150,20 +138,14 @@ public class DrawerActivity extends AppCompatActivity {
                     motionEvent) {
 
             }
-
         });
 
         mLayoutManager = new LinearLayoutManager(this);
-
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R
                 .string.openDrawer, R.string.closeDrawer) {
-
-
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -176,8 +158,6 @@ public class DrawerActivity extends AppCompatActivity {
         };
         Drawer.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-
-
     }
 
 //    @Override
