@@ -39,6 +39,11 @@ public class HomeActivity extends DrawerActivity{
     static String moneyGoalsPercentage;
     static String moneyGoalsToSaveAmount;
     static float moneyGoalsProgressBar;
+    static String timeGoalsGoalValue;
+    static String timeGoalsMonthlySavings;
+    static String timeGoalsToSaveAmount;
+    static String timeGoalsPercentage;
+    static float timeGoalsProgressBar;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -112,12 +117,14 @@ public class HomeActivity extends DrawerActivity{
                         moneyGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashGoal"))) * 100) / saveAmount)+"%";
                         moneyGoalsToSaveAmount = "$"+saveAmount;
 
+                        timeGoalsGoalValue = "$"+gridObjectList.get(position).getInt("StashGoal");
+                        timeGoalsMonthlySavings = "$"+String.valueOf(Math.round(((float) gridObjectList.get(position).getInt("StashGoal")/12)*100.0)/100.0)+"/month";
+                        timeGoalsProgressBar =  (float) (gridObjectList.get(position).getInt("StashGoal")) / saveAmount;
+                        timeGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashGoal"))) * 100) / saveAmount)+"%";
+                        timeGoalsToSaveAmount = "$"+saveAmount;
+
                         Intent i = new Intent(getApplicationContext(), ViewStashActivity.class);
                         startActivity(i);
-                        /*Toast.makeText(
-                                getApplicationContext(),
-                                ((TextView) v.findViewById(R.id.grid_item_label))
-                                        .getText(), Toast.LENGTH_SHORT).show();*/
                     }
                 });
             }
