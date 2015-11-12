@@ -28,18 +28,17 @@
 
 
             <TextView android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/mainTextView" />
+                android:layout_height="wrap_content"
+                android:id="@+id/mainTextView" />
 
             <aloksharma.ufl.edu.stash.HoloCircularProgressBar
                 android:id="@+id/simple"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
+                android:layout_width="230dp"
+                android:layout_height="230dp"
                 custom:thumb_visible="true"
                 custom:marker_visible="false"
                 custom:circle_progress_color="#E84079"
-                android:layout_marginTop="58dp"
-                android:layout_below="@+id/mainTextView"
+                android:layout_marginTop="47dp"
                 android:layout_centerHorizontal="true">
 
 
@@ -54,31 +53,29 @@
                 android:scaleType="fitCenter"
                 android:background="#69B6B1"
                 android:layout_below="@+id/mainTextView"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_toRightOf="@+id/simple"
+                android:layout_toEndOf="@+id/simple" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="60dp"
+                android:textSize="55dp"
                 android:id="@+id/toSaveAmount"
                 android:textColor="#ffffff"
-                android:layout_marginTop="66dp"
-                android:layout_below="@+id/addStashButton"
+                android:text="$0"
+                android:layout_marginTop="120dp"
+
                 android:layout_centerHorizontal="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="25dp"
+                android:textSize="20dp"
                 android:textColor="#ffffff"
                 android:text="to save"
-                android:paddingTop="5dp"
-                android:layout_alignTop="@+id/toSaveAmount"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="54dp" />
+                android:layout_below="@+id/toSaveAmount"
+                android:layout_centerHorizontal="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -88,7 +85,7 @@
                 android:text="Effective Balance : ?"
                 android:id="@+id/textView2"
                 android:paddingBottom="5dp"
-                android:layout_marginTop="39dp"
+                android:layout_marginTop="15dp"
                 android:layout_below="@+id/simple"
                 android:layout_centerHorizontal="true" />
 

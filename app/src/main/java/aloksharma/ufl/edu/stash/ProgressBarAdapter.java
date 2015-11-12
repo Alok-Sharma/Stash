@@ -1,6 +1,9 @@
 package aloksharma.ufl.edu.stash;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,13 +92,15 @@ public class ProgressBarAdapter extends BaseAdapter {
         LinearLayout stashBorder = (LinearLayout) grid.findViewById(R.id.stashBorder);
         stashBorder.setBackgroundColor(randomColor);
 
-        holoCircularProgressBar.setOnClickListener(new View.OnClickListener() {
+        /*holoCircularProgressBar.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-
+                Intent i = new Intent(mContext, ViewStashActivity.class);
+                ((Activity) mContext).startActivity(i);
+                //startActivity(R.layout.activity_view_stash);
             }
-        });
+        });*/
 
 
 
