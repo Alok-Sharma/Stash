@@ -43,6 +43,11 @@ public class HomeActivity extends DrawerActivity{
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
     static String stashName;
+    static String moneyGoalsGoalValue;
+    static String moneyGoalsMonthlySavings;
+    static String moneyGoalsPercentage;
+    static String moneyGoalsToSaveAmount;
+    static float moneyGoalsProgressBar;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -102,6 +107,13 @@ public class HomeActivity extends DrawerActivity{
                     public void onItemClick(AdapterView<?> parent, View v,
                                             int position, long id) {
                         stashName = gridObjectList.get(position).getString("StashName");
+
+                        moneyGoalsGoalValue = "$"+gridObjectList.get(position).getInt("StashGoal");
+                        moneyGoalsMonthlySavings = "$"+String.valueOf(Math.round(((float) gridObjectList.get(position).getInt("StashGoal")/12)*100.0)/100.0)+"/month";
+                        moneyGoalsProgressBar =  (float) (gridObjectList.get(position).getInt("StashGoal")) / saveAmount;
+                        moneyGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashGoal"))) * 100) / saveAmount)+"%";
+                        moneyGoalsToSaveAmount = "$"+saveAmount;
+
                         Intent i = new Intent(getApplicationContext(), ViewStashActivity.class);
                         startActivity(i);
                         /*Toast.makeText(

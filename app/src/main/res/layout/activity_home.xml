@@ -63,7 +63,7 @@
                 android:textSize="55dp"
                 android:id="@+id/toSaveAmount"
                 android:textColor="#ffffff"
-                android:text="$1450"
+                android:text="$0"
                 android:layout_marginTop="120dp"
 
                 android:layout_centerHorizontal="true" />
