@@ -20,7 +20,12 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -30,6 +35,8 @@ public class HomeActivity extends DrawerActivity{
     private GridView stashGridView;
     int savedAmount = 0;
     int toSaveAmount = 0;
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    Date currentDate = new Date();
 
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
@@ -106,22 +113,49 @@ public class HomeActivity extends DrawerActivity{
                 stashGridView = (GridView) findViewById(R.id.stashGridView);
                 stashGridView.setAdapter(new ProgressBarAdapter(getApplicationContext()));
 
-               stashGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                stashGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View v,
                                             int position, long id) {
+                        Calendar currentDateCalendar = new GregorianCalendar();
+                        currentDateCalendar.setTime(currentDate);
+                        Calendar stashTargetDateCalendar = new GregorianCalendar();
+                        try {
+                            stashTargetDateCalendar.setTime(dateFormat.parse(gridObjectList.get(position).getString("StashTargetDate")));
+                        } catch (java.text.ParseException e1) {
+                            e1.printStackTrace();
+                        }
+
                         stashName = gridObjectList.get(position).getString("StashName");
 
+                        moneyGoalsProgressBar =  (float) (gridObjectList.get(position).getInt("StashValue")) / (gridObjectList.get(position).getInt("StashGoal"));
+                        moneyGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashValue"))) * 100) / (gridObjectList.get(position).getInt("StashGoal")))+"%";
                         moneyGoalsGoalValue = "$"+gridObjectList.get(position).getInt("StashGoal");
-                        moneyGoalsMonthlySavings = "$"+String.valueOf(Math.round(((float) gridObjectList.get(position).getInt("StashGoal")/12)*100.0)/100.0)+"/month";
-                        moneyGoalsProgressBar =  (float) (gridObjectList.get(position).getInt("StashGoal")) / saveAmount;
-                        moneyGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashGoal"))) * 100) / saveAmount)+"%";
-                        moneyGoalsToSaveAmount = "$"+saveAmount;
+                        moneyGoalsToSaveAmount = "$"+(gridObjectList.get(position).getInt("StashGoal")-gridObjectList.get(position).getInt("StashValue"));
+                        int monthsLeft = ((stashTargetDateCalendar.get(Calendar.YEAR) - currentDateCalendar.get(Calendar.YEAR))*12)+stashTargetDateCalendar.get(Calendar.MONTH)-currentDateCalendar.get(Calendar.MONTH);
+                        if(monthsLeft>0){
+                            moneyGoalsMonthlySavings = "$" + String.valueOf(Math.round(((float) (gridObjectList.get(position).getInt("StashGoal")-gridObjectList.get(position).getInt("StashValue")) / (monthsLeft+1)) * 100.0) / 100.0) + "/month";
+                        }
+                        else if(monthsLeft == 0){
+                            moneyGoalsMonthlySavings = "$"+(gridObjectList.get(position).getInt("StashGoal")-gridObjectList.get(position).getInt("StashValue"))+"/month";
+                        }
+                        else {
+                            moneyGoalsMonthlySavings = "$ 0";
+                        }
 
+
+                        timeGoalsProgressBar =  (float) (gridObjectList.get(position).getInt("StashValue")) / (gridObjectList.get(position).getInt("StashGoal"));
+                        timeGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashValue"))) * 100) / (gridObjectList.get(position).getInt("StashGoal")))+"%";
                         timeGoalsGoalValue = "$"+gridObjectList.get(position).getInt("StashGoal");
-                        timeGoalsMonthlySavings = "$"+String.valueOf(Math.round(((float) gridObjectList.get(position).getInt("StashGoal")/12)*100.0)/100.0)+"/month";
-                        timeGoalsProgressBar =  (float) (gridObjectList.get(position).getInt("StashGoal")) / saveAmount;
-                        timeGoalsPercentage = String.valueOf(Math.round(((gridObjectList.get(position).getInt("StashGoal"))) * 100) / saveAmount)+"%";
-                        timeGoalsToSaveAmount = "$"+saveAmount;
+                        timeGoalsToSaveAmount = "$"+(gridObjectList.get(position).getInt("StashGoal")-gridObjectList.get(position).getInt("StashValue"));
+                        if(monthsLeft>0){
+                            timeGoalsMonthlySavings = "$" + String.valueOf(Math.round(((float) (gridObjectList.get(position).getInt("StashGoal")-gridObjectList.get(position).getInt("StashValue")) / (monthsLeft+1)) * 100.0) / 100.0) + "/month";
+                        }
+                        else if(monthsLeft == 0){
+                            timeGoalsMonthlySavings = "$"+(gridObjectList.get(position).getInt("StashGoal")-gridObjectList.get(position).getInt("StashValue"))+"/month";
+                        }
+                        else {
+                            timeGoalsMonthlySavings = "$ 0";
+                        }
 
                         Intent i = new Intent(getApplicationContext(), ViewStashActivity.class);
                         startActivity(i);
