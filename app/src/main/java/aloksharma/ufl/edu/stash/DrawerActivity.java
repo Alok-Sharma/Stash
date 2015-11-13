@@ -100,16 +100,17 @@ public class DrawerActivity extends AppCompatActivity {
                         (motionEvent)) {
                     Drawer.closeDrawers();
                     if (recyclerView.getChildPosition(child) == 1) {
-                        Toast.makeText(DrawerActivity.this, "Profile " +
-                                "View Coming Soon", Toast
-                                .LENGTH_SHORT).show();
+                        navigateTo = new Intent(DrawerActivity.this,
+                                ProfileActivity.class);
+                        navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(navigateTo);
                     }
                     if (recyclerView.getChildPosition(child) == 2) {
                         navigateTo = new Intent(DrawerActivity.this,
                                 AccountActivity.class);
-                        navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        navigateTo.addFlags(Intent
+                                .FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
-//                        finish();
                     }
                     if (recyclerView.getChildPosition(child) == 3) {
                         navigateTo = new Intent(DrawerActivity.this,
