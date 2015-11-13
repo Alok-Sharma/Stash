@@ -62,4 +62,12 @@ public class AccountActivity extends DrawerActivity {
         hm.put("Wells Fargo", ServerAccess.BankName.wells);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+        finish();
+    }
 }
