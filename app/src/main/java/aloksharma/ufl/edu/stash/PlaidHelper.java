@@ -200,7 +200,7 @@ public class PlaidHelper {
             JSONArray accountsArray = jObject.getJSONArray("accounts");
             double availableBalance = 0;
             for (int i = 0; i < accountsArray.length(); i++) {
-                availableBalance += accountsArray.getJSONObject(i).getJSONObject("balance").getDouble("available");
+                availableBalance += accountsArray.getJSONObject(i).getJSONObject("balance").optDouble("available", 0);
             }
             return availableBalance;
         } catch (ClientProtocolException e) {
