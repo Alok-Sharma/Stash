@@ -92,18 +92,6 @@ public class ProgressBarAdapter extends BaseAdapter {
         LinearLayout stashBorder = (LinearLayout) grid.findViewById(R.id.stashBorder);
         stashBorder.setBackgroundColor(randomColor);
 
-        /*holoCircularProgressBar.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Intent i = new Intent(mContext, ViewStashActivity.class);
-                ((Activity) mContext).startActivity(i);
-                //startActivity(R.layout.activity_view_stash);
-            }
-        });*/
-
-
-
         return grid;
     }
 

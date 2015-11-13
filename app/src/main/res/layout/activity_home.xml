@@ -83,8 +83,8 @@
                 android:textColor="#ffffff"
                 android:text="Effective Balance : ?"
                 android:id="@+id/effectiveBalance"
-                android:paddingBottom="5dp"
-                android:layout_marginTop="15dp"
+                android:paddingBottom="12dp"
+                android:layout_marginTop="34dp"
                 android:layout_below="@id/mainDialLayout"
                 android:layout_centerHorizontal="true" />
 
