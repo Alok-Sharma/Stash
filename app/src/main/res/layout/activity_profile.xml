@@ -115,22 +115,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_toEndOf="@+id/textview_changepassword"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 android:textStyle="normal"
                 android:textIsSelectable="false"
                 android:textAlignment="viewEnd"
-                android:gravity="right" />
-
-            <TextView
-                android:text="NOTIFICATIONS"
-                android:textColor="#898989"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textview_notifications"
-                android:padding="10dp"
-                android:textStyle="bold"
-                android:layout_below="@+id/edit_changepassword"
+                android:gravity="right"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
@@ -138,12 +126,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/switch1"
-                android:layout_alignBottom="@+id/textview_notifications"
+                android:checked="true"
+                android:clickable="true"
+                android:text="NOTIFICATIONS"
+                android:textStyle="bold|normal"
+                android:textColor="#898989"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:checked="true"
-                android:layout_toRightOf="@+id/textview_notifications"
-                android:clickable="true" />
+                android:layout_below="@+id/edit_changepassword"
+                android:padding="10dp" />
 
         </RelativeLayout>
     </RelativeLayout>
