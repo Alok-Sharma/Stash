@@ -48,9 +48,10 @@ public class ServerAccess extends IntentService {
                 String StashName = incomingIntent.getStringExtra("StashName");
                 String StashTargetDate = incomingIntent.getStringExtra("StashTargetDate");
                 int StashGoal = incomingIntent.getIntExtra("StashGoal", 0);
+                int StashValue = incomingIntent.getIntExtra("StashValue", 0);
 
                 //Push data to your function
-                addStash(StashName, StashTargetDate, StashGoal);
+                addStash(StashName, StashTargetDate, StashGoal, StashValue);
                 Intent homeActivity = new Intent(this, HomeActivity.class);
                 homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeActivity);
@@ -107,17 +108,19 @@ public class ServerAccess extends IntentService {
     /**
      * Add Stash Functionality
      */
-    public void addStash(String StashName, String StashTargetDate, int StashGoal) {
+    public void addStash(String StashName, String StashTargetDate, int StashGoal, int StashValue) {
         //Stub to create Stash
         Log.d("CreateStashLog1", StashName);
         Log.d("CreateStashLog2", StashTargetDate);
         Log.d("CreateStashLog3", "" + StashGoal);
+        Log.d("CreateStashLog4", "" + StashValue);
 
         /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
+        Stash.put("StashValue", StashValue);
 
         /*Link the ParseUser object with the Stash object*/
         ParseUser currentUser = ParseUser.getCurrentUser();

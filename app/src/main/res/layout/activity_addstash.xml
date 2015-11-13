@@ -59,16 +59,13 @@
                         android:id="@+id/edit_stashname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/edit_targetdate"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignStart="@+id/edit_targetdate"
-                        android:layout_marginTop="74dp"
-                        android:layout_toEndOf="@+id/textView2"
+                        android:layout_marginTop="27dp"
                         android:ems="10"
                         android:hint=" Stash Name "
-                        android:inputType="textMultiLine"/>
+                        android:inputType="textMultiLine"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignLeft="@+id/edit_targetdate"
+                        android:layout_alignStart="@+id/edit_targetdate" />
 
                     <TextView
                         android:id="@+id/textView2"
@@ -140,19 +137,51 @@
                         android:hint=" $ Goal "
                         android:inputType="number"/>
 
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/edit_stashvalue"
+                        android:layout_alignBottom="@+id/edit_stashvalue"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/edit_stashvalue"
+                        android:text="Stash Value"
+                        android:textColor="#444444"
+                        android:textSize="20dp"
+                        android:layout_toLeftOf="@+id/edit_stashvalue" />
+
+                    <EditText
+                        android:id="@+id/edit_stashvalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@+id/button"
+                        android:layout_alignParentBottom="false"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="false"
+                        android:layout_alignRight="@+id/button"
+                        android:layout_below="@+id/edit_goal"
+                        android:layout_marginTop="50dp"
+                        android:autoText="false"
+                        android:ems="10"
+                        android:hint=" $ Stash Value "
+                        android:inputType="number"
+                        android:layout_alignLeft="@+id/edit_goal"
+                        android:layout_alignStart="@+id/edit_goal" />
+
                     <Button
                         android:id="@+id/button_one"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/edit_goal"
-                        android:layout_marginTop="74dp"
                         android:ems="10"
                         android:onClick="CreateStash"
                         android:text=" Create Stash "
                         android:textColor="#444444"
-                        android:textSize="20dp"/>
+                        android:textSize="20dp"
+                        android:layout_below="@+id/edit_stashvalue"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="29dp" />
 
                 </RelativeLayout>
             </RelativeLayout>
