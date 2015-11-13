@@ -8,12 +8,13 @@ import android.widget.EditText;
 /**
  * Created by khimya on 11/8/15.
  */
-public class ProfileActivity extends Activity{
+public class ProfileActivity extends DrawerActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        super.onCreate(savedInstanceState, R.layout.activity_profile);
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_profile);
     }
 
     @Override
