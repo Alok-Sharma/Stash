@@ -28,6 +28,7 @@ public class AddStash extends DrawerActivity {
     EditText stashname;
     ImageButton datepicker_button;
     EditText goal;
+    EditText stashvlaue;
     final Calendar calendar = Calendar.getInstance();
     int year = calendar.get(Calendar.YEAR);
     int month = calendar.get(Calendar.MONTH);
@@ -37,15 +38,11 @@ public class AddStash extends DrawerActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_addstash);
         super.onCreate(savedInstanceState, R.layout.activity_addstash);
-        stashname = (EditText) findViewById(R.id.edit_stashname);  //reading
-        // the user input for stash name i.e. edit_stashname
-        goal = (EditText) findViewById(R.id.edit_goal);  //reading the user
-        // input for stash goal value i.e. edit_goal
+        stashname = (EditText) findViewById(R.id.edit_stashname);
+        goal = (EditText) findViewById(R.id.edit_goal);
         targetdate = (EditText) findViewById(R.id.edit_targetdate);
-        //reading the user input for stash targetdate i.e. edit_targetdate
+        stashvlaue = (EditText) findViewById(R.id.edit_stashvalue);
         datepicker_button = (ImageButton) findViewById(R.id.button);
         datepicker_button.setOnClickListener(new OnClickListener() {
             @Override
@@ -101,6 +98,7 @@ public class AddStash extends DrawerActivity {
         String message_stashname = stashname.getText().toString();
         String message_targetdate = targetdate.getText().toString();
         int message_goal = Integer.parseInt(goal.getText().toString());
+        int message_stashvalue = Integer.parseInt(stashvlaue.getText().toString());
 
         /**Create an intent*/
         Intent addstash_intent = new Intent(this, ServerAccess.class);
@@ -109,10 +107,20 @@ public class AddStash extends DrawerActivity {
         addstash_intent.putExtra("StashName", message_stashname);
         addstash_intent.putExtra("StashTargetDate", message_targetdate);
         addstash_intent.putExtra("StashGoal", message_goal);
+        addstash_intent.putExtra("StashValue", message_stashvalue);
         addstash_intent.putExtra("server_action", ServerAccess.ServerAction
                 .ADD_STASH.toString());
 
         /**Launching that intent*/
         this.startService(addstash_intent);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+        finish();
     }
 }
