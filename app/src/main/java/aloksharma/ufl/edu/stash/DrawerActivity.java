@@ -100,14 +100,14 @@ public class DrawerActivity extends AppCompatActivity {
                         (motionEvent)) {
                     Drawer.closeDrawers();
                     if (recyclerView.getChildPosition(child) == 1) {
-                            Toast.makeText(DrawerActivity.this, "Profile " +
-                                    "View Coming Soon", Toast
-                                    .LENGTH_SHORT).show();
+                        Toast.makeText(DrawerActivity.this, "Profile " +
+                                "View Coming Soon", Toast
+                                .LENGTH_SHORT).show();
                     }
                     if (recyclerView.getChildPosition(child) == 2) {
-                            navigateTo = new Intent(DrawerActivity.this,
-                                    AccountActivity.class);
-                            startActivity(navigateTo);
+                        navigateTo = new Intent(DrawerActivity.this,
+                                AccountActivity.class);
+                        startActivity(navigateTo);
                     }
                     if (recyclerView.getChildPosition(child) == 3) {
                         navigateTo = new Intent(DrawerActivity.this,
@@ -115,9 +115,11 @@ public class DrawerActivity extends AppCompatActivity {
                         startActivity(navigateTo);
                     }
                     if (recyclerView.getChildPosition(child) == 4) {
-                        currentUser.logOut();
-                        navigateTo = new Intent(DrawerActivity.this, LoginActivity.class);
+                        ParseUser.logOut();
+                        navigateTo = new Intent(DrawerActivity.this,
+                                LoginActivity.class);
                         startActivity(navigateTo);
+                        finish();
                     }
                     return true;
                 }
