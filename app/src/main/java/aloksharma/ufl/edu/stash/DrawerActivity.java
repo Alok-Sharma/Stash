@@ -107,17 +107,21 @@ public class DrawerActivity extends AppCompatActivity {
                     if (recyclerView.getChildPosition(child) == 2) {
                         navigateTo = new Intent(DrawerActivity.this,
                                 AccountActivity.class);
+                        navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
+//                        finish();
                     }
                     if (recyclerView.getChildPosition(child) == 3) {
                         navigateTo = new Intent(DrawerActivity.this,
                                 AddStash.class);
+                        navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
                     }
                     if (recyclerView.getChildPosition(child) == 4) {
                         ParseUser.logOut();
                         navigateTo = new Intent(DrawerActivity.this,
                                 LoginActivity.class);
+                        navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
                         finish();
                     }

@@ -13,12 +13,12 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".HomeActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".AddStash"
-            android:label="@string/title_activity_addstash"
-            android:launchMode="singleInstance">
+            android:label="@string/title_activity_addstash">
         </activity>
         <activity
             android:name=".AddStashHelper"
@@ -28,8 +28,7 @@
 
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:launchMode="singleInstance">
+            android:label="@string/title_activity_profile">
         </activity>
 
         <service
@@ -58,8 +57,7 @@
 
         <activity
             android:name=".AccountActivity"
-            android:label="@string/title_activity_account_activity"
-            android:launchMode="singleInstance">
+            android:label="@string/title_activity_account_activity">
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -71,8 +69,7 @@
         <!-- </activity> -->
         <activity
             android:name=".DrawerActivity"
-            android:label="@string/title_activity_drawer"
-            android:launchMode="singleInstance">
+            android:label="@string/title_activity_drawer">
         </activity>
         <activity
             android:name=".testing"
