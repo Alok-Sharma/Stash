@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -196,9 +197,12 @@ public class PlaidHelper {
             ParseUser.getCurrentUser().pinInBackground();
             ParseUser.getCurrentUser().saveInBackground();
 
-            double balance = jObject.getJSONArray("accounts").getJSONObject
-                    (0).getJSONObject("balance").getDouble("available");
-            return balance;
+            JSONArray accountsArray = jObject.getJSONArray("accounts");
+            double availableBalance = 0;
+            for (int i = 0; i < accountsArray.length(); i++) {
+                availableBalance += accountsArray.getJSONObject(i).getJSONObject("balance").getDouble("available");
+            }
+            return availableBalance;
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
