@@ -23,8 +23,10 @@ public class DrawerActivity extends AppCompatActivity {
 
     private static int fromPosition = 0;
     String TITLES[] = {"Profile", "Bank Accounts", "Add Stash", "Logout"};
-    int ICONS[] = {R.drawable.ic_person_black_18dp, R.drawable.ic_account_balance_black_18dp, R.drawable
-            .ic_add_circle_outline_black_18dp, R.drawable.ic_power_settings_new_black_18dp};
+    int ICONS[] = {R.drawable.ic_person_black_18dp, R.drawable
+            .ic_account_balance_black_18dp, R.drawable
+            .ic_add_circle_outline_black_18dp, R.drawable
+            .ic_power_settings_new_black_18dp};
 
     String NAME = null;
     String EMAIL = null;
@@ -46,11 +48,13 @@ public class DrawerActivity extends AppCompatActivity {
         setContentView(resLayoutID);
 
         currentUser = ParseUser.getCurrentUser();
-        Log.d("Stash: DrawerActivity", "CurrentUser is: " + currentUser.getUsername());
-        NAME = currentUser.getString("firstName") + " " + currentUser.getString("lastName");
-        Log.d("Stash: Drawer Activity:", "User's Name: "+NAME);
+        Log.d("Stash: DrawerActivity", "CurrentUser is: " + currentUser
+                .getUsername());
+        NAME = currentUser.getString("firstName") + " " + currentUser
+                .getString("lastName");
+        Log.d("Stash: Drawer Activity:", "User's Name: " + NAME);
         EMAIL = currentUser.getEmail();
-        Log.d("Stash: Drawer Activity:", "User's Email: "+EMAIL);
+        Log.d("Stash: Drawer Activity:", "User's Email: " + EMAIL);
         try {
             ParseFile parseFile = currentUser.getParseFile("profileThumb");
             if (parseFile != null) {
@@ -96,37 +100,24 @@ public class DrawerActivity extends AppCompatActivity {
                         (motionEvent)) {
                     Drawer.closeDrawers();
                     if (recyclerView.getChildPosition(child) == 1) {
-                        if (fromPosition == 1) {
-                        } else {
-                            fromPosition = 1;
-                            Toast.makeText(DrawerActivity.this, "Profile View Coming Soon", Toast
+                            Toast.makeText(DrawerActivity.this, "Profile " +
+                                    "View Coming Soon", Toast
                                     .LENGTH_SHORT).show();
-                        }
                     }
                     if (recyclerView.getChildPosition(child) == 2) {
-                        if (fromPosition == 2) {
-                        } else {
-                            fromPosition = 2;
-                            navigateTo = new Intent(DrawerActivity.this, AccountActivity.class);
+                            navigateTo = new Intent(DrawerActivity.this,
+                                    AccountActivity.class);
                             startActivity(navigateTo);
-                        }
                     }
                     if (recyclerView.getChildPosition(child) == 3) {
-                        if (fromPosition == 3) {
-                        } else {
-                            fromPosition = 3;
-                            navigateTo = new Intent(DrawerActivity.this, AddStash.class);
-                            startActivity(navigateTo);
-                        }
+                        navigateTo = new Intent(DrawerActivity.this,
+                                AddStash.class);
+                        startActivity(navigateTo);
                     }
                     if (recyclerView.getChildPosition(child) == 4) {
-                        if (fromPosition == 4) {
-                        } else {
-                            fromPosition = 4;
-                            currentUser.logOut();
-                            navigateTo = new Intent(DrawerActivity.this, LoginActivity.class);
-                            startActivity(navigateTo);
-                        }
+                        currentUser.logOut();
+                        navigateTo = new Intent(DrawerActivity.this, LoginActivity.class);
+                        startActivity(navigateTo);
                     }
                     return true;
                 }
@@ -169,10 +160,12 @@ public class DrawerActivity extends AppCompatActivity {
 //        try {
 //            ParseFile parseFile = currentUser.getParseFile("profileThumb");
 //            if (parseFile == null) {
-//                mProfileImage.setImageResource(R.drawable.ic_person_black_18dp);
+//                mProfileImage.setImageResource(R.drawable
+// .ic_person_black_18dp);
 //            } else {
 //                byte[] data = parseFile.getData();
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0,
+// data.length);
 //                mProfileImage.setImageBitmap(bitmap);
 //            }
 //        } catch (Exception e) {
