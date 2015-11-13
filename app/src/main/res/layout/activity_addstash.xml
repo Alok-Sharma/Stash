@@ -169,9 +169,6 @@
                         android:layout_alignLeft="@+id/edit_goal"
                         android:layout_alignStart="@+id/edit_goal" />
 
-
-
-
                     <Button
                         android:id="@+id/button_one"
                         android:layout_width="match_parent"
