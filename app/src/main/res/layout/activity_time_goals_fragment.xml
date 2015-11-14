@@ -52,12 +52,13 @@
                 android:layout_height="wrap_content"
                 android:textColor="#00B9E7"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="GOAL"
+                android:text="TARGET DATE"
                 android:textStyle="bold"
                 android:id="@+id/timeGoalsTextView"
                 android:paddingTop="10dp"
                 android:layout_below="@+id/timeGoalsPercentage"
-                android:layout_toLeftOf="@+id/timeGoalsProgressBar" />
+                android:layout_toLeftOf="@+id/timeGoalsPercentage"
+                android:layout_toStartOf="@+id/timeGoalsPercentage" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#00B9E7"
-                android:text="TO SAVE"
+                android:text="TIME LEFT"
                 android:textStyle="bold"
                 android:id="@+id/textView7"
                 android:paddingTop="90dp"
@@ -96,12 +97,12 @@
                 android:layout_alignLeft="@+id/textView7"
                 android:layout_alignStart="@+id/textView7" />
 
-            <TextView
+             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#00B9E7"
-                android:text="MONTHLY SAVINGS REQUIRED"
+                android:text="CURRENT RATE OF SAVING"
                 android:textStyle="bold"
                 android:id="@+id/textView9"
                 android:layout_below="@+id/timeGoalsToSaveAmount"
