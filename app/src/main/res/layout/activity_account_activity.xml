@@ -101,10 +101,15 @@
                 android:id="@+id/add_account_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/bankPassword"
                 android:layout_alignParentBottom="true"
-                android:layout_alignRight="@+id/bankPassword"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="55dp"
+                android:background="#69B6B1"
+                android:paddingLeft="36dp"
+                android:paddingRight="36dp"
+                android:paddingBottom="18dp"
+                android:paddingTop="18dp"
+                android:textColor="#fff"
                 android:text="Add Account"/>
         </RelativeLayout>
     </LinearLayout>
