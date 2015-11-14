@@ -144,7 +144,7 @@ public class HomeActivity extends DrawerActivity{
                         }
 
 
-                        if((stashTargetDate.getTime()-currentDate.getTime())>0) {
+                        if((stashTargetDate.getTime()-currentDate.getTime())>0 && ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))!=0) {
                             timeGoalsProgressBar = (float) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000));
                             timeGoalsPercentage = String.valueOf(Math.round((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))) * 100) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))) + "%";
                         }
@@ -156,8 +156,14 @@ public class HomeActivity extends DrawerActivity{
                         timeGoalsToSaveAmount = (int)( (stashTargetDate.getTime() - currentDate.getTime()) / (86400000))+" Days";
                         if(monthsLeft>=0 && (gridObjectList.get(position).getInt("StashValue")<gridObjectList.get(position).getInt("StashGoal"))){
                             //timeGoalsMonthlySavings = "$" + String.valueOf(Math.round(((float) (((gridObjectList.get(position).getInt("StashValue"))*((int)( (stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))))/((int)( (currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)))) / (monthsLeft+1)) * 100.0) / 100.0) + "/month";
-                            double savingRate = (Math.round(((float) (((gridObjectList.get(position).getInt("StashValue"))*((int)( (stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))))/((int)( (currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))))) * 100.0) / 100.0);
-                            timeGoalsMonthlySavings = String.format("%.2f",savingRate/(gridObjectList.get(position).getInt("StashGoal")))+"X Optimal Rate";
+                            if((((int) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))))!=0) {
+                                double savingRate = (Math.round(((float) (((gridObjectList.get(position).getInt("StashValue")) * ((int) ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000)))) / ((int) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))))) * 100.0) / 100.0);
+                                timeGoalsMonthlySavings = String.format("%.2f", savingRate / (gridObjectList.get(position).getInt("StashGoal"))) + "X Optimal Rate";
+                            }
+                            else{
+                                double savingRate = (Math.round(((float) (((gridObjectList.get(position).getInt("StashValue")) * ((int) ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000)))) / (1))) * 100.0) / 100.0);
+                                timeGoalsMonthlySavings = String.format("%.2f", savingRate / (gridObjectList.get(position).getInt("StashGoal"))) + "X Optimal Rate";
+                            }
                         }
                         else {
                             timeGoalsMonthlySavings = "TARGET ACHIEVED";
