@@ -10,7 +10,7 @@ import android.widget.Spinner;
 
 import java.util.HashMap;
 
-public class AccountActivity extends DrawerActivity {
+public class AddAccountActivity extends DrawerActivity {
 
     @SuppressLint("MissingSuperCall")
     @Override

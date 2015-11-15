@@ -56,8 +56,8 @@
             android:value="@string/app_id" />
 
         <activity
-            android:name=".AccountActivity"
-            android:label="@string/title_activity_account_activity">
+            android:name=".AddAccountActivity"
+            android:label="@string/title_activity_account_activity" >
         </activity>
         <activity
             android:name=".RegisterActivity"
