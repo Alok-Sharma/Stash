@@ -97,7 +97,6 @@
                 android:inputType="textAutoComplete|textAutoCorrect|textEmailAddress"
                 android:editable="true"
                 android:gravity="right"
-                android:layout_marginTop="15dp"
                 android:paddingBottom="40dp"
                 android:layout_below="@+id/edit_name"
                 android:layout_alignParentRight="true"
@@ -138,8 +137,7 @@
                 android:textIsSelectable="false"
                 android:textAlignment="viewEnd"
                 android:gravity="right"
-                android:layout_marginTop="15dp"
-                android:layout_alignParentLeft="true"
+                                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
             <Switch
