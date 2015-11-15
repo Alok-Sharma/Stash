@@ -8,7 +8,7 @@ import android.widget.EditText;
 /**
  * Created by khimya on 11/8/15.
  */
-public class ProfileActivity extends DrawerActivity{
+public class ProfileActivity extends DrawerActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,8 +18,7 @@ public class ProfileActivity extends DrawerActivity{
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);

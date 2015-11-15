@@ -52,7 +52,8 @@ public class ViewStashActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter
+                (getSupportFragmentManager());
         adapter.addFragment(new MoneyGoalsFragment(), "MONEY GOALS");
         adapter.addFragment(new TimeGoalsFragment(), "TIME GOALS");
         viewPager.setAdapter(adapter);

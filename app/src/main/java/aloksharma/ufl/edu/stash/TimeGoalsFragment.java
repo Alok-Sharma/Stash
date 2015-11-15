@@ -25,17 +25,24 @@ public class TimeGoalsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.activity_time_goals_fragment, container, false);
+        View view = inflater.inflate(R.layout.activity_time_goals_fragment,
+                container, false);
 
-        TextView timeGoalsGoalValue = (TextView) view.findViewById(R.id.timeGoalsGoalValue);
+        TextView timeGoalsGoalValue = (TextView) view.findViewById(R.id
+                .timeGoalsGoalValue);
         timeGoalsGoalValue.setText(homeActivity.timeGoalsGoalValue);
-        TextView timeGoalsMonthlySavings = (TextView) view.findViewById(R.id.timeGoalsMonthlySavings);
+        TextView timeGoalsMonthlySavings = (TextView) view.findViewById(R.id
+                .timeGoalsMonthlySavings);
         timeGoalsMonthlySavings.setText(homeActivity.timeGoalsMonthlySavings);
-        TextView timeGoalsPercentage = (TextView) view.findViewById(R.id.timeGoalsPercentage);
+        TextView timeGoalsPercentage = (TextView) view.findViewById(R.id
+                .timeGoalsPercentage);
         timeGoalsPercentage.setText(homeActivity.timeGoalsPercentage);
-        TextView timeGoalsToSaveAmount = (TextView) view.findViewById(R.id.timeGoalsToSaveAmount);
+        TextView timeGoalsToSaveAmount = (TextView) view.findViewById(R.id
+                .timeGoalsToSaveAmount);
         timeGoalsToSaveAmount.setText(homeActivity.timeGoalsToSaveAmount);
-        HoloCircularProgressBar timeGoalsProgressBar = (HoloCircularProgressBar) view.findViewById(R.id.timeGoalsProgressBar);
+        HoloCircularProgressBar timeGoalsProgressBar =
+                (HoloCircularProgressBar) view.findViewById(R.id
+                        .timeGoalsProgressBar);
         timeGoalsProgressBar.setProgress(homeActivity.timeGoalsProgressBar);
 
         return view;
