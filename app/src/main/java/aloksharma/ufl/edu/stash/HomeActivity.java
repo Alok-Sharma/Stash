@@ -153,7 +153,12 @@ public class HomeActivity extends DrawerActivity{
                             timeGoalsPercentage = String.valueOf(100)+"%";
                         }
                         timeGoalsGoalValue = new SimpleDateFormat("MMMM").format(stashTargetDateCalendar.getTime())+" "+new SimpleDateFormat("dd").format(stashTargetDateCalendar.getTime())+" "+new SimpleDateFormat("yyyy").format(stashTargetDateCalendar.getTime());
-                        timeGoalsToSaveAmount = (int)( (stashTargetDate.getTime() - currentDate.getTime()) / (86400000))+" Days";
+                        if(((int) ((stashTargetDate.getTime() - currentDate.getTime()) / (86400000)))>=0) {
+                            timeGoalsToSaveAmount = (int) ((stashTargetDate.getTime() - currentDate.getTime()) / (86400000)) + " Days";
+                        }
+                        else{
+                            timeGoalsToSaveAmount = "Deadline Expired";
+                        }
                         if(monthsLeft>=0 && (gridObjectList.get(position).getInt("StashValue")<gridObjectList.get(position).getInt("StashGoal"))){
                             //timeGoalsMonthlySavings = "$" + String.valueOf(Math.round(((float) (((gridObjectList.get(position).getInt("StashValue"))*((int)( (stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))))/((int)( (currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)))) / (monthsLeft+1)) * 100.0) / 100.0) + "/month";
                             if((((int) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))))!=0) {
@@ -167,6 +172,9 @@ public class HomeActivity extends DrawerActivity{
                         }
                         else {
                             timeGoalsMonthlySavings = "TARGET ACHIEVED";
+                            if(((int) ((stashTargetDate.getTime() - currentDate.getTime()) / (86400000)))<0){
+                                timeGoalsMonthlySavings = "STASH EXPIRED";
+                            }
                         }
 
                         Intent i = new Intent(getApplicationContext(), ViewStashActivity.class);
