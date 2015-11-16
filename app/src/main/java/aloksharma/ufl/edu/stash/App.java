@@ -12,6 +12,7 @@ import com.parse.ParseFacebookUtils;
  */
 public class App extends Application {
     private static Context mContext;
+
     @Override
     public void onCreate() {
         super.onCreate();

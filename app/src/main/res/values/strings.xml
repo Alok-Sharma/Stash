@@ -8,7 +8,6 @@
     <string name="title_activity_addstash">Add Stash</string>
     <string name="title_activity_profile">Profile</string>
     <string name="hello_world">Hello world!</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="plaid_client_id_test"/>
     <string name="plaid_secret_test"/>
@@ -16,14 +15,13 @@
     <string name="user_entry">Please Enter Your Name</string>
     <string name="button_text">Press Me</string>
     <string name="title_activity_display_message">My Message</string>
-    <string name="title_activity_account_activity">Add Account</string>
     <string name="title_bank_accounts">Bank Accounts</string>
+    <string name="title_activity_account_activity">Add Bank Account</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="openDrawer">Drawer Open</string>
     <string name="closeDrawer">Drawer Close</string>
     <string name="title_activity_drawer">DrawerActivity</string>
-    <string name="title_activity_testing">testing</string>
 
     <!-- Names of Banks to be displayed in dropdown/spinner -->
     <string-array name="bank_names">
@@ -42,6 +40,11 @@
         <item>US Bank</item>
         <item>USAA</item>
         <item>Wells Fargo</item>
+    </string-array>
+
+    <string-array name="add_money_options">
+        <item>One Time</item>
+        <item>Monthly</item>
     </string-array>
 
 </resources>

@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="aloksharma.ufl.edu.stash.AddMoney"
+    android:padding="@dimen/abc_dialog_padding_material">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Add Money"
+        android:id="@+id/addMoneyText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textSize="16dp"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/add_money_options"
+        android:id="@+id/timePeriod"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/addMoneyText"
+        android:layout_alignBaseline="@+id/addMoneyText"
+        android:spinnerMode="dropdown"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Repeat On"
+        android:id="@+id/repeatOnText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/addMoneyText"
+        android:layout_marginTop="50dp"
+        android:textSize="16dp"/>
+
+    <EditText
+        android:id="@+id/repeatOnDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:layout_alignStart="@+id/timePeriod"
+        android:layout_toRightOf="@id/repeatOnText"
+        android:layout_alignBaseline="@+id/repeatOnText"
+        android:layout_alignParentRight="true"
+        android:focusable="false"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/calendarImage"
+        android:src="@drawable/ic_insert_invitation_black_24dp"
+        android:layout_alignStart="@+id/repeatOnDate"
+        android:layout_alignBottom="@+id/repeatOnText"/>
+
+</RelativeLayout>

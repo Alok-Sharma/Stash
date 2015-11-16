@@ -7,15 +7,17 @@ package aloksharma.ufl.edu.stash;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import java.util.Calendar;
 
 
@@ -26,7 +28,7 @@ public class AddStash extends DrawerActivity {
 
     EditText targetdate;
     EditText stashname;
-    ImageButton datepicker_button;
+    ImageView calendarImage;
     EditText goal;
     EditText stashvlaue;
     final Calendar calendar = Calendar.getInstance();
@@ -41,13 +43,16 @@ public class AddStash extends DrawerActivity {
         super.onCreate(savedInstanceState, R.layout.activity_addstash);
         stashname = (EditText) findViewById(R.id.edit_stashname);
         goal = (EditText) findViewById(R.id.edit_goal);
+        calendarImage = (ImageView)findViewById(R.id.calendarImageAddStash);
+        int color = Color.parseColor("#939393");
+        calendarImage.setColorFilter(color);
         targetdate = (EditText) findViewById(R.id.edit_targetdate);
         stashvlaue = (EditText) findViewById(R.id.edit_stashvalue);
-        datepicker_button = (ImageButton) findViewById(R.id.button);
-        datepicker_button.setOnClickListener(new OnClickListener() {
+        targetdate.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onTouch(View view, MotionEvent motionEvent) {
                 showDialog(DIALOG_ID);
+                return true;
             }
         });
     }
@@ -98,7 +103,8 @@ public class AddStash extends DrawerActivity {
         String message_stashname = stashname.getText().toString();
         String message_targetdate = targetdate.getText().toString();
         int message_goal = Integer.parseInt(goal.getText().toString());
-        int message_stashvalue = Integer.parseInt(stashvlaue.getText().toString());
+        int message_stashvalue = Integer.parseInt(stashvlaue.getText()
+                .toString());
 
         /**Create an intent*/
         Intent addstash_intent = new Intent(this, ServerAccess.class);
@@ -116,11 +122,16 @@ public class AddStash extends DrawerActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
         finish();
+    }
+
+    public void showAddMoneyDialog(View view) {
+        FragmentManager fm = getFragmentManager();
+        AddMoneyFragment addMoneyDialog = new AddMoneyFragment();
+        addMoneyDialog.show(fm, "fragment_edit_name");
     }
 }
