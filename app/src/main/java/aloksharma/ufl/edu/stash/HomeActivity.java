@@ -179,23 +179,13 @@ public class HomeActivity extends DrawerActivity {
                         }
 
 
-                        if ((stashTargetDate.getTime() - currentDate.getTime
-                                ()) > 0 && ((stashTargetDate.getTime() -
-                                stashInitializationDate.getTime()) /
-                                (86400000)) != 0) {
-                            timeGoalsProgressBar = (float) ((currentDate
-                                    .getTime() - stashInitializationDate
-                                    .getTime()) / (86400000)) / (
-                                    (stashTargetDate.getTime() -
-                                            stashInitializationDate.getTime
-                                                    ()) / (86400000));
-                            timeGoalsPercentage = String.valueOf(Math.round(
-                                    (((currentDate.getTime() -
-                                            stashInitializationDate.getTime
-                                                    ()) / (86400000))) *
-                                            100) / ((stashTargetDate.getTime
-                                    () - stashInitializationDate.getTime())
-                                    / (86400000))) + "%";
+                        if ((stashTargetDate.getTime() - currentDate.getTime()) > 0 && ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000)) != 0) {
+                            timeGoalsProgressBar = (float) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)) / ((stashTargetDate.getTime() -  stashInitializationDate.getTime()) / (86400000));
+                            timeGoalsPercentage = String.valueOf(Math.round((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))) * 100) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))) + "%";
+                            if((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)))==0){
+                                timeGoalsProgressBar = (float) (1) / ((stashTargetDate.getTime() -  stashInitializationDate.getTime()) / (86400000));
+                                timeGoalsPercentage = String.valueOf(Math.round(((1)) * 100) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))) + "%";
+                            }
                         } else {
                             timeGoalsProgressBar = (float) 1.00f;
                             timeGoalsPercentage = String.valueOf(100) + "%";
