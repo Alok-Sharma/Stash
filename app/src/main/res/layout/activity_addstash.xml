@@ -65,7 +65,7 @@
                         android:inputType="textMultiLine"
                         android:layout_alignParentTop="true"
                         android:layout_alignLeft="@+id/edit_targetdate"
-                        android:layout_alignStart="@+id/edit_targetdate" />
+                        android:layout_alignStart="@+id/edit_targetdate"/>
 
                     <TextView
                         android:id="@+id/textView2"
@@ -149,7 +149,7 @@
                         android:text="Stash Value"
                         android:textColor="#444444"
                         android:textSize="20dp"
-                        android:layout_toLeftOf="@+id/edit_stashvalue" />
+                        android:layout_toLeftOf="@+id/edit_stashvalue"/>
 
                     <EditText
                         android:id="@+id/edit_stashvalue"
@@ -167,21 +167,38 @@
                         android:hint=" $ Stash Value "
                         android:inputType="number"
                         android:layout_alignLeft="@+id/edit_goal"
-                        android:layout_alignStart="@+id/edit_goal" />
+                        android:layout_alignStart="@+id/edit_goal"/>
+
+                    <!-- <Button
+                         android:id="@+id/button_one"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:ems="10"
+                         android:onClick="CreateStash"
+                         android:text=" Create Stash "
+                         android:textColor="#444444"
+                         android:textSize="20dp"
+                         android:layout_below="@+id/edit_stashvalue"
+                         android:layout_alignParentLeft="true"
+                         android:layout_alignParentStart="true"
+                         android:layout_marginTop="29dp" />-->
 
                     <Button
                         android:id="@+id/button_one"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ems="10"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="55dp"
+                        android:background="#69B6B1"
+                        android:paddingLeft="36dp"
+                        android:paddingRight="36dp"
+                        android:paddingBottom="18dp"
+                        android:paddingTop="18dp"
+                        android:textColor="#fff"
                         android:onClick="CreateStash"
-                        android:text=" Create Stash "
-                        android:textColor="#444444"
-                        android:textSize="20dp"
-                        android:layout_below="@+id/edit_stashvalue"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="29dp" />
+                        android:text="Create Stash"/>
+
 
                 </RelativeLayout>
             </RelativeLayout>

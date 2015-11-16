@@ -31,7 +31,9 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
-    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/values-v21'] } }
+    sourceSets {
+        main { res.srcDirs = ['src/main/res', 'src/main/res/values-v21'] }
+    }
 }
 
 repositories {

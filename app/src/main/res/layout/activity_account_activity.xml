@@ -20,74 +20,97 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="@dimen/activity_vertical_margin"
+            tools:context="aloksharma.ufl.edu.stash.AccountActivity"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="aloksharma.ufl.edu.stash.AccountActivity">
+            android:layout_marginTop="24dp"
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bank"
+                android:id="@+id/BankNamesLabel"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textSize="16dp"
+                android:layout_alignParentTop="true"/>
+
+            <Spinner
+                android:id="@+id/bankNamesList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/bank_names"
+                android:layout_toRightOf="@+id/BankNamesLabel"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="100dp"
+                android:layout_alignBaseline="@+id/BankNamesLabel"
+                android:hint="Select Bank"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:layout_below="@+id/BankNamesLabel"
+                android:id="@+id/usernameLabel"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="50dp"
+                android:textSize="16dp"/>
+
+            <EditText
+                android:id="@+id/bankUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:inputType="textPersonName"
+                android:layout_toRightOf="@+id/usernameLabel"
+                android:layout_alignBaseline="@+id/usernameLabel"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"/>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true">
 
-                    <EditText
-                        android:id="@+id/bankUsername"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/bankPassword"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignStart="@+id/bankPassword"
-                        android:layout_marginTop="74dp"
-                        android:ems="10"
-                        android:hint="Username"
-                        android:inputType="textPersonName"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                android:layout_marginTop="50dp"
+                android:id="@+id/passwordLabel"
+                android:layout_below="@id/usernameLabel"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textSize="16dp"/>
 
-                    <EditText
-                        android:id="@+id/bankPassword"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/bankUsername"
-                        android:layout_marginLeft="32dp"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="49dp"
-                        android:ems="10"
-                        android:hint="Password"
-                        android:inputType="textPassword"/>
+            <EditText
+                android:id="@+id/bankPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="100dp"
+                android:layout_alignBaseline="@+id/passwordLabel"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toRightOf="@id/passwordLabel"
+                android:inputType="textPassword"/>
 
-                    <Spinner
-                        android:id="@+id/bankNamesList"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/bankPassword"
-                        android:layout_alignStart="@+id/bankPassword"
-                        android:layout_below="@+id/bankPassword"
-                        android:layout_marginTop="44dp"
-                        android:entries="@array/bank_names"
-                        android:hint="Select Bank"
-                        android:spinnerMode="dropdown"/>
-
-                    <Button
-                        android:id="@+id/add_account_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignEnd="@+id/bankPassword"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignRight="@+id/bankPassword"
-                        android:layout_marginBottom="55dp"
-                        android:text="Add Account"/>
-                </RelativeLayout>
-            </RelativeLayout>
+            <Button
+                android:id="@+id/add_account_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="55dp"
+                android:background="#69B6B1"
+                android:paddingLeft="36dp"
+                android:paddingRight="36dp"
+                android:paddingBottom="18dp"
+                android:paddingTop="18dp"
+                android:textColor="#fff"
+                android:text="Add Account"/>
         </RelativeLayout>
     </LinearLayout>
 
