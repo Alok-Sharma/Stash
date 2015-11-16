@@ -71,11 +71,7 @@
             android:name=".DrawerActivity"
             android:label="@string/title_activity_drawer">
         </activity>
-        <activity
-            android:name=".testing"
-            android:label="@string/title_activity_testing">
-        </activity>
-        <activity android:name=".ViewStashActivity">
+        <activity android:name=".ViewStashActivity" >
         </activity>
     </application>
 
