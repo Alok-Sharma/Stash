@@ -289,6 +289,10 @@ public class HomeActivity extends DrawerActivity {
                                 "bank account from the menu.", Toast
                                 .LENGTH_LONG).show();
                     }
+
+                    if (error != null && error.equals("no_keys")) {
+                        Toast.makeText(context, "Unable to decrypt, please remove all Bank accounts and add again.", Toast.LENGTH_SHORT).show();
+                    }
 //                    TextView balanceText = (TextView)findViewById(R.id
 // .mainTextView);
 //                    balanceText.setText("Alok, your balance is: " + balance);
