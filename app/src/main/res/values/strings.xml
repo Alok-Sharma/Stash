@@ -16,7 +16,7 @@
     <string name="user_entry">Please Enter Your Name</string>
     <string name="button_text">Press Me</string>
     <string name="title_activity_display_message">My Message</string>
-    <string name="title_activity_account_activity">account_activity</string>
+    <string name="title_activity_account_activity">Add Bank Account</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="openDrawer">Drawer Open</string>
@@ -41,6 +41,11 @@
         <item>US Bank</item>
         <item>USAA</item>
         <item>Wells Fargo</item>
+    </string-array>
+
+    <string-array name="add_money_options">
+        <item>One Time</item>
+        <item>Monthly</item>
     </string-array>
 
 </resources>
