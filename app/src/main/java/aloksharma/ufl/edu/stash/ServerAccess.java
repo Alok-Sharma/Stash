@@ -80,7 +80,12 @@ public class ServerAccess extends IntentService {
                             Double balance = plaidHelper.getBankBalance
                                     (accessToken);
                             Log.d("StashLog", "balance: " + balance);
-                            outgoingIntent.putExtra("balance", balance);
+                            if (balance != null) {
+                                outgoingIntent.putExtra("balance", balance);
+                            } else {
+                                outgoingIntent.putExtra("error", "no_keys");
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
