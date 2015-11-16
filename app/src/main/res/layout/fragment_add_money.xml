@@ -22,12 +22,40 @@
         android:spinnerMode="dropdown"
         android:layout_marginLeft="20dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/amountText"
+        android:layout_below="@id/addMoneyText"
+        android:layout_marginTop="50dp"
+        android:textSize="16dp"
+        android:text="Amount"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addAmount"
+        android:inputType="numberDecimal"
+        android:layout_alignBaseline="@id/amountText"
+        android:layout_toRightOf="@id/amountText"
+        android:layout_alignStart="@+id/timePeriod"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="15dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        android:layout_alignStart="@id/addAmount"
+        android:layout_alignBaseline="@id/addAmount"/>
+
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:text="Repeat On"
         android:id="@+id/repeatOnText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/addMoneyText"
+        android:layout_below="@id/amountText"
         android:layout_marginTop="50dp"
         android:textSize="16dp"/>
 
@@ -40,7 +68,8 @@
         android:layout_toRightOf="@id/repeatOnText"
         android:layout_alignBaseline="@+id/repeatOnText"
         android:layout_alignParentRight="true"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:paddingLeft="15dp"/>
 
     <ImageView
         android:layout_width="wrap_content"

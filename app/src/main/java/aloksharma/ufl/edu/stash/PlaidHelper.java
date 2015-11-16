@@ -3,7 +3,6 @@ package aloksharma.ufl.edu.stash;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.parse.ParseUser;
@@ -64,7 +63,6 @@ public class PlaidHelper {
         try {
             String keysString = sharedPref.getString("keys", null);
             if(keysString == null) {
-                Toast.makeText(context, "Unable to decrypt. Please remove bank accounts and add again.", Toast.LENGTH_SHORT).show();
                 return null;
             } else {
                 AesCbcWithIntegrity.SecretKeys keys = AesCbcWithIntegrity.keys(keysString);
@@ -75,7 +73,6 @@ public class PlaidHelper {
                     .getMessage());
             e.printStackTrace();
         }
-        Toast.makeText(context, "Unable to decrypt. Please remove bank accounts and add again.", Toast.LENGTH_SHORT).show();
         return null;
     }
 
@@ -84,7 +81,7 @@ public class PlaidHelper {
         String plaidUrl = context.getString(R.string.plaid_url) + "/get";
         postArgs.add(new BasicNameValuePair("access_token", access_token));
         AesCbcWithIntegrity.SecretKeys keys = fetchExistingKeys();
-        if(keys == null) {
+        if(keys != null) {
             return plaidPostRequest(plaidUrl, postArgs, keys);
         } else {
             return null;
@@ -117,6 +114,7 @@ public class PlaidHelper {
             if (ParseUser.getCurrentUser() != null) {
                 Map<String, String> accessTokensEncrypted = ParseUser
                         .getCurrentUser().getMap("BankMap");
+                Log.d("StashLog", "Size: " + accessTokensEncrypted.size());
                 return accessTokensEncrypted;
             } else {
                 //current user is null. This shouldn't happen if the user was
@@ -214,16 +212,13 @@ public class PlaidHelper {
             String bankName = jObject.getJSONArray("accounts").getJSONObject
                     (0).getString("institution_type");
 
-            ParseUser.getCurrentUser().pinInBackground();
-            ParseUser.getCurrentUser().saveInBackground();
-
             Map<String, String> bankMap = getAccessTokenMapEncrypted();
             if (bankMap == null) {
                 bankMap = new HashMap<>();
             }
             bankMap.put(bankName, access_token_encrypted);
             ParseUser.getCurrentUser().put("BankMap", bankMap);
-
+            Log.d("StashLog", "Bankmap updated");
             ParseUser.getCurrentUser().pinInBackground();
             ParseUser.getCurrentUser().saveInBackground();
 

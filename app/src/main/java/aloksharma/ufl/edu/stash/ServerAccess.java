@@ -76,11 +76,16 @@ public class ServerAccess extends IntentService {
                         outgoingIntent.putExtra("error", "no_bank");
                     } else {
                         try {
-                            String accessToken = accessTokens.get("wells");
+                            String accessToken = accessTokens.get("wells"); // TODO: Only getting wells fargo balance. Iterate and get all (Alok)
                             Double balance = plaidHelper.getBankBalance
                                     (accessToken);
                             Log.d("StashLog", "balance: " + balance);
-                            outgoingIntent.putExtra("balance", balance);
+                            if (balance != null) {
+                                outgoingIntent.putExtra("balance", balance);
+                            } else {
+                                outgoingIntent.putExtra("error", "no_keys");
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
