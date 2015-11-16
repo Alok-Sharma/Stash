@@ -56,8 +56,8 @@
             android:value="@string/app_id"/>
 
         <activity
-            android:name=".AccountActivity"
-            android:label="@string/title_activity_account_activity">
+            android:name=".AddAccountActivity"
+            android:label="@string/title_activity_account_activity" >
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -72,6 +72,14 @@
             android:label="@string/title_activity_drawer">
         </activity>
         <activity android:name=".ViewStashActivity" >
+        </activity>
+        <activity android:name=".MoneyGoalsFragment" >
+        </activity>
+        <activity android:name=".TimeGoalsFragment" >
+        </activity>
+        <activity
+            android:name=".BankAccountsActivity"
+            android:label="@string/title_bank_accounts" >
         </activity>
     </application>
 

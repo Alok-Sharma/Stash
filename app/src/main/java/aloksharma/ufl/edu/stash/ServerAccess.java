@@ -13,6 +13,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,11 +68,12 @@ public class ServerAccess extends IntentService {
                 PlaidHelper plaidHelper = new PlaidHelper(this);
                 String bankUsername = incomingIntent.getStringExtra
                         ("bankUsername");
+
+                Map<String, String> accessTokens = null;
                 if (bankUsername == null) {
                     //no username, password. Use access token.
-                    Map<String, String> accessTokens = plaidHelper
-                            .getAccessTokenMapDecrypted();
-                    if (accessTokens == null) {
+                    accessTokens = plaidHelper.getAccessTokenMapDecrypted();
+                    if(accessTokens == null) {
                         // no banks associated yet.
                         outgoingIntent.putExtra("error", "no_bank");
                     } else {
@@ -80,12 +82,14 @@ public class ServerAccess extends IntentService {
                             Double balance = plaidHelper.getBankBalance
                                     (accessToken);
                             Log.d("StashLog", "balance: " + balance);
+                            //making a copy of Map because I'm able to send only HashMap
+                            HashMap<String, String> banks = new HashMap<>(accessTokens);
+                            outgoingIntent.putExtra("map", banks);
                             if (balance != null) {
                                 outgoingIntent.putExtra("balance", balance);
                             } else {
                                 outgoingIntent.putExtra("error", "no_keys");
                             }
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

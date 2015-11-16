@@ -114,7 +114,7 @@ public class PlaidHelper {
             if (ParseUser.getCurrentUser() != null) {
                 Map<String, String> accessTokensEncrypted = ParseUser
                         .getCurrentUser().getMap("BankMap");
-                Log.d("StashLog", "Size: " + accessTokensEncrypted.size());
+//                Log.d("StashLog", "Size: " + accessTokensEncrypted.size());
                 return accessTokensEncrypted;
             } else {
                 //current user is null. This shouldn't happen if the user was
