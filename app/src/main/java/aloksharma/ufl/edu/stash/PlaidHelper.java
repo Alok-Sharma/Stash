@@ -114,6 +114,7 @@ public class PlaidHelper {
             if (ParseUser.getCurrentUser() != null) {
                 Map<String, String> accessTokensEncrypted = ParseUser
                         .getCurrentUser().getMap("BankMap");
+                Log.d("StashLog", "Size: " + accessTokensEncrypted.size());
                 return accessTokensEncrypted;
             } else {
                 //current user is null. This shouldn't happen if the user was
@@ -211,16 +212,13 @@ public class PlaidHelper {
             String bankName = jObject.getJSONArray("accounts").getJSONObject
                     (0).getString("institution_type");
 
-            ParseUser.getCurrentUser().pinInBackground();
-            ParseUser.getCurrentUser().saveInBackground();
-
             Map<String, String> bankMap = getAccessTokenMapEncrypted();
             if (bankMap == null) {
                 bankMap = new HashMap<>();
             }
             bankMap.put(bankName, access_token_encrypted);
             ParseUser.getCurrentUser().put("BankMap", bankMap);
-
+            Log.d("StashLog", "Bankmap updated");
             ParseUser.getCurrentUser().pinInBackground();
             ParseUser.getCurrentUser().saveInBackground();
 
