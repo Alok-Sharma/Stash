@@ -61,6 +61,7 @@ public class ServerAccess extends IntentService {
                 //GET_BALANCE creates a new bank account if the incoming
                 // intent has username, password and bank name.
             case GET_BALANCE:
+                Log.d("StashLog", "calling get balance");
                 //Make appropriate getBankBalance call depending if
                 // username/password is available in the intent.
                 PlaidHelper plaidHelper = new PlaidHelper(this);

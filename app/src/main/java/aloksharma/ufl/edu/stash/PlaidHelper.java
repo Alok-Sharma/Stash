@@ -63,21 +63,19 @@ public class PlaidHelper {
         Log.d("StashLog", "fetching existing keys");
         try {
             String keysString = sharedPref.getString("keys", null);
-            AesCbcWithIntegrity.SecretKeys keys = AesCbcWithIntegrity.keys
-                    (keysString);
-            if (keysString == null) {
-                Toast.makeText(context, "Unable to decrypt. Please remove " +
-                        "bank accounts and add again.", Toast.LENGTH_LONG)
-                        .show();
+            if(keysString == null) {
+                Toast.makeText(context, "Unable to decrypt. Please remove bank accounts and add again.", Toast.LENGTH_SHORT).show();
+                return null;
+            } else {
+                AesCbcWithIntegrity.SecretKeys keys = AesCbcWithIntegrity.keys(keysString);
+                return keys;
             }
-            return keys;
         } catch (Exception e) {
             Log.d("StashLog", "error in fetch existing keys: " + e
                     .getMessage());
             e.printStackTrace();
         }
-        Toast.makeText(context, "Unable to decrypt. Please remove bank " +
-                "accounts and add again.", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Unable to decrypt. Please remove bank accounts and add again.", Toast.LENGTH_SHORT).show();
         return null;
     }
 
@@ -85,8 +83,12 @@ public class PlaidHelper {
         List<NameValuePair> postArgs = new ArrayList();
         String plaidUrl = context.getString(R.string.plaid_url) + "/get";
         postArgs.add(new BasicNameValuePair("access_token", access_token));
-
-        return plaidPostRequest(plaidUrl, postArgs, fetchExistingKeys());
+        AesCbcWithIntegrity.SecretKeys keys = fetchExistingKeys();
+        if(keys == null) {
+            return plaidPostRequest(plaidUrl, postArgs, keys);
+        } else {
+            return null;
+        }
     }
 
     Double getBankBalance(String username, String password, ServerAccess
@@ -147,15 +149,17 @@ public class PlaidHelper {
             for (Map.Entry<String, String> bankEntry : accessTokensEncrypted
                     .entrySet()) {
                 Log.d("StashLog", "Value: " + bankEntry.getValue());
-                AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = new
-                        AesCbcWithIntegrity.CipherTextIvMac(bankEntry
-                        .getValue());
-                String accessToken = AesCbcWithIntegrity.decryptString
-                        (cipherTextIvMac, fetchExistingKeys());
-                String bankName = bankEntry.getKey();
-                accessTokensDecrypted.put(bankName, accessToken);
+                AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = new AesCbcWithIntegrity.CipherTextIvMac(bankEntry.getValue());
+                AesCbcWithIntegrity.SecretKeys keys = fetchExistingKeys();
+                if(keys == null) {
+                    return null;
+                } else {
+                    String accessToken = AesCbcWithIntegrity.decryptString(cipherTextIvMac, keys);
+                    String bankName = bankEntry.getKey();
+                    accessTokensDecrypted.put(bankName, accessToken);
+                    return accessTokensDecrypted;
+                }
             }
-            return accessTokensDecrypted;
         } catch (Exception e) {
             Log.e("StashLog", "error in getAccessTokenMapDecrypted: " + e
                     .getMessage());
@@ -226,8 +230,7 @@ public class PlaidHelper {
             JSONArray accountsArray = jObject.getJSONArray("accounts");
             double availableBalance = 0;
             for (int i = 0; i < accountsArray.length(); i++) {
-                availableBalance += accountsArray.getJSONObject(i)
-                        .getJSONObject("balance").optDouble("available", 0);
+                availableBalance += accountsArray.getJSONObject(i).getJSONObject("balance").optDouble("available", 0.0);
             }
             return availableBalance;
         } catch (ClientProtocolException e) {

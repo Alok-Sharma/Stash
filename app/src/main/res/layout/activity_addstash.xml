@@ -61,7 +61,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="27dp"
                         android:ems="10"
-                        android:hint=" Stash Name "
                         android:inputType="textMultiLine"
                         android:layout_alignParentTop="true"
                         android:layout_alignLeft="@+id/edit_targetdate"
@@ -72,7 +71,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBaseline="@+id/edit_targetdate"
-                        android:layout_alignBottom="@+id/button"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_gravity="left"
@@ -84,24 +82,21 @@
                         android:id="@+id/edit_targetdate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignEnd="@+id/button"
-                        android:layout_alignRight="@+id/button"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_below="@+id/edit_stashname"
                         android:layout_marginTop="50dp"
                         android:ems="10"
-                        android:hint=" Target Date "
-                        android:inputType="date"/>
+                        android:inputType="date"
+                        android:paddingLeft="25dp"/>
 
-                    <ImageButton
-                        android:id="@+id/button"
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignTop="@+id/edit_targetdate"
-                        android:background="@null"
-                        android:ems="10"
-                        android:src="@drawable/ic_insert_invitation_black_24dp"/>
+                        android:id="@+id/calendarImageAddStash"
+                        android:src="@drawable/ic_insert_invitation_black_24dp"
+                        android:layout_alignStart="@+id/edit_targetdate"
+                        android:layout_alignBottom="@+id/textView2"/>
 
                     <TextView
                         android:id="@+id/textView3"
@@ -123,19 +118,24 @@
                         android:id="@+id/edit_goal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignEnd="@+id/button"
                         android:layout_alignParentBottom="false"
                         android:layout_alignParentLeft="false"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="false"
-                        android:layout_alignRight="@+id/button"
                         android:layout_alignStart="@+id/edit_targetdate"
                         android:layout_below="@+id/edit_targetdate"
                         android:layout_marginTop="50dp"
+                        android:paddingLeft="15dp"
                         android:autoText="false"
                         android:ems="10"
-                        android:hint=" $ Goal "
                         android:inputType="number"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:layout_alignStart="@id/edit_goal"
+                        android:layout_alignBaseline="@id/edit_goal"/>
 
                     <TextView
                         android:id="@+id/textView4"
@@ -155,19 +155,35 @@
                         android:id="@+id/edit_stashvalue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignEnd="@+id/button"
                         android:layout_alignParentBottom="false"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="false"
-                        android:layout_alignRight="@+id/button"
                         android:layout_below="@+id/edit_goal"
                         android:layout_marginTop="50dp"
+                        android:paddingLeft="15dp"
                         android:autoText="false"
                         android:ems="10"
-                        android:hint=" $ Stash Value "
                         android:inputType="number"
                         android:layout_alignLeft="@+id/edit_goal"
-                        android:layout_alignStart="@+id/edit_goal"/>
+                        android:layout_alignStart="@+id/edit_goal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:layout_alignStart="@id/edit_stashvalue"
+                        android:layout_alignBaseline="@id/edit_stashvalue"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/moreOptions"
+                        android:text="More Options"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_alignBaseline="@id/edit_stashvalue"
+                        android:layout_alignEnd="@id/edit_stashvalue"
+                        android:textSize="10dp"
+                        android:onClick="showAddMoneyDialog"/>
 
                     <!-- <Button
                          android:id="@+id/button_one"
