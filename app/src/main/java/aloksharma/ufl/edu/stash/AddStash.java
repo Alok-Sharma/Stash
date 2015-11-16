@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import java.util.Calendar;
 
 
@@ -104,7 +103,8 @@ public class AddStash extends DrawerActivity {
         String message_stashname = stashname.getText().toString();
         String message_targetdate = targetdate.getText().toString();
         int message_goal = Integer.parseInt(goal.getText().toString());
-        int message_stashvalue = Integer.parseInt(stashvlaue.getText().toString());
+        int message_stashvalue = Integer.parseInt(stashvlaue.getText()
+                .toString());
 
         /**Create an intent*/
         Intent addstash_intent = new Intent(this, ServerAccess.class);
@@ -122,8 +122,7 @@ public class AddStash extends DrawerActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);

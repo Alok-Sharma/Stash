@@ -46,17 +46,20 @@ public class ServerAccess extends IntentService {
         switch (serverAction) {
             case ADD_STASH:
                 String StashName = incomingIntent.getStringExtra("StashName");
-                String StashTargetDate = incomingIntent.getStringExtra("StashTargetDate");
+                String StashTargetDate = incomingIntent.getStringExtra
+                        ("StashTargetDate");
                 int StashGoal = incomingIntent.getIntExtra("StashGoal", 0);
                 int StashValue = incomingIntent.getIntExtra("StashValue", 0);
 
                 //Push data to your function
                 addStash(StashName, StashTargetDate, StashGoal, StashValue);
                 Intent homeActivity = new Intent(this, HomeActivity.class);
-                homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeActivity);
             case ADD_USER:
-            //GET_BALANCE creates a new bank account if the incoming intent has username, password and bank name.
+                //GET_BALANCE creates a new bank account if the incoming
+                // intent has username, password and bank name.
             case GET_BALANCE:
                 Log.d("StashLog", "calling get balance");
                 //Make appropriate getBankBalance call depending if
@@ -66,14 +69,16 @@ public class ServerAccess extends IntentService {
                         ("bankUsername");
                 if (bankUsername == null) {
                     //no username, password. Use access token.
-                    Map<String, String> accessTokens = plaidHelper.getAccessTokenMapDecrypted();
-                    if(accessTokens == null) {
+                    Map<String, String> accessTokens = plaidHelper
+                            .getAccessTokenMapDecrypted();
+                    if (accessTokens == null) {
                         // no banks associated yet.
                         outgoingIntent.putExtra("error", "no_bank");
-                    } else{
+                    } else {
                         try {
                             String accessToken = accessTokens.get("wells");
-                            Double balance = plaidHelper.getBankBalance(accessToken);
+                            Double balance = plaidHelper.getBankBalance
+                                    (accessToken);
                             Log.d("StashLog", "balance: " + balance);
                             outgoingIntent.putExtra("balance", balance);
                         } catch (Exception e) {
@@ -109,7 +114,8 @@ public class ServerAccess extends IntentService {
     /**
      * Add Stash Functionality
      */
-    public void addStash(String StashName, String StashTargetDate, int StashGoal, int StashValue) {
+    public void addStash(String StashName, String StashTargetDate, int
+            StashGoal, int StashValue) {
         //Stub to create Stash
         Log.d("CreateStashLog1", StashName);
         Log.d("CreateStashLog2", StashTargetDate);
@@ -125,7 +131,8 @@ public class ServerAccess extends IntentService {
 
         /*Link the ParseUser object with the Stash object*/
         ParseUser currentUser = ParseUser.getCurrentUser();
-        Stash.put("user", ParseUser.getCurrentUser());     //create a user relation with the current user
+        Stash.put("user", ParseUser.getCurrentUser());     //create a user
+        // relation with the current user
         Stash.saveInBackground(new SaveCallback() {
 
             @Override
@@ -141,7 +148,8 @@ public class ServerAccess extends IntentService {
         });
 
         /**
-         * My Stashes Functionality - Populating the list of Stash Fields; that query should be via a button
+         * My Stashes Functionality - Populating the list of Stash Fields;
+         * that query should be via a button
          */
         /**Create query for objects of type "Stash"*/
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");

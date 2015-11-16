@@ -34,10 +34,10 @@ public class ProgressBarAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int arg0) {
-        if(homeActivity.gridObjectList instanceof ArrayList) {
-            return ((ArrayList<ParseObject>)homeActivity.gridObjectList).get(arg0);
-        }
-        else{
+        if (homeActivity.gridObjectList instanceof ArrayList) {
+            return ((ArrayList<ParseObject>) homeActivity.gridObjectList)
+                    .get(arg0);
+        } else {
             return null;
         }
     }
@@ -52,23 +52,32 @@ public class ProgressBarAdapter extends BaseAdapter {
 
         View grid;
 
-        if(convertView==null){
+        if (convertView == null) {
             grid = new View(mContext);
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            grid=inflater.inflate(R.layout.grid_items, parent, false);
+            LayoutInflater inflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            grid = inflater.inflate(R.layout.grid_items, parent, false);
 
-        }else{
-            grid = (View)convertView;
+        } else {
+            grid = (View) convertView;
         }
 
 
-        HoloCircularProgressBar holoCircularProgressBar = (HoloCircularProgressBar) grid.findViewById(R.id.holoCircularProgressBar);
-        int stashPercent = Math.round(((homeActivity.gridObjectList.get(position).getInt("StashGoal")) * 100) / homeActivity.saveAmount);
-        holoCircularProgressBar.setProgress((float) (homeActivity.gridObjectList.get(position).getInt("StashGoal")) / homeActivity.saveAmount);
-        TextView stashPercentage = (TextView) grid.findViewById(R.id.stashPercent);
+        HoloCircularProgressBar holoCircularProgressBar =
+                (HoloCircularProgressBar) grid.findViewById(R.id
+                        .holoCircularProgressBar);
+        int stashPercent = Math.round(((homeActivity.gridObjectList.get
+                (position).getInt("StashGoal")) * 100) / homeActivity
+                .saveAmount);
+        holoCircularProgressBar.setProgress((float) (homeActivity
+                .gridObjectList.get(position).getInt("StashGoal")) /
+                homeActivity.saveAmount);
+        TextView stashPercentage = (TextView) grid.findViewById(R.id
+                .stashPercent);
         stashPercentage.setText(stashPercent + "%");
         TextView stashName = (TextView) grid.findViewById(R.id.stashName);
-        stashName.setText(homeActivity.gridObjectList.get(position).getString("StashName"));
+        stashName.setText(homeActivity.gridObjectList.get(position)
+                .getString("StashName"));
         ArrayList<Integer> colorList = new ArrayList<Integer>();
         colorList.add(-956847);
         colorList.add(-347881);
@@ -89,7 +98,8 @@ public class ProgressBarAdapter extends BaseAdapter {
         holoCircularProgressBar.setProgressColor(randomColor);
         stashName.setTextColor(randomColor);
         stashPercentage.setTextColor(randomColor);
-        LinearLayout stashBorder = (LinearLayout) grid.findViewById(R.id.stashBorder);
+        LinearLayout stashBorder = (LinearLayout) grid.findViewById(R.id
+                .stashBorder);
         stashBorder.setBackgroundColor(randomColor);
 
         return grid;

@@ -48,8 +48,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter
                 EmailTextView = (TextView) itemView.findViewById(R.id.email);
                 profile = (ImageView) itemView.findViewById(R.id.profile_image)
                 ;
-                if (profile==null)
-                    Log.d("Stash: CustomAdapter :", "Cannot find placeholder for profile_image");
+                if (profile == null)
+                    Log.d("Stash: CustomAdapter :", "Cannot find placeholder" +
+                            " for profile_image");
                 Holderid = 0;
             }
         }

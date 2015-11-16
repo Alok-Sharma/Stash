@@ -2,7 +2,8 @@
  * Copyright (c) 2014-2015 Tozny LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation files (the "Software"), to
+ * deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -15,7 +16,8 @@
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
@@ -60,11 +62,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Simple library for the "right" defaults for AES key generation, encryption,
- * and decryption using 128-bit AES, CBC, PKCS5 padding, and a random 16-byte IV
+ * and decryption using 128-bit AES, CBC, PKCS5 padding, and a random
+ * 16-byte IV
  * with SHA1PRNG. Integrity with HmacSHA256.
  */
 public class AesCbcWithIntegrity {
-    // If the PRNG fix would not succeed for some reason, we normally will throw an exception.
+    // If the PRNG fix would not succeed for some reason, we normally will
+    // throw an exception.
     // If ALLOW_BROKEN_PRNG is true, however, we will simply log instead.
     private static final boolean ALLOW_BROKEN_PRNG = false;
 
@@ -74,7 +78,8 @@ public class AesCbcWithIntegrity {
     private static final int AES_KEY_LENGTH_BITS = 128;
     private static final int IV_LENGTH_BYTES = 16;
     private static final int PBE_ITERATION_COUNT = 10000;
-    private static final int PBE_SALT_LENGTH_BITS = AES_KEY_LENGTH_BITS; // same size as key output
+    private static final int PBE_SALT_LENGTH_BITS = AES_KEY_LENGTH_BITS; //
+    // same size as key output
     private static final String PBE_ALGORITHM = "PBKDF2WithHmacSHA1";
 
     //Made BASE_64_FLAGS public as it's useful to know for compatibility.
@@ -86,11 +91,13 @@ public class AesCbcWithIntegrity {
     private static final int HMAC_KEY_LENGTH_BITS = 256;
 
     /**
-     * Converts the given AES/HMAC keys into a base64 encoded string suitable for
+     * Converts the given AES/HMAC keys into a base64 encoded string
+     * suitable for
      * storage. Sister function of keys.
      *
      * @param keys The combined aes and hmac keys
-     * @return a base 64 encoded AES string & hmac key as base64(aesKey) : base64(hmacKey)
+     * @return a base 64 encoded AES string & hmac key as base64(aesKey) :
+     * base64(hmacKey)
      */
     public static String keyString(SecretKeys keys) {
         return keys.toString();
@@ -100,7 +107,8 @@ public class AesCbcWithIntegrity {
      * An aes key derived from a base64 encoded key. This does not generate the
      * key. It's not random or a PBE key.
      *
-     * @param keysStr a base64 encoded AES key / hmac key as base64(aesKey) : base64(hmacKey).
+     * @param keysStr a base64 encoded AES key / hmac key as base64(aesKey)
+     *                : base64(hmacKey).
      * @return an AES & HMAC key set suitable for other functions.
      */
     public static SecretKeys keys(String keysStr) throws InvalidKeyException {
@@ -110,28 +118,34 @@ public class AesCbcWithIntegrity {
             throw new IllegalArgumentException("Cannot parse aesKey:hmacKey");
 
         } else {
-            byte[] confidentialityKey = Base64.decode(keysArr[0], BASE64_FLAGS);
-            if (confidentialityKey.length != AES_KEY_LENGTH_BITS /8) {
-                throw new InvalidKeyException("Base64 decoded key is not " + AES_KEY_LENGTH_BITS + " bytes");
+            byte[] confidentialityKey = Base64.decode(keysArr[0],
+                    BASE64_FLAGS);
+            if (confidentialityKey.length != AES_KEY_LENGTH_BITS / 8) {
+                throw new InvalidKeyException("Base64 decoded key is not " +
+                        AES_KEY_LENGTH_BITS + " bytes");
             }
             byte[] integrityKey = Base64.decode(keysArr[1], BASE64_FLAGS);
-            if (integrityKey.length != HMAC_KEY_LENGTH_BITS /8) {
-                throw new InvalidKeyException("Base64 decoded key is not " + HMAC_KEY_LENGTH_BITS + " bytes");
+            if (integrityKey.length != HMAC_KEY_LENGTH_BITS / 8) {
+                throw new InvalidKeyException("Base64 decoded key is not " +
+                        HMAC_KEY_LENGTH_BITS + " bytes");
             }
 
             return new SecretKeys(
-                    new SecretKeySpec(confidentialityKey, 0, confidentialityKey.length, CIPHER),
+                    new SecretKeySpec(confidentialityKey, 0,
+                            confidentialityKey.length, CIPHER),
                     new SecretKeySpec(integrityKey, HMAC_ALGORITHM));
         }
     }
 
     /**
-     * A function that generates random AES & HMAC keys and prints out exceptions but
+     * A function that generates random AES & HMAC keys and prints out
+     * exceptions but
      * doesn't throw them since none should be encountered. If they are
      * encountered, the return value is null.
      *
      * @return The AES & HMAC keys.
-     * @throws GeneralSecurityException if AES is not implemented on this system,
+     * @throws GeneralSecurityException if AES is not implemented on this
+     * system,
      *                                  or a suitable RNG is not available
      */
     public static SecretKeys generateKey() throws GeneralSecurityException {
@@ -143,57 +157,72 @@ public class AesCbcWithIntegrity {
         SecretKey confidentialityKey = keyGen.generateKey();
 
         //Now make the HMAC key
-        byte[] integrityKeyBytes = randomBytes(HMAC_KEY_LENGTH_BITS / 8);//to get bytes
-        SecretKey integrityKey = new SecretKeySpec(integrityKeyBytes, HMAC_ALGORITHM);
+        byte[] integrityKeyBytes = randomBytes(HMAC_KEY_LENGTH_BITS / 8);
+        //to get bytes
+        SecretKey integrityKey = new SecretKeySpec(integrityKeyBytes,
+                HMAC_ALGORITHM);
 
         return new SecretKeys(confidentialityKey, integrityKey);
     }
 
     /**
-     * A function that generates password-based AES & HMAC keys. It prints out exceptions but
+     * A function that generates password-based AES & HMAC keys. It prints
+     * out exceptions but
      * doesn't throw them since none should be encountered. If they are
      * encountered, the return value is null.
      *
      * @param password The password to derive the keys from.
      * @return The AES & HMAC keys.
-     * @throws GeneralSecurityException if AES is not implemented on this system,
+     * @throws GeneralSecurityException if AES is not implemented on this
+     * system,
      *                                  or a suitable RNG is not available
      */
-    public static SecretKeys generateKeyFromPassword(String password, byte[] salt) throws GeneralSecurityException {
+    public static SecretKeys generateKeyFromPassword(String password, byte[]
+            salt) throws GeneralSecurityException {
         fixPrng();
         //Get enough random bytes for both the AES key and the HMAC key:
         KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt,
-                PBE_ITERATION_COUNT, AES_KEY_LENGTH_BITS + HMAC_KEY_LENGTH_BITS);
+                PBE_ITERATION_COUNT, AES_KEY_LENGTH_BITS +
+                HMAC_KEY_LENGTH_BITS);
         SecretKeyFactory keyFactory = SecretKeyFactory
                 .getInstance(PBE_ALGORITHM);
         byte[] keyBytes = keyFactory.generateSecret(keySpec).getEncoded();
 
         // Split the random bytes into two parts:
-        byte[] confidentialityKeyBytes = copyOfRange(keyBytes, 0, AES_KEY_LENGTH_BITS /8);
-        byte[] integrityKeyBytes = copyOfRange(keyBytes, AES_KEY_LENGTH_BITS /8, AES_KEY_LENGTH_BITS /8 + HMAC_KEY_LENGTH_BITS /8);
+        byte[] confidentialityKeyBytes = copyOfRange(keyBytes, 0,
+                AES_KEY_LENGTH_BITS / 8);
+        byte[] integrityKeyBytes = copyOfRange(keyBytes, AES_KEY_LENGTH_BITS
+                / 8, AES_KEY_LENGTH_BITS / 8 + HMAC_KEY_LENGTH_BITS / 8);
 
         //Generate the AES key
-        SecretKey confidentialityKey = new SecretKeySpec(confidentialityKeyBytes, CIPHER);
+        SecretKey confidentialityKey = new SecretKeySpec
+                (confidentialityKeyBytes, CIPHER);
 
         //Generate the HMAC key
-        SecretKey integrityKey = new SecretKeySpec(integrityKeyBytes, HMAC_ALGORITHM);
+        SecretKey integrityKey = new SecretKeySpec(integrityKeyBytes,
+                HMAC_ALGORITHM);
 
         return new SecretKeys(confidentialityKey, integrityKey);
     }
 
     /**
-     * A function that generates password-based AES & HMAC keys. See generateKeyFromPassword.
+     * A function that generates password-based AES & HMAC keys. See
+     * generateKeyFromPassword.
+     *
      * @param password The password to derive the AES/HMAC keys from
-     * @param salt A string version of the salt; base64 encoded.
+     * @param salt     A string version of the salt; base64 encoded.
      * @return The AES & HMAC keys.
      * @throws GeneralSecurityException
      */
-    public static SecretKeys generateKeyFromPassword(String password, String salt) throws GeneralSecurityException {
-        return generateKeyFromPassword(password, Base64.decode(salt, BASE64_FLAGS));
+    public static SecretKeys generateKeyFromPassword(String password, String
+            salt) throws GeneralSecurityException {
+        return generateKeyFromPassword(password, Base64.decode(salt,
+                BASE64_FLAGS));
     }
 
     /**
      * Generates a random salt.
+     *
      * @return The random salt suitable for generateKeyFromPassword.
      */
     public static byte[] generateSalt() throws GeneralSecurityException {
@@ -205,7 +234,8 @@ public class AesCbcWithIntegrity {
      * storage.
      *
      * @param salt
-     * @return a base 64 encoded salt string suitable to pass into generateKeyFromPassword.
+     * @return a base 64 encoded salt string suitable to pass into
+     * generateKeyFromPassword.
      */
     public static String saltString(byte[] salt) {
         return Base64.encodeToString(salt, BASE64_FLAGS);
@@ -222,7 +252,8 @@ public class AesCbcWithIntegrity {
         return randomBytes(IV_LENGTH_BYTES);
     }
 
-    private static byte[] randomBytes(int length) throws GeneralSecurityException {
+    private static byte[] randomBytes(int length) throws
+            GeneralSecurityException {
         fixPrng();
         SecureRandom random = SecureRandom.getInstance(RANDOM_ALGORITHM);
         byte[] b = new byte[length];
@@ -237,50 +268,63 @@ public class AesCbcWithIntegrity {
      */
 
     /**
-     * Generates a random IV and encrypts this plain text with the given key. Then attaches
+     * Generates a random IV and encrypts this plain text with the given key
+     * . Then attaches
      * a hashed MAC, which is contained in the CipherTextIvMac class.
      *
-     * @param plaintext The text that will be encrypted, which
-     *                  will be serialized with UTF-8
+     * @param plaintext  The text that will be encrypted, which
+     *                   will be serialized with UTF-8
      * @param secretKeys The AES & HMAC keys with which to encrypt
      * @return a tuple of the IV, ciphertext, mac
-     * @throws GeneralSecurityException if AES is not implemented on this system
-     * @throws UnsupportedEncodingException if UTF-8 is not supported in this system
+     * @throws GeneralSecurityException     if AES is not implemented on
+     * this system
+     * @throws UnsupportedEncodingException if UTF-8 is not supported in
+     * this system
      */
-    public static CipherTextIvMac encrypt(String plaintext, SecretKeys secretKeys)
+    public static CipherTextIvMac encrypt(String plaintext, SecretKeys
+            secretKeys)
             throws UnsupportedEncodingException, GeneralSecurityException {
         return encrypt(plaintext, secretKeys, "UTF-8");
     }
 
     /**
-     * Generates a random IV and encrypts this plain text with the given key. Then attaches
+     * Generates a random IV and encrypts this plain text with the given key
+     * . Then attaches
      * a hashed MAC, which is contained in the CipherTextIvMac class.
      *
-     * @param plaintext The bytes that will be encrypted
+     * @param plaintext  The bytes that will be encrypted
      * @param secretKeys The AES & HMAC keys with which to encrypt
      * @return a tuple of the IV, ciphertext, mac
-     * @throws GeneralSecurityException if AES is not implemented on this system
-     * @throws UnsupportedEncodingException if the specified encoding is invalid
+     * @throws GeneralSecurityException     if AES is not implemented on
+     * this system
+     * @throws UnsupportedEncodingException if the specified encoding is
+     * invalid
      */
-    public static CipherTextIvMac encrypt(String plaintext, SecretKeys secretKeys, String encoding)
+    public static CipherTextIvMac encrypt(String plaintext, SecretKeys
+            secretKeys, String encoding)
             throws UnsupportedEncodingException, GeneralSecurityException {
         return encrypt(plaintext.getBytes(encoding), secretKeys);
     }
 
     /**
-     * Generates a random IV and encrypts this plain text with the given key. Then attaches
+     * Generates a random IV and encrypts this plain text with the given key
+     * . Then attaches
      * a hashed MAC, which is contained in the CipherTextIvMac class.
      *
-     * @param plaintext The text that will be encrypted
+     * @param plaintext  The text that will be encrypted
      * @param secretKeys The combined AES & HMAC keys with which to encrypt
      * @return a tuple of the IV, ciphertext, mac
-     * @throws GeneralSecurityException if AES is not implemented on this system
+     * @throws GeneralSecurityException if AES is not implemented on this
+     * system
      */
-    public static CipherTextIvMac encrypt(byte[] plaintext, SecretKeys secretKeys)
+    public static CipherTextIvMac encrypt(byte[] plaintext, SecretKeys
+            secretKeys)
             throws GeneralSecurityException {
         byte[] iv = generateIv();
-        Cipher aesCipherForEncryption = Cipher.getInstance(CIPHER_TRANSFORMATION);
-        aesCipherForEncryption.init(Cipher.ENCRYPT_MODE, secretKeys.getConfidentialityKey(), new IvParameterSpec(iv));
+        Cipher aesCipherForEncryption = Cipher.getInstance
+                (CIPHER_TRANSFORMATION);
+        aesCipherForEncryption.init(Cipher.ENCRYPT_MODE, secretKeys
+                .getConfidentialityKey(), new IvParameterSpec(iv));
 
         /*
          * Now we get back the IV that will actually be used. Some Android
@@ -288,14 +332,17 @@ public class AesCbcWithIntegrity {
          */
         iv = aesCipherForEncryption.getIV();
         byte[] byteCipherText = aesCipherForEncryption.doFinal(plaintext);
-        byte[] ivCipherConcat = CipherTextIvMac.ivCipherConcat(iv, byteCipherText);
+        byte[] ivCipherConcat = CipherTextIvMac.ivCipherConcat(iv,
+                byteCipherText);
 
-        byte[] integrityMac = generateMac(ivCipherConcat, secretKeys.getIntegrityKey());
+        byte[] integrityMac = generateMac(ivCipherConcat, secretKeys
+                .getIntegrityKey());
         return new CipherTextIvMac(byteCipherText, iv, integrityMac);
     }
 
     /**
-     * Ensures that the PRNG is fixed. Should be used before generating any keys.
+     * Ensures that the PRNG is fixed. Should be used before generating any
+     * keys.
      * Will only run once, and every subsequent call should return immediately.
      */
     private static void fixPrng() {
@@ -318,14 +365,17 @@ public class AesCbcWithIntegrity {
     /**
      * AES CBC decrypt.
      *
-     * @param civ The cipher text, IV, and mac
+     * @param civ        The cipher text, IV, and mac
      * @param secretKeys The AES & HMAC keys
-     * @param encoding The string encoding to use to decode the bytes after decryption
+     * @param encoding   The string encoding to use to decode the bytes
+     *                   after decryption
      * @return A string derived from the decrypted bytes (not base64 encoded)
-     * @throws GeneralSecurityException if AES is not implemented on this system
+     * @throws GeneralSecurityException     if AES is not implemented on
+     * this system
      * @throws UnsupportedEncodingException if the encoding is unsupported
      */
-    public static String decryptString(CipherTextIvMac civ, SecretKeys secretKeys, String encoding)
+    public static String decryptString(CipherTextIvMac civ, SecretKeys
+            secretKeys, String encoding)
             throws UnsupportedEncodingException, GeneralSecurityException {
         return new String(decrypt(civ, secretKeys), encoding);
     }
@@ -333,14 +383,16 @@ public class AesCbcWithIntegrity {
     /**
      * AES CBC decrypt.
      *
-     * @param civ The cipher text, IV, and mac
+     * @param civ        The cipher text, IV, and mac
      * @param secretKeys The AES & HMAC keys
      * @return A string derived from the decrypted bytes, which are interpreted
-     *         as a UTF-8 String
-     * @throws GeneralSecurityException if AES is not implemented on this system
+     * as a UTF-8 String
+     * @throws GeneralSecurityException     if AES is not implemented on
+     * this system
      * @throws UnsupportedEncodingException if UTF-8 is not supported
      */
-    public static String decryptString(CipherTextIvMac civ, SecretKeys secretKeys)
+    public static String decryptString(CipherTextIvMac civ, SecretKeys
+            secretKeys)
             throws UnsupportedEncodingException, GeneralSecurityException {
         return decryptString(civ, secretKeys, "UTF-8");
     }
@@ -348,23 +400,29 @@ public class AesCbcWithIntegrity {
     /**
      * AES CBC decrypt.
      *
-     * @param civ the cipher text, iv, and mac
+     * @param civ        the cipher text, iv, and mac
      * @param secretKeys the AES & HMAC keys
      * @return The raw decrypted bytes
-     * @throws GeneralSecurityException if MACs don't match or AES is not implemented
+     * @throws GeneralSecurityException if MACs don't match or AES is not
+     * implemented
      */
     public static byte[] decrypt(CipherTextIvMac civ, SecretKeys secretKeys)
             throws GeneralSecurityException {
 
-        byte[] ivCipherConcat = CipherTextIvMac.ivCipherConcat(civ.getIv(), civ.getCipherText());
-        byte[] computedMac = generateMac(ivCipherConcat, secretKeys.getIntegrityKey());
+        byte[] ivCipherConcat = CipherTextIvMac.ivCipherConcat(civ.getIv(),
+                civ.getCipherText());
+        byte[] computedMac = generateMac(ivCipherConcat, secretKeys
+                .getIntegrityKey());
         if (constantTimeEq(computedMac, civ.getMac())) {
-            Cipher aesCipherForDecryption = Cipher.getInstance(CIPHER_TRANSFORMATION);
-            aesCipherForDecryption.init(Cipher.DECRYPT_MODE, secretKeys.getConfidentialityKey(),
+            Cipher aesCipherForDecryption = Cipher.getInstance
+                    (CIPHER_TRANSFORMATION);
+            aesCipherForDecryption.init(Cipher.DECRYPT_MODE, secretKeys
+                            .getConfidentialityKey(),
                     new IvParameterSpec(civ.getIv()));
             return aesCipherForDecryption.doFinal(civ.getCipherText());
         } else {
-            throw new GeneralSecurityException("MAC stored in civ does not match computed MAC.");
+            throw new GeneralSecurityException("MAC stored in civ does not " +
+                    "match computed MAC.");
         }
     }
 
@@ -376,20 +434,25 @@ public class AesCbcWithIntegrity {
 
     /**
      * Generate the mac based on HMAC_ALGORITHM
-     * @param integrityKey The key used for hmac
+     *
+     * @param integrityKey   The key used for hmac
      * @param byteCipherText the cipher text
      * @return A byte array of the HMAC for the given key & ciphertext
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    public static byte[] generateMac(byte[] byteCipherText, SecretKey integrityKey) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static byte[] generateMac(byte[] byteCipherText, SecretKey
+            integrityKey) throws NoSuchAlgorithmException,
+            InvalidKeyException {
         //Now compute the mac for later integrity checking
         Mac sha256_HMAC = Mac.getInstance(HMAC_ALGORITHM);
         sha256_HMAC.init(integrityKey);
         return sha256_HMAC.doFinal(byteCipherText);
     }
+
     /**
-     * Holder class that has both the secret AES key for encryption (confidentiality)
+     * Holder class that has both the secret AES key for encryption
+     * (confidentiality)
      * and the secret HMAC key for integrity.
      */
 
@@ -399,10 +462,12 @@ public class AesCbcWithIntegrity {
 
         /**
          * Construct the secret keys container.
+         *
          * @param confidentialityKeyIn The AES key
-         * @param integrityKeyIn the HMAC key
+         * @param integrityKeyIn       the HMAC key
          */
-        public SecretKeys(SecretKey confidentialityKeyIn, SecretKey integrityKeyIn) {
+        public SecretKeys(SecretKey confidentialityKeyIn, SecretKey
+                integrityKeyIn) {
             setConfidentialityKey(confidentialityKeyIn);
             setIntegrityKey(integrityKeyIn);
         }
@@ -425,12 +490,15 @@ public class AesCbcWithIntegrity {
 
         /**
          * Encodes the two keys as a string
+         *
          * @return base64(confidentialityKey):base64(integrityKey)
          */
         @Override
-        public String toString () {
-            return Base64.encodeToString(getConfidentialityKey().getEncoded(), BASE64_FLAGS)
-                    + ":" + Base64.encodeToString(getIntegrityKey().getEncoded(), BASE64_FLAGS);
+        public String toString() {
+            return Base64.encodeToString(getConfidentialityKey().getEncoded
+                    (), BASE64_FLAGS)
+                    + ":" + Base64.encodeToString(getIntegrityKey()
+                    .getEncoded(), BASE64_FLAGS);
         }
 
         @Override
@@ -461,7 +529,9 @@ public class AesCbcWithIntegrity {
 
 
     /**
-     * Simple constant-time equality of two byte arrays. Used for security to avoid timing attacks.
+     * Simple constant-time equality of two byte arrays. Used for security
+     * to avoid timing attacks.
+     *
      * @param a
      * @param b
      * @return true iff the arrays are exactly equal.
@@ -499,6 +569,7 @@ public class AesCbcWithIntegrity {
 
         /**
          * Construct a new bundle of ciphertext and IV.
+         *
          * @param c The ciphertext
          * @param i The IV
          * @param h The mac
@@ -517,13 +588,15 @@ public class AesCbcWithIntegrity {
          * format <code>base64(iv):base64(ciphertext)</code>.
          *
          * @param base64IvAndCiphertext A string of the format
-         *            <code>iv:ciphertext</code> The IV and ciphertext must each
-         *            be base64-encoded.
+         *                              <code>iv:ciphertext</code> The IV
+         *                              and ciphertext must each
+         *                              be base64-encoded.
          */
         public CipherTextIvMac(String base64IvAndCiphertext) {
             String[] civArray = base64IvAndCiphertext.split(":");
             if (civArray.length != 3) {
-                throw new IllegalArgumentException("Cannot parse iv:ciphertext:mac");
+                throw new IllegalArgumentException("Cannot parse " +
+                        "iv:ciphertext:mac");
             } else {
                 iv = Base64.decode(civArray[0], BASE64_FLAGS);
                 mac = Base64.decode(civArray[1], BASE64_FLAGS);
@@ -534,14 +607,16 @@ public class AesCbcWithIntegrity {
         /**
          * Concatinate the IV to the cipherText using array copy.
          * This is used e.g. before computing mac.
-         * @param iv The IV to prepend
+         *
+         * @param iv         The IV to prepend
          * @param cipherText the cipherText to append
          * @return iv:cipherText, a new byte array.
          */
         public static byte[] ivCipherConcat(byte[] iv, byte[] cipherText) {
             byte[] combined = new byte[iv.length + cipherText.length];
             System.arraycopy(iv, 0, combined, 0, iv.length);
-            System.arraycopy(cipherText, 0, combined, iv.length, cipherText.length);
+            System.arraycopy(cipherText, 0, combined, iv.length, cipherText
+                    .length);
             return combined;
         }
 
@@ -554,9 +629,11 @@ public class AesCbcWithIntegrity {
         @Override
         public String toString() {
             String ivString = Base64.encodeToString(iv, BASE64_FLAGS);
-            String cipherTextString = Base64.encodeToString(cipherText, BASE64_FLAGS);
+            String cipherTextString = Base64.encodeToString(cipherText,
+                    BASE64_FLAGS);
             String macString = Base64.encodeToString(mac, BASE64_FLAGS);
-            return String.format(ivString + ":" + macString + ":" + cipherTextString);
+            return String.format(ivString + ":" + macString + ":" +
+                    cipherTextString);
         }
 
         @Override
@@ -605,18 +682,19 @@ public class AesCbcWithIntegrity {
 
     /**
      * Fixes for the RNG as per
-     * http://android-developers.blogspot.com/2013/08/some-securerandom-thoughts.html
-     *
+     * http://android-developers.blogspot
+     * .com/2013/08/some-securerandom-thoughts.html
+     * <p/>
      * This software is provided 'as-is', without any express or implied
      * warranty. In no event will Google be held liable for any damages arising
      * from the use of this software.
-     *
+     * <p/>
      * Permission is granted to anyone to use this software for any purpose,
      * including commercial applications, and to alter it and redistribute it
      * freely, as long as the origin is not misrepresented.
-     *
+     * <p/>
      * Fixes for the output of the default PRNG having low entropy.
-     *
+     * <p/>
      * The fixes need to be applied via {@link #apply()} before any use of Java
      * Cryptography Architecture primitives. A good place to invoke them is in
      * the application's {@code onCreate}.
@@ -625,9 +703,12 @@ public class AesCbcWithIntegrity {
 
         private static final int VERSION_CODE_JELLY_BEAN = 16;
         private static final int VERSION_CODE_JELLY_BEAN_MR2 = 18;
-        private static final byte[] BUILD_FINGERPRINT_AND_DEVICE_SERIAL = getBuildFingerprintAndDeviceSerial();
+        private static final byte[] BUILD_FINGERPRINT_AND_DEVICE_SERIAL =
+                getBuildFingerprintAndDeviceSerial();
 
-        /** Hidden constructor to prevent instantiation. */
+        /**
+         * Hidden constructor to prevent instantiation.
+         */
         private PrngFixes() {
         }
 
@@ -635,7 +716,7 @@ public class AesCbcWithIntegrity {
          * Applies all fixes.
          *
          * @throws SecurityException if a fix is needed but could not be
-         *             applied.
+         *                           applied.
          */
         public static void apply() {
             applyOpenSSLFix();
@@ -647,7 +728,7 @@ public class AesCbcWithIntegrity {
          * the fix is not needed.
          *
          * @throws SecurityException if the fix is needed but could not be
-         *             applied.
+         *                           applied.
          */
         private static void applyOpenSSLFix() throws SecurityException {
             if ((Build.VERSION.SDK_INT < VERSION_CODE_JELLY_BEAN)
@@ -658,23 +739,29 @@ public class AesCbcWithIntegrity {
 
             try {
                 // Mix in the device- and invocation-specific seed.
-                Class.forName("org.apache.harmony.xnet.provider.jsse.NativeCrypto")
-                        .getMethod("RAND_seed", byte[].class).invoke(null, generateSeed());
+                Class.forName("org.apache.harmony.xnet.provider.jsse" +
+                        ".NativeCrypto")
+                        .getMethod("RAND_seed", byte[].class).invoke(null,
+                        generateSeed());
 
                 // Mix output of Linux PRNG into OpenSSL's PRNG
                 int bytesRead = (Integer) Class
-                        .forName("org.apache.harmony.xnet.provider.jsse.NativeCrypto")
+                        .forName("org.apache.harmony.xnet.provider.jsse" +
+                                ".NativeCrypto")
                         .getMethod("RAND_load_file", String.class, long.class)
                         .invoke(null, "/dev/urandom", 1024);
                 if (bytesRead != 1024) {
-                    throw new IOException("Unexpected number of bytes read from Linux PRNG: "
+                    throw new IOException("Unexpected number of bytes read " +
+                            "from Linux PRNG: "
                             + bytesRead);
                 }
             } catch (Exception e) {
                 if (ALLOW_BROKEN_PRNG) {
-                    Log.w(PrngFixes.class.getSimpleName(), "Failed to seed OpenSSL PRNG", e);
+                    Log.w(PrngFixes.class.getSimpleName(), "Failed to seed " +
+                            "OpenSSL PRNG", e);
                 } else {
-                    throw new SecurityException("Failed to seed OpenSSL PRNG", e);
+                    throw new SecurityException("Failed to seed OpenSSL " +
+                            "PRNG", e);
                 }
             }
         }
@@ -685,9 +772,10 @@ public class AesCbcWithIntegrity {
          * default or if there is not need to install the implementation.
          *
          * @throws SecurityException if the fix is needed but could not be
-         *             applied.
+         *                           applied.
          */
-        private static void installLinuxPRNGSecureRandom() throws SecurityException {
+        private static void installLinuxPRNGSecureRandom() throws
+                SecurityException {
             if (Build.VERSION.SDK_INT > VERSION_CODE_JELLY_BEAN_MR2) {
                 // No need to apply the fix
                 return;
@@ -695,7 +783,8 @@ public class AesCbcWithIntegrity {
 
             // Install a Linux PRNG-based SecureRandom implementation as the
             // default, if not yet installed.
-            Provider[] secureRandomProviders = Security.getProviders("SecureRandom.SHA1PRNG");
+            Provider[] secureRandomProviders = Security.getProviders
+                    ("SecureRandom.SHA1PRNG");
 
             // Insert and check the provider atomically.
             // The official Android Java libraries use synchronized methods for
@@ -705,21 +794,29 @@ public class AesCbcWithIntegrity {
             synchronized (java.security.Security.class) {
                 if ((secureRandomProviders == null)
                         || (secureRandomProviders.length < 1)
-                        || (!secureRandomProviders[0].getClass().getSimpleName().equals("LinuxPRNGSecureRandomProvider"))) {
-                    Security.insertProviderAt(new LinuxPRNGSecureRandomProvider(), 1);
+                        || (!secureRandomProviders[0].getClass()
+                        .getSimpleName().equals
+                                ("LinuxPRNGSecureRandomProvider"))) {
+                    Security.insertProviderAt(new
+                            LinuxPRNGSecureRandomProvider(), 1);
                 }
 
                 // Assert that new SecureRandom() and
-                // SecureRandom.getInstance("SHA1PRNG") return a SecureRandom backed
+                // SecureRandom.getInstance("SHA1PRNG") return a
+                // SecureRandom backed
                 // by the Linux PRNG-based SecureRandom implementation.
                 SecureRandom rng1 = new SecureRandom();
-                if (!rng1.getProvider().getClass().getSimpleName().equals("LinuxPRNGSecureRandomProvider")) {
+                if (!rng1.getProvider().getClass().getSimpleName().equals
+                        ("LinuxPRNGSecureRandomProvider")) {
                     if (ALLOW_BROKEN_PRNG) {
                         Log.w(PrngFixes.class.getSimpleName(),
-                                "new SecureRandom() backed by wrong Provider: " + rng1.getProvider().getClass());
+                                "new SecureRandom() backed by wrong " +
+                                        "Provider: " + rng1.getProvider()
+                                        .getClass());
                         return;
                     } else {
-                        throw new SecurityException("new SecureRandom() backed by wrong Provider: "
+                        throw new SecurityException("new SecureRandom() " +
+                                "backed by wrong Provider: "
                                 + rng1.getProvider().getClass());
                     }
                 }
@@ -729,21 +826,25 @@ public class AesCbcWithIntegrity {
                     rng2 = SecureRandom.getInstance("SHA1PRNG");
                 } catch (NoSuchAlgorithmException e) {
                     if (ALLOW_BROKEN_PRNG) {
-                        Log.w(PrngFixes.class.getSimpleName(), "SHA1PRNG not available", e);
+                        Log.w(PrngFixes.class.getSimpleName(), "SHA1PRNG not" +
+                                " available", e);
                         return;
                     } else {
                         new SecurityException("SHA1PRNG not available", e);
                     }
                 }
-                if (!rng2.getProvider().getClass().getSimpleName().equals("LinuxPRNGSecureRandomProvider")) {
+                if (!rng2.getProvider().getClass().getSimpleName().equals
+                        ("LinuxPRNGSecureRandomProvider")) {
                     if (ALLOW_BROKEN_PRNG) {
                         Log.w(PrngFixes.class.getSimpleName(),
-                                "SecureRandom.getInstance(\"SHA1PRNG\") backed by wrong" + " Provider: "
+                                "SecureRandom.getInstance(\"SHA1PRNG\") " +
+                                        "backed by wrong" + " Provider: "
                                         + rng2.getProvider().getClass());
                         return;
                     } else {
                         throw new SecurityException(
-                                "SecureRandom.getInstance(\"SHA1PRNG\") backed by wrong" + " Provider: "
+                                "SecureRandom.getInstance(\"SHA1PRNG\") " +
+                                        "backed by wrong" + " Provider: "
                                         + rng2.getProvider().getClass());
                     }
                 }
@@ -757,19 +858,23 @@ public class AesCbcWithIntegrity {
         private static class LinuxPRNGSecureRandomProvider extends Provider {
 
             public LinuxPRNGSecureRandomProvider() {
-                super("LinuxPRNG", 1.0, "A Linux-specific random number provider that uses"
+                super("LinuxPRNG", 1.0, "A Linux-specific random number " +
+                        "provider that uses"
                         + " /dev/urandom");
                 // Although /dev/urandom is not a SHA-1 PRNG, some apps
                 // explicitly request a SHA1PRNG SecureRandom and we thus need
-                // to prevent them from getting the default implementation whose
+                // to prevent them from getting the default implementation
+                // whose
                 // output may have low entropy.
-                put("SecureRandom.SHA1PRNG", LinuxPRNGSecureRandom.class.getName());
+                put("SecureRandom.SHA1PRNG", LinuxPRNGSecureRandom.class
+                        .getName());
                 put("SecureRandom.SHA1PRNG ImplementedIn", "Software");
             }
         }
 
         /**
-         * {@link SecureRandomSpi} which passes all requests to the Linux PRNG (
+         * {@link SecureRandomSpi} which passes all requests to the Linux
+         * PRNG (
          * {@code /dev/urandom}).
          */
         public static class LinuxPRNGSecureRandom extends SecureRandomSpi {
@@ -808,7 +913,8 @@ public class AesCbcWithIntegrity {
 
             /**
              * Whether this engine instance has been seeded. This is needed
-             * because each instance needs to seed itself if the client does not
+             * because each instance needs to seed itself if the client does
+             * not
              * explicitly seed it.
              */
             private boolean mSeeded;
@@ -825,7 +931,8 @@ public class AesCbcWithIntegrity {
                 } catch (IOException e) {
                     // On a small fraction of devices /dev/urandom is not
                     // writable Log and ignore.
-                    Log.w(PrngFixes.class.getSimpleName(), "Failed to mix seed into "
+                    Log.w(PrngFixes.class.getSimpleName(), "Failed to mix " +
+                            "seed into "
                             + URANDOM_FILE);
                 } finally {
                     mSeeded = true;
@@ -848,7 +955,8 @@ public class AesCbcWithIntegrity {
                         in.readFully(bytes);
                     }
                 } catch (IOException e) {
-                    throw new SecurityException("Failed to read from " + URANDOM_FILE, e);
+                    throw new SecurityException("Failed to read from " +
+                            URANDOM_FILE, e);
                 }
             }
 
@@ -863,13 +971,17 @@ public class AesCbcWithIntegrity {
                 synchronized (sLock) {
                     if (sUrandomIn == null) {
                         // NOTE: Consider inserting a BufferedInputStream
-                        // between DataInputStream and FileInputStream if you need
-                        // higher PRNG output performance and can live with future PRNG
+                        // between DataInputStream and FileInputStream if
+                        // you need
+                        // higher PRNG output performance and can live with
+                        // future PRNG
                         // output being pulled into this process prematurely.
                         try {
-                            sUrandomIn = new DataInputStream(new FileInputStream(URANDOM_FILE));
+                            sUrandomIn = new DataInputStream(new
+                                    FileInputStream(URANDOM_FILE));
                         } catch (IOException e) {
-                            throw new SecurityException("Failed to open " + URANDOM_FILE
+                            throw new SecurityException("Failed to open " +
+                                    URANDOM_FILE
                                     + " for reading", e);
                         }
                     }
@@ -888,13 +1000,15 @@ public class AesCbcWithIntegrity {
         }
 
         /**
-         * Generates a device- and invocation-specific seed to be mixed into the
+         * Generates a device- and invocation-specific seed to be mixed into
+         * the
          * Linux PRNG.
          */
         private static byte[] generateSeed() {
             try {
                 ByteArrayOutputStream seedBuffer = new ByteArrayOutputStream();
-                DataOutputStream seedBufferOut = new DataOutputStream(seedBuffer);
+                DataOutputStream seedBufferOut = new DataOutputStream
+                        (seedBuffer);
                 seedBufferOut.writeLong(System.currentTimeMillis());
                 seedBufferOut.writeLong(System.nanoTime());
                 seedBufferOut.writeInt(Process.myPid());
