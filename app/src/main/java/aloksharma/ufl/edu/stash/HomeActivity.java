@@ -118,7 +118,8 @@ public class HomeActivity extends DrawerActivity {
                 } else {
                     mainCircleProgress = (float) savedAmount / toSaveAmount;
                 }
-                mainHoloCircularProgressBar.setProgress(mainCircleProgress);
+//                mainHoloCircularProgressBar.setProgress(mainCircleProgress);
+                mainHoloCircularProgressBar.animate(null, mainCircleProgress, 2000);
 
                 stashGridView = (GridView) findViewById(R.id.stashGridView);
                 stashGridView.setAdapter(new ProgressBarAdapter
@@ -257,7 +258,6 @@ public class HomeActivity extends DrawerActivity {
         });
     }
 
-
     /**
      * The inner Broadcast receiver class that receives the responses from
      * the ServerAccess class.
@@ -293,9 +293,6 @@ public class HomeActivity extends DrawerActivity {
                     if (error != null && error.equals("no_keys")) {
                         Toast.makeText(context, "Unable to decrypt, please remove all Bank accounts and add again.", Toast.LENGTH_SHORT).show();
                     }
-//                    TextView balanceText = (TextView)findViewById(R.id
-// .mainTextView);
-//                    balanceText.setText("Alok, your balance is: " + balance);
             }
         }
     }

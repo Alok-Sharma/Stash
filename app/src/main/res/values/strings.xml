@@ -47,4 +47,9 @@
         <item>Monthly</item>
     </string-array>
 
+    <string-array name="endEventOptions">
+        <item>Goal amount reached</item>
+        <item>Goal date reached</item>
+    </string-array>
+
 </resources>

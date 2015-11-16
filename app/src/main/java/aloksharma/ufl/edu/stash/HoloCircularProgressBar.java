@@ -1,5 +1,8 @@
 package aloksharma.ufl.edu.stash;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -242,7 +245,7 @@ public class HoloCircularProgressBar extends View {
                         .getColor(R.styleable.HoloCircularProgressBar_progress_background_color,
                                 Color.GREEN));
                 setProgress(
-                        attributes.getFloat(R.styleable.HoloCircularProgressBar_progress, 0.0f));
+                        attributes.getFloat(0, 0.0f));
                 setMarkerProgress(
                         attributes.getFloat(R.styleable.HoloCircularProgressBar_marker_progress,
                                 0.0f));
@@ -660,6 +663,56 @@ public class HoloCircularProgressBar extends View {
         mThumbColorPaint.setStrokeWidth(mCircleStrokeWidth);
 
         invalidate();
+    }
+
+    private ObjectAnimator mProgressBarAnimator;
+
+    private void animate(final HoloCircularProgressBar progressBar,
+                         final Animator.AnimatorListener listener) {
+        final float progress = (float) (Math.random() * 2);
+        int duration = 3000;
+        animate(listener, progress, duration);
+    }
+
+    public void animate(final Animator.AnimatorListener listener,
+                         final float progress, final int duration) {
+
+        final HoloCircularProgressBar progressBar = this;
+        progressBar.setProgress(0);
+        mProgressBarAnimator = ObjectAnimator.ofFloat(progressBar, "progress", progress);
+        mProgressBarAnimator.setDuration(duration);
+
+        mProgressBarAnimator.addListener(new Animator.AnimatorListener() {
+
+            @Override
+            public void onAnimationCancel(final Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(final Animator animation) {
+                progressBar.setProgress(progress);
+            }
+
+            @Override
+            public void onAnimationRepeat(final Animator animation) {
+            }
+
+            @Override
+            public void onAnimationStart(final Animator animation) {
+            }
+        });
+        if (listener != null) {
+            mProgressBarAnimator.addListener(listener);
+        }
+        mProgressBarAnimator.reverse();
+        mProgressBarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(final ValueAnimator animation) {
+                progressBar.setProgress((Float) animation.getAnimatedValue());
+            }
+        });
+        mProgressBarAnimator.start();
     }
 
 }

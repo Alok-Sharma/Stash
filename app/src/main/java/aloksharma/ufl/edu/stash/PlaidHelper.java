@@ -39,7 +39,7 @@ public class PlaidHelper {
 
     PlaidHelper(Context context) {
         this.context = context;
-        sharedPref = context.getSharedPreferences("keyStore", 0);
+        sharedPref = context.getSharedPreferences("stashData", 0);
         sharedPrefEditor = sharedPref.edit();
     }
 
@@ -227,6 +227,8 @@ public class PlaidHelper {
             for (int i = 0; i < accountsArray.length(); i++) {
                 availableBalance += accountsArray.getJSONObject(i).getJSONObject("balance").optDouble("available", 0.0);
             }
+            sharedPrefEditor.putString("balance", availableBalance + "");
+            sharedPrefEditor.commit();
             return availableBalance;
         } catch (ClientProtocolException e) {
             e.printStackTrace();
