@@ -2,12 +2,17 @@ package aloksharma.ufl.edu.stash;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,22 +28,78 @@ import java.util.Set;
  */
 public class BankAccountsActivity extends DrawerActivity {
 
+    ServiceBroadcastReceiver serviceListener;
+    IntentFilter serviceFilter;
+
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState, R.layout.bank_accounts);
 
+        //Register to listen for the services response.
+        serviceFilter = new IntentFilter("server_response");
+        serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        serviceListener = new ServiceBroadcastReceiver();
+
+        FloatingActionButton addAccountFAB = (FloatingActionButton) findViewById(R.id.fab);
+        addAccountFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(BankAccountsActivity.this, AddAccountActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
+        ListView listView = (ListView) findViewById(R.id.BanksList);
+        final Context context = this;
+
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                AlertDialog dialog = new AlertDialog.Builder(context)
+//                    .setTitle("Delete Bank")
+//                    .setMessage("Are you sure you want to delete this bank?")
+//                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        })
+//                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                // do nothing
+//                            }
+//                        })
+//                        .show();
+//            }
+//        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
+
         //creating an intent to talk to server access
         final Intent serverIntent = new Intent(this, ServerAccess.class);
         serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
         startService(serverIntent);
+    }
 
-        //Register to listen for the services response.
-        IntentFilter serviceFilter = new IntentFilter("server_response");
-        serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        ServiceBroadcastReceiver serviceListener = new ServiceBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(serviceListener);
+    }
+
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+
+        View empty = findViewById(R.id.empty);
+        ListView list = (ListView) findViewById(R.id.BanksList);
+        list.setEmptyView(empty);
     }
 
     private class ServiceBroadcastReceiver extends BroadcastReceiver {
@@ -52,11 +113,11 @@ public class BankAccountsActivity extends DrawerActivity {
                 case GET_BALANCE:
 
                     ListView BanksList = (ListView) findViewById(R.id.BanksList);
-                    ArrayList<String> list = null;
+                    ArrayList<String> list;
+                    String error = intent.getStringExtra("error");
+                    HashMap<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("map");
 
-                    if (!"no_bank".equals(intent.getStringExtra("error"))){
-
-                        HashMap<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("map");
+                    if (error == null && map != null){
                         Set<String> set = map.keySet();
                         //passing ArrayList to ListView Adapter
                         list = new ArrayList<>(set);
