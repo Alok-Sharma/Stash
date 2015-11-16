@@ -9,6 +9,8 @@
     android:singleLine="true"
     android:text="Description"
     android:textSize="18dp"
+    android:textColor="#000"
+    android:paddingLeft="18dp"
     android:gravity="center_vertical" />
 
 

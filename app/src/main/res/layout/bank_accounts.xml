@@ -26,26 +26,11 @@
         android:layout_height="match_parent">
     </ListView>
 
-    <!--<ImageView-->
-        <!--android:id="@+id/icon"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_marginRight="6dip"-->
-        <!--android:src="" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/secondLine"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="26dip"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_toRightOf="@id/icon"-->
-        <!--android:ellipsize="marquee"-->
-        <!--android:singleLine="true"-->
-        <!--android:text="Description"-->
-        <!--android:textSize="12sp" />-->
+    <TextView android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:text="No data"/>
 
 </RelativeLayout>
 

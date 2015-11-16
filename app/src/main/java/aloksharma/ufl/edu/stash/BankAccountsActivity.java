@@ -2,12 +2,21 @@ package aloksharma.ufl.edu.stash;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by nikitadagar on 11/14/15.
@@ -20,28 +29,72 @@ public class BankAccountsActivity extends DrawerActivity {
 
         super.onCreate(savedInstanceState, R.layout.bank_accounts);
 
-        ListView BanksList = (ListView) findViewById(R.id.BanksList);
+        //creating an intent to talk to server access
+        final Intent serverIntent = new Intent(this, ServerAccess.class);
+        serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
+        startService(serverIntent);
 
-        String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
-                "Jupiter", "Saturn", "Uranus", "Neptune"};
-        ArrayList<String> planetList = new ArrayList<String>();
-        planetList.addAll( Arrays.asList(planets) );
+        //Register to listen for the services response.
+        IntentFilter serviceFilter = new IntentFilter("server_response");
+        serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        ServiceBroadcastReceiver serviceListener = new ServiceBroadcastReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
+    }
 
-        // Create ArrayAdapter using the planet list.
-        ArrayAdapter listAdapter = new ArrayAdapter<>(this, R.layout.banks_list_row, planetList);
+    private class ServiceBroadcastReceiver extends BroadcastReceiver {
 
-        // Add more planets. If you passed a String[] instead of a List<String>
-        // into the ArrayAdapter constructor, you must not add more items.
-        // Otherwise an exception will occur.
-        listAdapter.add( "Ceres" );
-        listAdapter.add( "Pluto" );
-        listAdapter.add( "Haumea" );
-        listAdapter.add( "Makemake" );
-        listAdapter.add( "Eris" );
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String response = intent.getStringExtra("server_response");
+            ServerAccess.ServerAction responseAction = ServerAccess.ServerAction.valueOf(response);
 
-        // Set the ArrayAdapter as the ListView's adapter.
-        BanksList.setAdapter(listAdapter);
+            switch (responseAction) {
+                case GET_BALANCE:
 
+//                    if ("no_bank".equals(intent.getStringExtra("error"))){
+//
+//                    }
 
+                    ListView BanksList = (ListView) findViewById(R.id.BanksList);
+
+                    HashMap<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("map");
+                    Set<String> set = map.keySet();
+                    //passing ArrayList to ListView Adapter
+                    ArrayList<String> list = new ArrayList<>(set);
+
+                    //for Enum to String conversion
+                    HashMap<String, String> banks = new HashMap<>();
+                    initBankNamesHash(banks);
+
+                    for (String bank : list){
+                        String b = banks.get(bank);
+                        list.remove(bank);  //remove Enum
+                        list.add(b);    //add full name of bank
+                    }
+
+                    //create list view adapter
+                    ArrayAdapter listAdapter = new ArrayAdapter<>(context, R.layout.banks_list_row, list);
+
+                    BanksList.setAdapter(listAdapter);
+            }
+        }
+    }
+
+    private void initBankNamesHash(HashMap<String, String> hm){
+        hm.put("amex", "American Express");
+        hm.put("bofa", "Bank of America");
+        hm.put("capone360", "Capital One");
+        hm.put("schwab", "Charles Schwab");
+        hm.put("chase", "Chase");
+        hm.put("citi", "Citi");
+        hm.put("fidelity", "Fidelity");
+        hm.put("nfcu", "Navy Federal Credit Union");
+        hm.put("pnc", "PNC");
+        hm.put("svb", "Silicon Valley Bank");
+        hm.put("suntrust", "SunTrust");
+        hm.put("td", "TD Bank");
+        hm.put("us", "US Bank");
+        hm.put("usaa", "USAA");
+        hm.put("wells", "Wells Fargo");
     }
 }
