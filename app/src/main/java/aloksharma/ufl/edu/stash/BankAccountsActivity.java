@@ -51,31 +51,31 @@ public class BankAccountsActivity extends DrawerActivity {
             switch (responseAction) {
                 case GET_BALANCE:
 
-//                    if ("no_bank".equals(intent.getStringExtra("error"))){
-//
-//                    }
-
                     ListView BanksList = (ListView) findViewById(R.id.BanksList);
+                    ArrayList<String> list = null;
 
-                    HashMap<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("map");
-                    Set<String> set = map.keySet();
-                    //passing ArrayList to ListView Adapter
-                    ArrayList<String> list = new ArrayList<>(set);
+                    if (!"no_bank".equals(intent.getStringExtra("error"))){
 
-                    //for Enum to String conversion
-                    HashMap<String, String> banks = new HashMap<>();
-                    initBankNamesHash(banks);
+                        HashMap<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("map");
+                        Set<String> set = map.keySet();
+                        //passing ArrayList to ListView Adapter
+                        list = new ArrayList<>(set);
 
-                    for (String bank : list){
-                        String b = banks.get(bank);
-                        list.remove(bank);  //remove Enum
-                        list.add(b);    //add full name of bank
+                        //for Enum to String conversion
+                        HashMap<String, String> banks = new HashMap<>();
+                        initBankNamesHash(banks);
+
+                        for (String bank : list) {
+                            String b = banks.get(bank);
+                            list.remove(bank);  //remove Enum
+                            list.add(b);    //add full name of bank
+                        }
+
+                        //create list view adapter
+                        ArrayAdapter listAdapter = new ArrayAdapter<>(context, R.layout.banks_list_row, list);
+
+                        BanksList.setAdapter(listAdapter);
                     }
-
-                    //create list view adapter
-                    ArrayAdapter listAdapter = new ArrayAdapter<>(context, R.layout.banks_list_row, list);
-
-                    BanksList.setAdapter(listAdapter);
             }
         }
     }
