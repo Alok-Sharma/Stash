@@ -72,7 +72,7 @@ public class AddStash extends DrawerActivity {
             year = Year;
             month = Month;
             day = Day;
-            targetdate.setText(day + "/" + month + "/" + year);
+            targetdate.setText(month + "/" + day + "/" + year);
         }
     };
 
