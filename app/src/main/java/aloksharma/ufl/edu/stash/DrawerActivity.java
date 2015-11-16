@@ -107,7 +107,7 @@ public class DrawerActivity extends AppCompatActivity {
                     }
                     if (recyclerView.getChildPosition(child) == 2) {
                         navigateTo = new Intent(DrawerActivity.this,
-                                AccountActivity.class);
+                                AddAccountActivity.class);
                         navigateTo.addFlags(Intent
                                 .FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
