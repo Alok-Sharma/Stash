@@ -43,8 +43,8 @@
     </string-array>
 
     <string-array name="add_money_options">
-        <item>One Time</item>
         <item>Monthly</item>
+        <item>One Time</item>
     </string-array>
 
     <string-array name="endEventOptions">
