@@ -5,12 +5,15 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,6 +60,15 @@ public class AddMoneyFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        Bundle incomingBundle = getArguments();
+        final String stashObjectId;
+        if(incomingBundle != null) {
+            stashObjectId = incomingBundle.getString("stashObjectId");
+        } else {
+            stashObjectId = null;
+        }
+
         sharedPref = getActivity().getSharedPreferences("stashData", 0);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
@@ -83,6 +95,15 @@ public class AddMoneyFragment extends DialogFragment {
                 Dialog dateDialog = new DatePickerDialog(getActivity(), dpickerListener, year, month,
                         day);
                 dateDialog.show();
+            }
+        });
+
+        amountValueField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus && amountValueField.getText().toString().trim().equals("")) {
+                    amountValueField.setText("0");
+                }
             }
         });
 
@@ -113,22 +134,49 @@ public class AddMoneyFragment extends DialogFragment {
         });
 
         builder.setView(addMoneyView)
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Done", null)
+                .setNegativeButton("Cancel", null);
+
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(final View v) {
+                        String addAmountString = amountValueField.getText().toString().trim();
+                        String repeatOnDateString = repeatOnDate.getText().toString().trim();
                         String addPeriod = addPeriodSpinner.getSelectedItem().toString();
-                        double addAmount = Double.parseDouble(amountValueField.getText().toString());
                         String endEvent = endEventSpinner.getSelectedItem().toString();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        AddMoneyFragment.this.getDialog().cancel();
+
+                        if (addAmountString.equals("")) {
+                            amountValueField.setError("Enter the amount to add.");
+                        } else if (repeatOnDateString.equals("") && repeatOnDate.getVisibility() != View.GONE) {
+                            repeatOnDate.setError("Enter the target date.");
+                        } else {
+                            double addAmount = Double.parseDouble(addAmountString);
+                            Log.d("StashLog", "Alok " + addPeriod + " " + stashObjectId + " " + addAmount);
+                            if(addPeriod.equals("One Time")) {
+                                Intent serverIntent = new Intent(getActivity(), ServerAccess.class);
+                                serverIntent.putExtra("server_action", ServerAccess.ServerAction
+                                        .ADD_MONEY.toString());
+                                serverIntent.putExtra("stashObjectId", stashObjectId);
+                                serverIntent.putExtra("addAmount", addAmount);
+                                getActivity().startService(serverIntent);
+                                dismiss();
+                            } else {
+
+                            }
+                        }
                     }
                 });
+                Button negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
+                // same for negative (and/or neutral) button if required
+            }
+        });
 
-        return builder.create();
+        return dialog;
     }
 
     private DatePickerDialog.OnDateSetListener dpickerListener

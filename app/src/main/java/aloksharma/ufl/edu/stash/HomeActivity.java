@@ -1,5 +1,7 @@
 package aloksharma.ufl.edu.stash;
 
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -59,15 +61,6 @@ public class HomeActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_home);
-        if (ParseUser.getCurrentUser() == null) {
-            //user isn't logged in, move to login page.
-            Intent loginActivity = new Intent(this, LoginActivity.class);
-            startActivity(loginActivity);
-            finish();
-        }
-
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_home);
 
         //Start the service and get the balance.
         Intent serverIntent = new Intent(this, ServerAccess.class);
@@ -93,6 +86,7 @@ public class HomeActivity extends DrawerActivity {
         final ArrayList<String> stashNameList = new ArrayList<>();
 
         stashQuery.findInBackground(new FindCallback<ParseObject>() {
+
             @Override
             public void done(List<ParseObject> stashes, ParseException e) {
                 for (ParseObject stash : stashes) {
@@ -106,7 +100,7 @@ public class HomeActivity extends DrawerActivity {
                 }
                 TextView toSaveText = (TextView) findViewById(R.id
                         .toSaveAmount);
-                toSaveText.setText("$" + toSaveAmount);
+                textViewAnimate(toSaveText, toSaveAmount - savedAmount, 2000);
 
                 gridObjectList = stashList;
                 saveAmount = toSaveAmount;
@@ -119,7 +113,6 @@ public class HomeActivity extends DrawerActivity {
                 } else {
                     mainCircleProgress = (float) savedAmount / toSaveAmount;
                 }
-//                mainHoloCircularProgressBar.setProgress(mainCircleProgress);
                 mainHoloCircularProgressBar.animate(null, mainCircleProgress, 2000);
 
                 stashGridView = (GridView) findViewById(R.id.stashGridView);
@@ -254,13 +247,38 @@ public class HomeActivity extends DrawerActivity {
                             }
                         }
 
-                        Intent i = new Intent(getApplicationContext(),
+                        Intent toViewStash = new Intent(getApplicationContext(),
                                 ViewStashActivity.class);
-                        startActivity(i);
+                        toViewStash.putExtra("objectId", gridObjectList.get(position).getObjectId());
+                        startActivity(toViewStash);
                     }
                 });
             }
+
+            private void textViewAnimate(final TextView view, int countTo, int duration) {
+                ValueAnimator animator = new ValueAnimator();
+                animator.setObjectValues(0, countTo);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        view.setText("$" + String.valueOf(animation.getAnimatedValue()));
+                    }
+                });
+                animator.setEvaluator(new TypeEvaluator<Integer>() {
+                    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+                        return Math.round(startValue + (endValue - startValue) * fraction);
+                    }
+                });
+                animator.setDuration(duration);
+                animator.start();
+            }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //TODO: Entire home screen should fetch data again.
+        Log.d("StashLog", "on resume called for home activity");
     }
 
     /**

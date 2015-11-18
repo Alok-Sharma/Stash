@@ -1,7 +1,9 @@
 package aloksharma.ufl.edu.stash;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,7 +11,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,8 @@ public class ViewStashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_stash);
+        Intent incomingIntent = getIntent();
+        final String stashObjectId = incomingIntent.getStringExtra("objectId");
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -39,7 +45,22 @@ public class ViewStashActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setBackgroundColor(HomeActivity.stashColor);
+
+        FloatingActionButton addAccountFAB = (FloatingActionButton) findViewById(R.id.fabAddMoney);
+        addAccountFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddMoneyDialog(v, stashObjectId);
+            }
+        });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("StashLog", "onresume called for view stash");
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -87,5 +108,14 @@ public class ViewStashActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    public void showAddMoneyDialog(View view, String stashObjectId) {
+        android.app.FragmentManager fm = getFragmentManager();
+        AddMoneyFragment addMoneyDialog = new AddMoneyFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("stashObjectId", stashObjectId);
+        addMoneyDialog.setArguments(bundle);
+        addMoneyDialog.show(fm, "fragment_edit_name");
     }
 }

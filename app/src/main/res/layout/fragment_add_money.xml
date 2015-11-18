@@ -40,6 +40,7 @@
         android:layout_toRightOf="@id/amountText"
         android:layout_alignStart="@+id/timePeriod"
         android:paddingLeft="15dp"
+        android:text="0"
         android:ems="4"/>
 
     <TextView
