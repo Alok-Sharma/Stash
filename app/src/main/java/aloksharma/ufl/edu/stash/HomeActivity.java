@@ -61,6 +61,12 @@ public class HomeActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_home);
+        if (ParseUser.getCurrentUser() == null) {
+            //user isn't logged in, move to login page.
+            Intent loginActivity = new Intent(this, LoginActivity.class);
+            startActivity(loginActivity);
+            finish();
+        }
 
         //Start the service and get the balance.
         Intent serverIntent = new Intent(this, ServerAccess.class);
