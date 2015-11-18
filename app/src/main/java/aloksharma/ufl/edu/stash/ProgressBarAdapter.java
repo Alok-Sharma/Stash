@@ -67,11 +67,12 @@ public class ProgressBarAdapter extends BaseAdapter {
                 (HoloCircularProgressBar) grid.findViewById(R.id
                         .holoCircularProgressBar);
         int stashPercent = Math.round(((homeActivity.gridObjectList.get
-                (position).getInt("StashGoal")) * 100) / homeActivity
-                .saveAmount);
+                (position).getInt("StashValue")) * 100) / ((homeActivity.gridObjectList.get
+                (position).getInt("StashGoal"))));
         holoCircularProgressBar.setProgress((float) (homeActivity
-                .gridObjectList.get(position).getInt("StashGoal")) /
-                homeActivity.saveAmount);
+                .gridObjectList.get(position).getInt("StashValue")) /
+                ((homeActivity.gridObjectList.get
+                        (position).getInt("StashGoal"))));
         TextView stashPercentage = (TextView) grid.findViewById(R.id
                 .stashPercent);
         stashPercentage.setText(stashPercent + "%");
