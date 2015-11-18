@@ -136,7 +136,7 @@ public class AddMoneyFragment extends DialogFragment {
         @Override
         public void onDateSet(DatePicker view, int Year, int Month, int Day) {
             year = Year;
-            month = Month;
+            month = Month + 1;
             day = Day;
             repeatOnDate.setText(month + "/" + day + "/" + year);
         }

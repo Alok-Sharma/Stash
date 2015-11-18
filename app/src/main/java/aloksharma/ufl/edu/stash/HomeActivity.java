@@ -20,11 +20,11 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -41,6 +41,7 @@ public class HomeActivity extends DrawerActivity {
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
     static String stashName;
+    static int stashColor;
     static String moneyGoalsGoalValue;
     static String moneyGoalsMonthlySavings;
     static String moneyGoalsPercentage;
@@ -138,6 +139,10 @@ public class HomeActivity extends DrawerActivity {
                         } catch (java.text.ParseException e1) {
                             e1.printStackTrace();
                         }
+
+                        TextView stashNameview = (TextView)v.findViewById(R.id.stashName);
+                        stashColor = stashNameview.getCurrentTextColor();
+
                         Calendar currentDateCalendar = new GregorianCalendar();
                         currentDateCalendar.setTime(currentDate);
                         Calendar stashTargetDateCalendar = new

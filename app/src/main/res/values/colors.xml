@@ -3,7 +3,11 @@
 
     <color name="ColorPrimary">#69B6B1</color>
     <color name="ColorPrimaryDark">#227670</color>
-
+    <color name="orange">#F16651</color>
+    <color name="yellow">#FAB117</color>
+    <color name="aqua">#69B6B1</color>
+    <color name="dark_blue">#2E5EAA</color>
+    <color name="pink">#E84079</color>
     <!--<color name="PrimaryColor">#2196F3</color>-->
     <!--<color name="PrimaryDarkColor">#1976D2</color>-->
 </resources> 
