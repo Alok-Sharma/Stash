@@ -1,19 +1,14 @@
 package aloksharma.ufl.edu.stash;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.parse.ParseObject;
-
 
 import java.util.ArrayList;
 
@@ -51,7 +46,6 @@ public class ProgressBarAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View grid;
-
         if (convertView == null) {
             grid = new View(mContext);
             LayoutInflater inflater = (LayoutInflater) mContext
@@ -80,21 +74,12 @@ public class ProgressBarAdapter extends BaseAdapter {
         stashName.setText(homeActivity.gridObjectList.get(position)
                 .getString("StashName"));
         ArrayList<Integer> colorList = new ArrayList<Integer>();
-        colorList.add(-956847);
-        colorList.add(-347881);
-        colorList.add(-13738326);
-        colorList.add(-1556359);
-        if (colorCounter < 3) {
-            colorCounter++;
-        } else {
-            colorCounter = 0;
-        }
-        /*Random rand = new Random();
-        int r = rand.nextInt(255);
-        int g = rand.nextInt(255);
-        int b = rand.nextInt(255);
-        int randomColor = Color.rgb(r,g,b);*/
-        /*Collections.shuffle(colorList);*/
+        colorList.add(mContext.getResources().getColor(R.color.yellow));
+        colorList.add(mContext.getResources().getColor(R.color.dark_blue));
+        colorList.add(mContext.getResources().getColor(R.color.orange));
+        colorList.add(mContext.getResources().getColor(R.color.pink));
+
+        colorCounter = position % 4;
         int randomColor = colorList.get(colorCounter);
         holoCircularProgressBar.setProgressColor(randomColor);
         stashName.setTextColor(randomColor);

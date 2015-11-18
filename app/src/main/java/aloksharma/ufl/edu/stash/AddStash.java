@@ -70,7 +70,7 @@ public class AddStash extends DrawerActivity {
         @Override
         public void onDateSet(DatePicker view, int Year, int Month, int Day) {
             year = Year;
-            month = Month;
+            month = Month + 1;
             day = Day;
             targetdate.setText(month + "/" + day + "/" + year);
         }

@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,6 +32,8 @@ public class AddMoneyFragment extends DialogFragment {
     Spinner endEventSpinner;
     EditText amountValueField;
     TextView currentBalanceText;
+    TextView repeatOnDateText;
+    TextView endEventText;
 
     final Calendar calendar = Calendar.getInstance();
     int year = calendar.get(Calendar.YEAR);
@@ -64,9 +67,10 @@ public class AddMoneyFragment extends DialogFragment {
         int color = Color.parseColor("#939393");
         calendarImage.setColorFilter(color);
 
-        addPeriodSpinner = (Spinner)addMoneyView.findViewById(R.id.timePeriod);
         amountValueField = (EditText)addMoneyView.findViewById(R.id.addAmount);
         endEventSpinner = (Spinner)addMoneyView.findViewById(R.id.endEvent);
+        endEventText = (TextView)addMoneyView.findViewById(R.id.endText);
+        repeatOnDateText = (TextView)addMoneyView.findViewById(R.id.repeatOnText);
 
         currentBalanceText = (TextView)addMoneyView.findViewById(R.id.currentBalance);
         String balanceString = sharedPref.getString("balance", "-1");
@@ -79,6 +83,32 @@ public class AddMoneyFragment extends DialogFragment {
                 Dialog dateDialog = new DatePickerDialog(getActivity(), dpickerListener, year, month,
                         day);
                 dateDialog.show();
+            }
+        });
+
+        addPeriodSpinner = (Spinner)addMoneyView.findViewById(R.id.timePeriod);
+        addPeriodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selected = adapterView.getItemAtPosition(i).toString();
+                if (selected.equals("Monthly")) {
+                    repeatOnDate.setVisibility(View.VISIBLE);
+                    repeatOnDateText.setVisibility(View.VISIBLE);
+                    calendarImage.setVisibility(View.VISIBLE);
+                    endEventSpinner.setVisibility(View.VISIBLE);
+                    endEventText.setVisibility(View.VISIBLE);
+                } else if (selected.equals("One Time")) {
+                    repeatOnDate.setVisibility(View.GONE);
+                    repeatOnDateText.setVisibility(View.GONE);
+                    calendarImage.setVisibility(View.GONE);
+                    endEventSpinner.setVisibility(View.GONE);
+                    endEventText.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -106,7 +136,7 @@ public class AddMoneyFragment extends DialogFragment {
         @Override
         public void onDateSet(DatePicker view, int Year, int Month, int Day) {
             year = Year;
-            month = Month;
+            month = Month + 1;
             day = Day;
             repeatOnDate.setText(month + "/" + day + "/" + year);
         }
