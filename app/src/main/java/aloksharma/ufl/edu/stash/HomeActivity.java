@@ -120,7 +120,8 @@ public class HomeActivity extends DrawerActivity {
                     mainCircleProgress = (float) savedAmount / toSaveAmount;
                 }
 //                mainHoloCircularProgressBar.setProgress(mainCircleProgress);
-                mainHoloCircularProgressBar.animate(null, mainCircleProgress, 2000);
+                mainHoloCircularProgressBar.animate(null,
+                        mainCircleProgress, 2000);
 
                 stashGridView = (GridView) findViewById(R.id.stashGridView);
                 stashGridView.setAdapter(new ProgressBarAdapter
@@ -281,7 +282,7 @@ public class HomeActivity extends DrawerActivity {
             switch (responseAction) {
                 case GET_BALANCE:
                     Double balance = intent.getDoubleExtra("balance", -1.0);
-                    Double effectiveBalance = balance - savedAmount;
+                    Double effectiveBalance = Math.floor((balance - savedAmount) * 100) / 100;
 
                     TextView effectiveBalanceView = (TextView) findViewById
                             (R.id.effectiveBalance);
