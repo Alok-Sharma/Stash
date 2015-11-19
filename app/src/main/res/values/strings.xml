@@ -42,6 +42,24 @@
         <item>Wells Fargo</item>
     </string-array>
 
+    <string-array name="bankNamesMapping">
+        <item>American Express;amex</item>
+        <item>Bank of America;bofa</item>
+        <item>Capital One;capone360</item>
+        <item>Charles Schwab;schwab</item>
+        <item>Chase;chase</item>
+        <item>Citi;citi</item>
+        <item>Fidelity;fidelity</item>
+        <item>Navy Federal Credit Union;nfcu</item>
+        <item>PNC;pnc</item>
+        <item>Silicon Valley Bank;svb</item>
+        <item>SunTrust;suntrust</item>
+        <item>TD Bank;td</item>
+        <item>US Bank;us</item>
+        <item>USAA;usaa</item>
+        <item>Wells Fargo;wells</item>
+    </string-array>
+
     <string-array name="add_money_options">
         <item>Monthly</item>
         <item>One Time</item>

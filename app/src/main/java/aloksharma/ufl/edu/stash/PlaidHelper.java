@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.parse.ParseUser;
 
 import org.apache.http.HttpResponse;
@@ -33,7 +32,6 @@ import java.util.Map;
  */
 public class PlaidHelper {
     Context context;
-    Gson gson = new Gson();
     SharedPreferences sharedPref;
     SharedPreferences.Editor sharedPrefEditor;
 
@@ -88,14 +86,13 @@ public class PlaidHelper {
         }
     }
 
-    Double getBankBalance(String username, String password, ServerAccess
-            .BankName bankName) {
+    Double getBankBalance(String username, String password, String bankName) {
         List<NameValuePair> postArgs = new ArrayList();
         String plaidUrl = context.getString(R.string.plaid_url);
 
         postArgs.add(new BasicNameValuePair("username", username));
         postArgs.add(new BasicNameValuePair("password", password));
-        postArgs.add(new BasicNameValuePair("type", bankName.toString()));
+        postArgs.add(new BasicNameValuePair("type", bankName));
 
         return plaidPostRequest(plaidUrl, postArgs, generateNewKeys());
     }
