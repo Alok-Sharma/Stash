@@ -85,7 +85,7 @@ public class AddMoneyFragment extends DialogFragment {
         repeatOnDateText = (TextView)addMoneyView.findViewById(R.id.repeatOnText);
 
         currentBalanceText = (TextView)addMoneyView.findViewById(R.id.currentBalance);
-        String balanceString = sharedPref.getString("balance", "-1");
+        Double balanceString = Math.floor((Double.valueOf(sharedPref.getString("balance", "-1")))* 100) / 100;
         currentBalanceText.setText("(Current balance: " + balanceString + ")");
 
         repeatOnDate = (EditText)addMoneyView.findViewById(R.id.repeatOnDate);

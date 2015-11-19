@@ -8,8 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.util.HashMap;
-
 public class AddAccountActivity extends DrawerActivity {
 
     @SuppressLint("MissingSuperCall")
@@ -21,10 +19,7 @@ public class AddAccountActivity extends DrawerActivity {
 //        ParseUser.logInInBackground("nikita","nikita");
 
         final Intent serverIntent = new Intent(this, ServerAccess.class);
-
-        final HashMap<String, Enum> bankNamesHash = new HashMap<String,
-                Enum>();
-        createBankNamesHash(bankNamesHash);
+        final BankMappingHelper bankMappingHelper = new BankMappingHelper(this);
 
         Button add_account = (Button) findViewById(R.id.add_account_btn);
         add_account.setOnClickListener(new View.OnClickListener() {
@@ -43,31 +38,12 @@ public class AddAccountActivity extends DrawerActivity {
                         .toString());
                 serverIntent.putExtra("bankPassword", bankPassword.getText()
                         .toString());
-                serverIntent.putExtra("bankName", bankNamesHash.get(bank)
-                        .toString());
+                serverIntent.putExtra("bankName", bankMappingHelper.getBankCode(bank));
                 startService(serverIntent);
                 finish();
             }
         });
 
-    }
-
-    private void createBankNamesHash(HashMap<String, Enum> hm) {
-        hm.put("American Express", ServerAccess.BankName.amex);
-        hm.put("Bank of America", ServerAccess.BankName.bofa);
-        hm.put("Capital One", ServerAccess.BankName.capone360);
-        hm.put("Charles Schwab", ServerAccess.BankName.schwab);
-        hm.put("Chase", ServerAccess.BankName.chase);
-        hm.put("Citi", ServerAccess.BankName.citi);
-        hm.put("Fidelity", ServerAccess.BankName.fidelity);
-        hm.put("Navy Federal Credit Union", ServerAccess.BankName.nfcu);
-        hm.put("PNC", ServerAccess.BankName.pnc);
-        hm.put("Silicon Valley Bank", ServerAccess.BankName.svb);
-        hm.put("SunTrust", ServerAccess.BankName.suntrust);
-        hm.put("TD Bank", ServerAccess.BankName.td);
-        hm.put("US Bank", ServerAccess.BankName.us);
-        hm.put("USAA", ServerAccess.BankName.usaa);
-        hm.put("Wells Fargo", ServerAccess.BankName.wells);
     }
 
     @Override

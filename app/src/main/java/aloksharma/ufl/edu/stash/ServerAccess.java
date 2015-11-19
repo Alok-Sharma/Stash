@@ -25,13 +25,7 @@ public class ServerAccess extends IntentService {
 
     PlaidHelper plaidHelper;
     public enum ServerAction {
-        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY
-    }
-
-    public enum BankName {
-        amex, bofa, capone360, schwab, chase, citi, fidelity, nfcu, pnc,
-        svb, suntrust,
-        td, us, usaa, wells
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK
     }
 
     public ServerAccess() {
@@ -45,6 +39,7 @@ public class ServerAccess extends IntentService {
         Intent outgoingIntent = new Intent("server_response");
         outgoingIntent.putExtra("server_response", action);
         plaidHelper = new PlaidHelper(this);
+        BankMappingHelper bankMappingHelper = new BankMappingHelper(this);
 
         switch (serverAction) {
             case ADD_STASH:
@@ -84,7 +79,6 @@ public class ServerAccess extends IntentService {
                     }
                 });
             case GET_BALANCE:
-                Log.d("StashLog", "calling get balance");
                 //Make appropriate getBankBalance call depending if
                 // username/password is available in the intent.
                 String bankUsername = incomingIntent.getStringExtra
@@ -102,7 +96,6 @@ public class ServerAccess extends IntentService {
                             String accessToken = accessTokens.get("wells"); // TODO: Only getting wells fargo balance. Iterate and get all (Alok)
                             Double balance = plaidHelper.getBankBalance
                                     (accessToken);
-                            Log.d("StashLog", "balance: " + balance);
                             //making a copy of Map because I'm able to send only HashMap
                             HashMap<String, String> banks = new HashMap<>(accessTokens);
                             outgoingIntent.putExtra("map", banks);
@@ -122,10 +115,18 @@ public class ServerAccess extends IntentService {
                     String bankName = incomingIntent.getStringExtra
                             ("bankName");
                     Double balance = plaidHelper.getBankBalance(bankUsername,
-                            bankPassword, BankName.valueOf(bankName));
+                            bankPassword, bankName);
                     Log.d("StashLog", "balance: " + balance);
                     outgoingIntent.putExtra("balance", balance);
                 }
+            case DELETE_BANK:
+                String bankName = incomingIntent.getStringExtra("BankName");
+                String bankCode = bankMappingHelper.getBankCode(bankName);
+                HashMap<String, String> bankMap = new HashMap<>(plaidHelper.getAccessTokenMapEncrypted());
+                bankMap.remove(bankCode);
+                ParseUser.getCurrentUser().put("BankMap", bankMap);
+                ParseUser.getCurrentUser().saveInBackground();
+                ParseUser.getCurrentUser().pinInBackground();
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
     }
@@ -166,12 +167,10 @@ public class ServerAccess extends IntentService {
             public void done(ParseException e) {
                 if (e == null) {
                     Log.i("Success", "11");
-
                 } else {
                     Log.i("Fail", "22");
                 }
             }
-
         });
 
         /**
@@ -219,8 +218,6 @@ public class ServerAccess extends IntentService {
      * Remove Stash Functionality
      */
     public void removeStash(ParseObject Stash) {
-
         Stash.deleteInBackground();
-
     }
 }
