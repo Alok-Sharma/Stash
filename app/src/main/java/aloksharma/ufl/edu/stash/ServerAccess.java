@@ -6,6 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -22,15 +23,10 @@ import java.util.Map;
  */
 public class ServerAccess extends IntentService {
 
+    PlaidHelper plaidHelper;
     public enum ServerAction {
-        ADD_USER, GET_USER, ADD_STASH, GET_BALANCE, GET_ACCESS_TOKEN, DELETE_BANK
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK
     }
-
-//    public enum BankName {
-//        amex, bofa, capone360, schwab, chase, citi, fidelity, nfcu, pnc,
-//        svb, suntrust,
-//        td, us, usaa, wells
-//    }
 
     public ServerAccess() {
         super("ServerAccess");
@@ -42,7 +38,7 @@ public class ServerAccess extends IntentService {
         ServerAction serverAction = ServerAction.valueOf(action);
         Intent outgoingIntent = new Intent("server_response");
         outgoingIntent.putExtra("server_response", action);
-        PlaidHelper plaidHelper = new PlaidHelper(this);
+        plaidHelper = new PlaidHelper(this);
         BankMappingHelper bankMappingHelper = new BankMappingHelper(this);
 
         switch (serverAction) {
@@ -62,6 +58,26 @@ public class ServerAccess extends IntentService {
             case ADD_USER:
                 //GET_BALANCE creates a new bank account if the incoming
                 // intent has username, password and bank name.
+            case ADD_MONEY:
+                //Add money to a stash.
+                String stashObjectId = incomingIntent.getStringExtra("stashObjectId");
+                final Double addAmount = incomingIntent.getDoubleExtra("addAmount", 0.0);
+
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
+                query.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
+                    public void done(ParseObject stashObject, ParseException e) {
+                        if (e == null) {
+                            double currentValue = stashObject.getDouble("StashValue");
+                            double newValue = currentValue + addAmount;
+                            stashObject.put("StashValue", newValue);
+                            stashObject.saveInBackground();
+                        } else {
+                            // something went wrong
+                            Log.e("StashLog", e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                });
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
                 // username/password is available in the intent.
@@ -103,9 +119,6 @@ public class ServerAccess extends IntentService {
                     Log.d("StashLog", "balance: " + balance);
                     outgoingIntent.putExtra("balance", balance);
                 }
-
-            case GET_USER:
-            case GET_ACCESS_TOKEN:
             case DELETE_BANK:
                 String bankName = incomingIntent.getStringExtra("BankName");
                 String bankCode = bankMappingHelper.getBankCode(bankName);
