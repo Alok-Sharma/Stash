@@ -254,12 +254,13 @@ public class ServerAccess extends IntentService {
     }
 
     public void updateprofile(String User_Name, String User_Email, String User_Password) {
-
         /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
         ParseUser currentuser = ParseUser.getCurrentUser();
-        currentuser.setUsername(User_Name);
+        currentuser.put("firstName",User_Name);
+        currentuser.put("lastName",User_Name);
         currentuser.setPassword(User_Password);
         currentuser.setEmail(User_Email);
+        currentuser.saveInBackground();
     }
 }
