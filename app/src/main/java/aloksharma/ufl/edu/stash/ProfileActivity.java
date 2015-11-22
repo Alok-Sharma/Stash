@@ -42,8 +42,6 @@ public class ProfileActivity extends DrawerActivity {
         Log.d("ProfileActivityLog1", message_user_name);
         Log.d("ProfileActivityLog1", message_user_email);
         Log.d("ProfileActivityLog1", message_user_password);
-
-
         /**Create an intent*/
         Intent updateprofile_intent = new Intent(this, ServerAccess.class);
 
