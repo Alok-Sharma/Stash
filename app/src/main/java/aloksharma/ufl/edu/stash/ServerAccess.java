@@ -55,6 +55,7 @@ public class ServerAccess extends IntentService {
                 homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeActivity);
+                break;
             case ADD_USER:
                 //GET_BALANCE creates a new bank account if the incoming
                 // intent has username, password and bank name.
@@ -78,6 +79,7 @@ public class ServerAccess extends IntentService {
                         }
                     }
                 });
+                break;
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
                 // username/password is available in the intent.
@@ -119,6 +121,7 @@ public class ServerAccess extends IntentService {
                     Log.d("StashLog", "balance: " + balance);
                     outgoingIntent.putExtra("balance", balance);
                 }
+                break;
 
             case DELETE_BANK:
                 String bankName = incomingIntent.getStringExtra("BankName");
@@ -143,7 +146,7 @@ public class ServerAccess extends IntentService {
                         }
                     }
                 });
-
+                break;
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
     }
