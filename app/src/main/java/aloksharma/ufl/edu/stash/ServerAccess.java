@@ -131,7 +131,7 @@ public class ServerAccess extends IntentService {
                 ParseUser.getCurrentUser().put("BankMap", bankMap);
                 ParseUser.getCurrentUser().saveInBackground();
                 ParseUser.getCurrentUser().pinInBackground();
-
+                break;
             case DELETE_STASH:
                 String removeStashId = incomingIntent.getStringExtra("stashObjectId");
                 ParseQuery<ParseObject> removeQuery = ParseQuery.getQuery("Stash");
