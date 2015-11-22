@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -24,13 +25,15 @@ public class ViewStashActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    String stashObjectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_view_stash);
         Intent incomingIntent = getIntent();
-        final String stashObjectId = incomingIntent.getStringExtra("objectId");
+        stashObjectId = incomingIntent.getStringExtra("objectId");
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -61,16 +64,25 @@ public class ViewStashActivity extends AppCompatActivity {
         Log.d("StashLog", "onresume called for view stash");
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
+            case R.id.menu_deleteStash:
+                Intent serverIntent = new Intent(this, ServerAccess.class);
+                serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_STASH.toString());
+                serverIntent.putExtra("stashObjectId", stashObjectId);
+                startService(serverIntent);
+                finish();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_stash, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void setupViewPager(ViewPager viewPager) {

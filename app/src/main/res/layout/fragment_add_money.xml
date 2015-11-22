@@ -39,6 +39,7 @@
         android:layout_alignBaseline="@id/amountText"
         android:layout_toRightOf="@id/amountText"
         android:layout_alignStart="@+id/timePeriod"
+        android:layout_alignLeft="@+id/timePeriod"
         android:paddingLeft="15dp"
         android:text="0"
         android:ems="4"/>
@@ -49,6 +50,7 @@
         android:id="@+id/currentBalance"
         android:layout_below="@id/addAmount"
         android:layout_alignLeft="@id/addAmount"
+        android:layout_alignStart="@+id/addAmount"
         android:textSize="10dp"
         android:text="(Current balance: xxxx.xx)"/>
 
@@ -56,7 +58,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="$"
-        android:layout_alignStart="@id/addAmount"
+        android:layout_alignStart="@+id/addAmount"
+        android:layout_alignLeft="@+id/addAmount"
         android:layout_alignBaseline="@id/addAmount"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -74,9 +77,11 @@
         android:layout_height="wrap_content"
         android:inputType="date"
         android:layout_alignStart="@+id/timePeriod"
+        android:layout_alignLeft="@+id/timePeriod"
         android:layout_toRightOf="@id/repeatOnText"
         android:layout_alignBaseline="@+id/repeatOnText"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:focusable="false"
         android:paddingLeft="25dp"/>
 
@@ -86,6 +91,7 @@
         android:id="@+id/calendarImage"
         android:src="@drawable/ic_insert_invitation_black_24dp"
         android:layout_alignStart="@+id/repeatOnDate"
+        android:layout_alignLeft="@+id/repeatOnDate"
         android:layout_alignBottom="@+id/repeatOnText"/>
 
     <TextView
@@ -107,6 +113,7 @@
         android:layout_toRightOf="@+id/endText"
         android:layout_alignBaseline="@+id/endText"
         android:layout_alignStart="@id/timePeriod"
+        android:layout_alignLeft="@+id/timePeriod"
         android:spinnerMode="dropdown"/>
 
 </RelativeLayout>
