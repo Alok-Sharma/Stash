@@ -74,6 +74,11 @@ public class ViewStashActivity extends AppCompatActivity {
                 startService(serverIntent);
                 finish();
                 return true;
+            case android.R.id.home:
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Reuse the existing instance
+                startActivity(intent);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
