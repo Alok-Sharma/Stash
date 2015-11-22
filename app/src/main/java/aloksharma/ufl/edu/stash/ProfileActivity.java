@@ -42,5 +42,19 @@ public class ProfileActivity extends DrawerActivity {
         Log.d("ProfileActivityLog1", message_user_name);
         Log.d("ProfileActivityLog1", message_user_email);
         Log.d("ProfileActivityLog1", message_user_password);
+
+
+        /**Create an intent*/
+        Intent updateprofile_intent = new Intent(this, ServerAccess.class);
+
+        /**Attaching Data to that intent*/
+        updateprofile_intent.putExtra("User_Name", message_user_name);
+        updateprofile_intent.putExtra("User_Email", message_user_email);
+        updateprofile_intent.putExtra("User_Password", message_user_password);
+        updateprofile_intent.putExtra("server_action", ServerAccess.ServerAction
+                .UPDATE_PROFILE.toString());
+
+        /**Launching that intent*/
+        this.startService(updateprofile_intent);
     }
 }
