@@ -21,12 +21,6 @@
             android:label="@string/title_activity_addstash">
         </activity>
         <activity
-            android:name=".AddStashHelper"
-            android:label="@string/title_activity_display_message"
-            android:parentActivityName=".AddStash">
-        </activity>
-
-        <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile">
         </activity>
