@@ -61,6 +61,8 @@ public class HomeActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_home);
+        final Context context = this;
+
         if (ParseUser.getCurrentUser() == null) {
             //user isn't logged in, move to login page.
             Intent loginActivity = new Intent(this, LoginActivity.class);
@@ -139,7 +141,7 @@ public class HomeActivity extends DrawerActivity {
                             e1.printStackTrace();
                         }
 
-                        TextView stashNameview = (TextView)v.findViewById(R.id.stashName);
+                        TextView stashNameview = (TextView) v.findViewById(R.id.stashName);
                         stashColor = stashNameview.getCurrentTextColor();
 
                         Calendar currentDateCalendar = new GregorianCalendar();
@@ -174,10 +176,10 @@ public class HomeActivity extends DrawerActivity {
                         if (monthsLeft >= 0) {
                             moneyGoalsMonthlySavings = "$" + String.valueOf
                                     (Math.round(((float) (gridObjectList.get
-                                            (position).getInt("StashGoal") -
-                                            gridObjectList.get(position)
-                                                    .getInt("StashValue")) /
-                                            (monthsLeft + 1)) * 100.0) / 100.0
+                                                    (position).getInt("StashGoal") -
+                                                    gridObjectList.get(position)
+                                                            .getInt("StashValue")) /
+                                                    (monthsLeft + 1)) * 100.0) / 100.0
                                     ) + "/month";
                         } else {
                             moneyGoalsMonthlySavings = "$ 0";
@@ -185,10 +187,10 @@ public class HomeActivity extends DrawerActivity {
 
 
                         if ((stashTargetDate.getTime() - currentDate.getTime()) > 0 && ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000)) != 0) {
-                            timeGoalsProgressBar = (float) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)) / ((stashTargetDate.getTime() -  stashInitializationDate.getTime()) / (86400000));
+                            timeGoalsProgressBar = (float) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000));
                             timeGoalsPercentage = String.valueOf(Math.round((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))) * 100) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))) + "%";
-                            if((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)))==0){
-                                timeGoalsProgressBar = (float) (1) / ((stashTargetDate.getTime() -  stashInitializationDate.getTime()) / (86400000));
+                            if ((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))) == 0) {
+                                timeGoalsProgressBar = (float) (1) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000));
                                 timeGoalsPercentage = String.valueOf(Math.round(((1)) * 100) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))) + "%";
                             }
                         } else {
@@ -259,6 +261,18 @@ public class HomeActivity extends DrawerActivity {
                         startActivity(toViewStash);
                     }
                 });
+
+//                stashGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//                    @Override
+//                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                        String objectId = gridObjectList.get(i).getObjectId();
+//                        Intent serverIntent = new Intent(context, ServerAccess.class);
+//                        serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_STASH.toString());
+//                        serverIntent.putExtra("stashObjectId", objectId);
+//                        context.startService(serverIntent);
+//                        return false;
+//                    }
+//                });
             }
 
             private void textViewAnimate(final TextView view, int countTo, int duration) {

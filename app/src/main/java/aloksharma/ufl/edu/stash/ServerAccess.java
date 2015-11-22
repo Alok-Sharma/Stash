@@ -25,7 +25,7 @@ public class ServerAccess extends IntentService {
 
     PlaidHelper plaidHelper;
     public enum ServerAction {
-        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH
     }
 
     public ServerAccess() {
@@ -119,6 +119,7 @@ public class ServerAccess extends IntentService {
                     Log.d("StashLog", "balance: " + balance);
                     outgoingIntent.putExtra("balance", balance);
                 }
+
             case DELETE_BANK:
                 String bankName = incomingIntent.getStringExtra("BankName");
                 String bankCode = bankMappingHelper.getBankCode(bankName);
@@ -127,6 +128,22 @@ public class ServerAccess extends IntentService {
                 ParseUser.getCurrentUser().put("BankMap", bankMap);
                 ParseUser.getCurrentUser().saveInBackground();
                 ParseUser.getCurrentUser().pinInBackground();
+
+            case DELETE_STASH:
+                String removeStashId = incomingIntent.getStringExtra("stashObjectId");
+                ParseQuery<ParseObject> removeQuery = ParseQuery.getQuery("Stash");
+                removeQuery.getInBackground(removeStashId, new GetCallback<ParseObject>() {
+                    public void done(ParseObject stashObject, ParseException e) {
+                        if (e == null) {
+                            try {
+                                stashObject.delete();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+                });
+
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
     }
