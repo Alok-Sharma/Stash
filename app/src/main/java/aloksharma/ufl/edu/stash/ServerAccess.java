@@ -24,8 +24,9 @@ import java.util.Map;
 public class ServerAccess extends IntentService {
 
     PlaidHelper plaidHelper;
+
     public enum ServerAction {
-        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE
     }
 
     public ServerAccess() {
@@ -52,6 +53,17 @@ public class ServerAccess extends IntentService {
                 //Push data to your function
                 addStash(StashName, StashTargetDate, StashGoal, StashValue);
                 Intent homeActivity = new Intent(this, HomeActivity.class);
+                homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeActivity);
+                break;
+            case UPDATE_PROFILE:
+                String User_Name = incomingIntent.getStringExtra("User_Name");
+                String User_Email = incomingIntent.getStringExtra("User_Email");
+                String User_Password = incomingIntent.getStringExtra("User_Password");
+                //Push data to your function
+                updateprofile(User_Name, User_Email, User_Password);
+                homeActivity = new Intent(this, HomeActivity.class);
                 homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeActivity);
@@ -239,5 +251,16 @@ public class ServerAccess extends IntentService {
      */
     public void removeStash(ParseObject Stash) {
         Stash.deleteInBackground();
+    }
+
+    public void updateprofile(String User_Name, String User_Email, String User_Password) {
+        /**Send to Parse Database*/
+        final ParseObject Stash = new ParseObject("Stash");
+        ParseUser currentuser = ParseUser.getCurrentUser();
+        currentuser.put("firstName",User_Name);
+        currentuser.put("lastName",User_Name);
+        currentuser.setPassword(User_Password);
+        currentuser.setEmail(User_Email);
+        currentuser.saveInBackground();
     }
 }
