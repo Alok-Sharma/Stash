@@ -50,8 +50,7 @@ public class DrawerActivity extends AppCompatActivity {
         currentUser = ParseUser.getCurrentUser();
         Log.d("Stash: DrawerActivity", "CurrentUser is: " + currentUser
                 .getUsername());
-        NAME = currentUser.getString("firstName") + " " + currentUser
-                .getString("lastName");
+        NAME = currentUser.getString("username");
         Log.d("Stash: Drawer Activity:", "User's Name: " + NAME);
         EMAIL = currentUser.getEmail();
         Log.d("Stash: Drawer Activity:", "User's Email: " + EMAIL);
