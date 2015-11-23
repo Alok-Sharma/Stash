@@ -10,9 +10,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +34,7 @@ import java.util.List;
 public class HomeActivity extends DrawerActivity {
 
     private HoloCircularProgressBar mainHoloCircularProgressBar;
-    private GridView stashGridView;
+    private ExpandableHeightGridView stashGridView;
     int savedAmount = 0;
     int toSaveAmount = 0;
     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -84,6 +84,10 @@ public class HomeActivity extends DrawerActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver
                 (serviceListener, serviceFilter);
 
+        homeScreenFunctionality();
+    }
+
+    protected void homeScreenFunctionality() {
         mainHoloCircularProgressBar = (HoloCircularProgressBar) findViewById
                 (R.id.simple);
 
@@ -123,7 +127,10 @@ public class HomeActivity extends DrawerActivity {
                 }
                 mainHoloCircularProgressBar.animate(null, mainCircleProgress, 2000);
 
-                stashGridView = (GridView) findViewById(R.id.stashGridView);
+                savedAmount = 0;
+                toSaveAmount = 0;
+                stashGridView = (ExpandableHeightGridView) findViewById(R.id.stashGridView);
+                stashGridView.setFocusable(false);
                 stashGridView.setAdapter(new ProgressBarAdapter
                         (getApplicationContext()));
 
@@ -297,6 +304,8 @@ public class HomeActivity extends DrawerActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        homeScreenFunctionality();
         //TODO: Entire home screen should fetch data again.
         Log.d("StashLog", "on resume called for home activity");
     }

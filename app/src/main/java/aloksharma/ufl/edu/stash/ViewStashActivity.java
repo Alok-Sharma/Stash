@@ -31,6 +31,10 @@ public class ViewStashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        viewStashFunctionality();
+    }
+
+    private void viewStashFunctionality() {
         setContentView(R.layout.activity_view_stash);
         Intent incomingIntent = getIntent();
         stashObjectId = incomingIntent.getStringExtra("objectId");
@@ -61,6 +65,7 @@ public class ViewStashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        viewStashFunctionality();
         Log.d("StashLog", "onresume called for view stash");
     }
 

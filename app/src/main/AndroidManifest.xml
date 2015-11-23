@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="aloksharma.ufl.edu.stash">
+    package="aloksharma.ufl.edu.stash" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/stashlogo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".HomeActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".AddStash"
-            android:label="@string/title_activity_addstash">
+            android:label="@string/title_activity_addstash" >
         </activity>
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile">
+            android:label="@string/title_activity_profile" >
         </activity>
 
         <service
             android:name=".ServerAccess"
-            android:exported="false">
+            android:exported="false" >
         </service>
 
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id"/>
+            android:value="@string/app_id" />
 
         <activity
             android:name=".AddAccountActivity"
@@ -55,7 +55,7 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
         </activity>
         <!-- <activity android:name=".HoloCircularProgressBar" > -->
         <!-- </activity> -->
@@ -63,18 +63,20 @@
         <!-- </activity> -->
         <activity
             android:name=".DrawerActivity"
-            android:label="@string/title_activity_drawer">
+            android:label="@string/title_activity_drawer" >
         </activity>
         <activity android:name=".ViewStashActivity" >
         </activity>
-        <activity android:name=".MoneyGoalsFragment" >
+        <!--<activity android:name=".MoneyGoalsFragment" >
         </activity>
         <activity android:name=".TimeGoalsFragment" >
-        </activity>
+        </activity>-->
         <activity
             android:name=".BankAccountsActivity"
             android:label="@string/title_bank_accounts" >
         </activity>
+        <!--<activity android:name=".ExpandableHeightGridView" >
+        </activity>-->
     </application>
 
 </manifest>
