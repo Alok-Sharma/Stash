@@ -10,9 +10,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ public class HomeActivity extends DrawerActivity {
 
     private HoloCircularProgressBar mainHoloCircularProgressBar;
     private ExpandableHeightGridView stashGridView;
+    private ScrollView homeScrollView;
     int savedAmount = 0;
     int toSaveAmount = 0;
     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -84,6 +87,20 @@ public class HomeActivity extends DrawerActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver
                 (serviceListener, serviceFilter);
 
+        stashGridView = (ExpandableHeightGridView) findViewById(R.id.stashGridView);
+        homeScrollView = (ScrollView)findViewById(R.id.homeScrollView);
+
+        homeScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if(homeScrollView.getScrollY() > 10) {
+                    getSupportActionBar().setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
+                } else{
+                    getSupportActionBar().setElevation(0);
+                }
+            }
+        });
+
         homeScreenFunctionality();
     }
 
@@ -129,7 +146,6 @@ public class HomeActivity extends DrawerActivity {
 
                 savedAmount = 0;
                 toSaveAmount = 0;
-                stashGridView = (ExpandableHeightGridView) findViewById(R.id.stashGridView);
                 stashGridView.setFocusable(false);
                 stashGridView.setAdapter(new ProgressBarAdapter
                         (getApplicationContext()));
@@ -268,18 +284,6 @@ public class HomeActivity extends DrawerActivity {
                         startActivity(toViewStash);
                     }
                 });
-
-//                stashGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//                    @Override
-//                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                        String objectId = gridObjectList.get(i).getObjectId();
-//                        Intent serverIntent = new Intent(context, ServerAccess.class);
-//                        serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_STASH.toString());
-//                        serverIntent.putExtra("stashObjectId", objectId);
-//                        context.startService(serverIntent);
-//                        return false;
-//                    }
-//                });
             }
 
             private void textViewAnimate(final TextView view, int countTo, int duration) {

@@ -26,7 +26,7 @@ public class ServerAccess extends IntentService {
     PlaidHelper plaidHelper;
 
     public enum ServerAction {
-        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE, ALARM
     }
 
     public ServerAccess() {
@@ -107,13 +107,11 @@ public class ServerAccess extends IntentService {
                         outgoingIntent.putExtra("error", "no_bank");
                     } else {
                         try {
-                            String accessToken = accessTokens.get("wells"); // TODO: Only getting wells fargo balance. Iterate and get all (Alok)
-                            Double balance = plaidHelper.getBankBalance
-                                    (accessToken);
+                            double balance = getBalanceFromTokens(accessTokens);
                             //making a copy of Map because I'm able to send only HashMap
                             HashMap<String, String> banks = new HashMap<>(accessTokens);
                             outgoingIntent.putExtra("map", banks);
-                            if (balance != null) {
+                            if (balance != -1.0) {
                                 outgoingIntent.putExtra("balance", balance);
                             } else {
                                 outgoingIntent.putExtra("error", "no_keys");
@@ -159,6 +157,22 @@ public class ServerAccess extends IntentService {
                     }
                 });
                 break;
+            case ALARM:
+                Map<String, String> accessTokensAlarm = plaidHelper.getAccessTokenMapDecrypted();
+                if(accessTokensAlarm == null) {
+                    // no banks associated yet.
+                    outgoingIntent.putExtra("error", "no_bank");
+                } else {
+                    Double balance = getBalanceFromTokens(accessTokensAlarm);
+                    List<ParseObject> stashes = getStashes();
+                    //Alok
+
+
+
+                    
+                    //Nikita
+                }
+                break;
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
     }
@@ -169,6 +183,27 @@ public class ServerAccess extends IntentService {
 
     public void getUser() {
         //Stub to get the Parse user object.
+    }
+
+    private List<ParseObject> getStashes(){
+        ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
+        stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        List<ParseObject> stashList = null;
+        try {
+            stashList = stashQuery.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return stashList;
+    }
+
+    private double getBalanceFromTokens(Map<String, String> accessTokens) {
+        String accessToken = accessTokens.get("wells"); // TODO: Only getting wells fargo balance. Iterate and get all (Alok)
+        Double balance = plaidHelper.getBankBalance(accessToken);
+        if(balance != null){
+            return balance;
+        }
+        return -1.0;
     }
 
     /**
