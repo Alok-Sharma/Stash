@@ -26,7 +26,7 @@ public class ServerAccess extends IntentService {
     PlaidHelper plaidHelper;
 
     public enum ServerAction {
-        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE, ALARM
     }
 
     public ServerAccess() {

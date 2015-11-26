@@ -3,6 +3,8 @@ package aloksharma.ufl.edu.stash;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +41,10 @@ public class HomeActivity extends DrawerActivity {
     int toSaveAmount = 0;
     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     Date currentDate = new Date();
+
+    //alarms for notifications and automated adding money to a stash
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
@@ -85,6 +91,15 @@ public class HomeActivity extends DrawerActivity {
                 (serviceListener, serviceFilter);
 
         homeScreenFunctionality();
+
+        //an alarm manager which will go off every 24 hours
+        //it checks the effective balance and checks if money needs to be added to a stash
+        alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ServerAccess.class);
+        intent.putExtra("server_action", ServerAccess.ServerAction.ALARM);
+        alarmIntent = PendingIntent.getService(context, 0, intent, 0);
+        //TODO: change frequency to 24 hours after testing
+        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 5000, 5000, alarmIntent);
     }
 
     protected void homeScreenFunctionality() {
