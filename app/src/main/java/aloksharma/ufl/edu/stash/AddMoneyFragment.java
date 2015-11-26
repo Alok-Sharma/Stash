@@ -37,13 +37,12 @@ public class AddMoneyFragment extends DialogFragment {
     TextView currentBalanceText;
     TextView repeatOnDateText;
     TextView endEventText;
+    View addMoneyView;
 
     final Calendar calendar = Calendar.getInstance();
     int year = calendar.get(Calendar.YEAR);
     int month = calendar.get(Calendar.MONTH);
     int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-    View addMoneyView;
 
     public AddMoneyFragment() {
     }
@@ -71,6 +70,7 @@ public class AddMoneyFragment extends DialogFragment {
 
         sharedPref = getActivity().getSharedPreferences("stashData", 0);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         addMoneyView = inflater.inflate(R.layout.fragment_add_money, null);

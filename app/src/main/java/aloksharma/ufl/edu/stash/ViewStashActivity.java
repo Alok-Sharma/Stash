@@ -44,6 +44,7 @@ public class ViewStashActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(HomeActivity.stashName);
+        getSupportActionBar().setElevation(0);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(HomeActivity.stashColor));
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
