@@ -170,8 +170,13 @@ public class ServerAccess extends IntentService {
                     // no banks associated yet.
                     outgoingIntent.putExtra("error", "no_bank");
                 } else {
+                    double savedAmount = 0, effectiveBal;
                     Double balance = getBalanceFromTokens(accessTokensAlarm);
                     List<ParseObject> stashes = getStashes();
+                    for (ParseObject stash : stashes) {
+                        savedAmount = savedAmount + stash.getInt("StashValue");
+                    }
+                    effectiveBal = balance - savedAmount;
                     //Alok
 
 
@@ -180,7 +185,8 @@ public class ServerAccess extends IntentService {
                     //Nikita
                     sharedPref = getSharedPreferences("stashData", 0);
                     Boolean status = sharedPref.getBoolean("notifyStatus", true);
-                    if (status == true){
+                    Log.d("stashalarm", "alarm fired");
+                    if (status == true && effectiveBal < -1.0){
                         NotificationCompat.Builder mBuilder =
                                 new NotificationCompat.Builder(this)
                                         .setSmallIcon(R.drawable.stashlogo)

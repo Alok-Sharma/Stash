@@ -113,7 +113,7 @@ public class HomeActivity extends DrawerActivity {
         //it checks the effective balance and checks if money needs to be added to a stash
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, ServerAccess.class);
-        intent.putExtra("server_action", ServerAccess.ServerAction.ALARM);
+        intent.putExtra("server_action", ServerAccess.ServerAction.ALARM.toString());
         alarmIntent = PendingIntent.getService(context, 0, intent, 0);
         //TODO: change frequency to 24 hours after testing
         alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 5000, 5000, alarmIntent);
