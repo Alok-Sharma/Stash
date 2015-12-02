@@ -257,8 +257,12 @@ public class ServerAccess extends IntentService {
         /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
         ParseUser currentuser = ParseUser.getCurrentUser();
-        currentuser.put("firstName",User_Name);
-        currentuser.put("lastName",User_Name);
+        int firstSpace = User_Name.indexOf(" ");
+        String firstName = User_Name.substring(0, firstSpace);
+        String lastName = User_Name.substring(firstSpace).trim();
+
+        currentuser.put("firstName",firstName);
+        currentuser.put("lastName",lastName);
         currentuser.setPassword(User_Password);
         currentuser.setEmail(User_Email);
         currentuser.saveInBackground();
