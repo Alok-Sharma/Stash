@@ -114,8 +114,7 @@ public class AddStash extends DrawerActivity {
         addstash_intent.putExtra("StashTargetDate", message_targetdate);
         addstash_intent.putExtra("StashGoal", message_goal);
         addstash_intent.putExtra("StashValue", message_stashvalue);
-        addstash_intent.putExtra("server_action", ServerAccess.ServerAction
-                .ADD_STASH.toString());
+        addstash_intent.putExtra("server_action", ServerAccess.ServerAction.ADD_STASH.toString());
 
         /**Launching that intent*/
         this.startService(addstash_intent);

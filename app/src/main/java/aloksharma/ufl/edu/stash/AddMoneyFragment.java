@@ -149,6 +149,7 @@ public class AddMoneyFragment extends DialogFragment {
                         String repeatOnDateString = repeatOnDate.getText().toString().trim();
                         String addPeriod = addPeriodSpinner.getSelectedItem().toString();
                         String endEvent = endEventSpinner.getSelectedItem().toString();
+//                        String[] endEventOptions = getResources().getStringArray(R.array.endEventOptions);
 
                         if (addAmountString.equals("")) {
                             amountValueField.setError("Enter the amount to add.");
@@ -157,17 +158,20 @@ public class AddMoneyFragment extends DialogFragment {
                         } else {
                             double addAmount = Double.parseDouble(addAmountString);
                             Log.d("StashLog", "Alok " + addPeriod + " " + stashObjectId + " " + addAmount);
-                            if(addPeriod.equals("One Time")) {
-                                Intent serverIntent = new Intent(getActivity(), ServerAccess.class);
-                                serverIntent.putExtra("server_action", ServerAccess.ServerAction
-                                        .ADD_MONEY.toString());
-                                serverIntent.putExtra("stashObjectId", stashObjectId);
-                                serverIntent.putExtra("addAmount", addAmount);
-                                getActivity().startService(serverIntent);
-                                dismiss();
-                            } else {
+                            Intent serverIntent = new Intent(getActivity(), ServerAccess.class);
+                            serverIntent.putExtra("stashObjectId", stashObjectId);
+                            serverIntent.putExtra("addAmount", addAmount);
 
+                            if(addPeriod.equals("One Time")) {
+                                serverIntent.putExtra("server_action", ServerAccess.ServerAction.ADD_MONEY.toString());
+                            } else if(addPeriod.equals("Monthly")) {
+                                serverIntent.putExtra("server_action", ServerAccess.ServerAction.ADD_RULE.toString());
+                                serverIntent.putExtra("repeatOnDate", repeatOnDateString);
+                                serverIntent.putExtra("endOnEvent", endEvent);
                             }
+
+                            getActivity().startService(serverIntent);
+                            dismiss();
                         }
                     }
                 });
