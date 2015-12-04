@@ -164,8 +164,13 @@ public class AddMoneyFragment extends DialogFragment {
                                 serverIntent.putExtra("stashObjectId", stashObjectId);
                                 serverIntent.putExtra("addAmount", addAmount);
                                 getActivity().startService(serverIntent);
-                                getActivity().startActivity(new Intent(getActivity().getApplicationContext(), HomeActivity.class));
-                                dismiss();
+                                try {
+                                    Thread.sleep(250);
+                                    getActivity().startActivity(new Intent(getActivity().getApplicationContext(), HomeActivity.class));
+                                    dismiss();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             } else {
 
                             }
