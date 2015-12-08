@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -36,6 +37,9 @@ import java.util.List;
 
 
 public class HomeActivity extends DrawerActivity {
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     private HoloCircularProgressBar mainHoloCircularProgressBar;
     private ExpandableHeightGridView stashGridView;
@@ -79,12 +83,6 @@ public class HomeActivity extends DrawerActivity {
             finish();
         }
 
-        //Start the service and get the balance.
-        Intent serverIntent = new Intent(this, ServerAccess.class);
-        serverIntent.putExtra("server_action", ServerAccess.ServerAction
-                .GET_BALANCE.toString());
-        this.startService(serverIntent);
-
         //Register to listen for the services response.
         IntentFilter serviceFilter = new IntentFilter("server_response");
         serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -99,15 +97,15 @@ public class HomeActivity extends DrawerActivity {
         homeScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if(homeScrollView.getScrollY() > 10) {
+                if (homeScrollView.getScrollY() > 10) {
                     getSupportActionBar().setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
-                } else{
+                } else {
                     getSupportActionBar().setElevation(0);
                 }
             }
         });
 
-        homeScreenFunctionality();
+//        homeScreenFunctionality(); //Dont need to call this function in onCreate and onResume. Only in onResume should be fine.
 
         //an alarm manager which will go off every 24 hours
         //it checks the effective balance and checks if money needs to be added to a stash
@@ -120,8 +118,16 @@ public class HomeActivity extends DrawerActivity {
     }
 
     protected void homeScreenFunctionality() {
+        sharedPreferences = this.getSharedPreferences("stashData", 0);
         mainHoloCircularProgressBar = (HoloCircularProgressBar) findViewById
                 (R.id.simple);
+
+        //Get balance from service
+        Intent serverIntent = new Intent(this, ServerAccess.class);
+        serverIntent.putExtra("server_action", ServerAccess.ServerAction
+                .GET_BALANCE.toString());
+        this.startService(serverIntent);
+
 
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
@@ -141,6 +147,14 @@ public class HomeActivity extends DrawerActivity {
                             stash.getInt("StashValue");
                     stashNameList.add(stash.getString("StashName") + " :\t"
                             + String.valueOf(stashDifferential) + "$ to save");
+                    String autoAddOn = stash.getString("AutoAddOn");
+                    Double autoAddValue = stash.getDouble("AutoAddValue");
+                    String autoAddEnd = stash.getString("AutoAddEnd");
+                    String ruleAsString = "$" + autoAddValue + " will be added on " + autoAddOn + ", repeating every month " +
+                            "until the " + autoAddEnd.toLowerCase();
+                    editor = sharedPreferences.edit();
+                    editor.putString("rule-"+stash.getObjectId(), ruleAsString);
+                    editor.commit();
                 }
                 TextView toSaveText = (TextView) findViewById(R.id
                         .toSaveAmount);

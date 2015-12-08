@@ -2,6 +2,7 @@ package aloksharma.ufl.edu.stash;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -28,6 +29,8 @@ import java.util.Map;
 public class ServerAccess extends IntentService {
 
     PlaidHelper plaidHelper;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     public enum ServerAction {
         ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE, ALARM,
@@ -36,6 +39,7 @@ public class ServerAccess extends IntentService {
 
     public ServerAccess() {
         super("ServerAccess");
+        sharedPreferences = getSharedPreferences("stashData", 0);
     }
 
     @Override
@@ -53,10 +57,9 @@ public class ServerAccess extends IntentService {
                 String StashTargetDate = incomingIntent.getStringExtra
                         ("StashTargetDate");
                 int StashGoal = incomingIntent.getIntExtra("StashGoal", 0);
-                int StashValue = incomingIntent.getIntExtra("StashValue", 0);
 
                 //Push data to your function
-                addStash(StashName, StashTargetDate, StashGoal, StashValue);
+                addStash(StashName, StashTargetDate, StashGoal);
                 Intent homeActivity = new Intent(this, HomeActivity.class);
                 homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -83,11 +86,11 @@ public class ServerAccess extends IntentService {
                 addMoneyToStash(stashObjectId, addAmount);
                 break;
             case ADD_RULE:
-                String stashObjectIdRule = incomingIntent.getStringExtra("stashObjectId");
+                String stashObjectIdAddRule = incomingIntent.getStringExtra("stashObjectId");
                 Double addAmountRule = incomingIntent.getDoubleExtra("addAmount", 0.0);
                 String repeatOnDateString = incomingIntent.getStringExtra("repeatOnDate");
                 String endOnEvent = incomingIntent.getStringExtra("endOn");
-                addRule(stashObjectIdRule, addAmountRule, repeatOnDateString, endOnEvent);
+                addRule(stashObjectIdAddRule, addAmountRule, repeatOnDateString, endOnEvent);
                 break;
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
@@ -162,39 +165,34 @@ public class ServerAccess extends IntentService {
                 } else {
                     Double balance = getBalanceFromTokens(accessTokensAlarm);
                     List<ParseObject> stashes = getStashes();
-                    //Alok
                     // for each stash check if todays date is same as autoAddNext date.
                     for(ParseObject stash : stashes) {
-                        if(isAutoAddDate(stash)){
-                            //today is the date for auto adding money.
-                            if(isEndConditionMet(stash)) {
-                                //end condition is being met. Delete all auto add fields.
-                                stash.remove("AutoAddValue");
-                                stash.remove("AutoAddEnd");
-                                stash.remove("AutoAddOn");
-                                stash.saveInBackground();
-                                stash.pinInBackground();
-                            } else {
-                                //end condition not met. Add money to stash. Update AutoAddOn date.
-                                String objectId = stash.getObjectId();
-                                Double autoAddValue = stash.getDouble("AutoAddValue");
-                                String autoAddOn = stash.getString("AutoAddOn");
+                        if(isAutoAddDate(stash) && isEndConditionMet(stash)) {
+                            // Today is the date for auto adding money and the end condition is being met.
+                            // Delete all auto add fields.
+                            stash.remove("AutoAddValue");
+                            stash.remove("AutoAddEnd");
+                            stash.remove("AutoAddOn");
+                            stash.saveInBackground();
+                            stash.pinInBackground();
+                        } else if(isAutoAddDate(stash) && !isEndConditionMet(stash)) {
+                            // Today is the date for adding money, but the end condition is not met.
+                            // Add money to stash. Update AutoAddOn date.
+                            String objectId = stash.getObjectId();
+                            Double autoAddValue = stash.getDouble("AutoAddValue");
+                            String autoAddOn = stash.getString("AutoAddOn");
 
-                                addMoneyToStash(objectId, autoAddValue);
+                            addMoneyToStash(objectId, autoAddValue);
 
-                                String newAutoAddOn = incrementMonth(autoAddOn);
-                                stash.put("AutoAddOn", newAutoAddOn);
-                                stash.saveInBackground();
-                                stash.pinInBackground();
-                            }
-                        } else {
-                            //today is not the date for auto adding money. Do noting.
+                            String newAutoAddOn = incrementMonth(autoAddOn);
+                            stash.put("AutoAddOn", newAutoAddOn);
+                            stash.saveInBackground();
+                            stash.pinInBackground();
                         }
                     }
-
-                    //Nikita
                 }
                 break;
+            //Nikita
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
     }
@@ -269,6 +267,7 @@ public class ServerAccess extends IntentService {
         query.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject stashObject, ParseException e) {
+                // TODO: check if e is null first.
                 stashObject.put("AutoAddOn", addMoneyOnString);
                 stashObject.put("AutoAddValue", amount);
                 stashObject.put("AutoAddEnd", endOnString);
@@ -276,6 +275,11 @@ public class ServerAccess extends IntentService {
                 stashObject.pinInBackground();
             }
         });
+        String ruleAsString = "$" + amount + " will be added on " + addMoneyOnString + ", repeating every month " +
+                "until the " + endOnString.toLowerCase();
+        editor = sharedPreferences.edit();
+        editor.putString("rule-"+stashObjectId, ruleAsString);
+        editor.commit();
     }
 
     /**
@@ -337,23 +341,21 @@ public class ServerAccess extends IntentService {
      * Add Stash Functionality
      */
     public void addStash(String StashName, String StashTargetDate, int
-            StashGoal, int StashValue) {
+            StashGoal) {
         //Stub to create Stash
         Log.d("CreateStashLog1", StashName);
         Log.d("CreateStashLog2", StashTargetDate);
         Log.d("CreateStashLog3", "" + StashGoal);
-        Log.d("CreateStashLog4", "" + StashValue);
 
         /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
-        Stash.put("StashValue", StashValue);
+        Stash.put("StashValue", 0); //A new stash will have an initial value of 0.
 
         /*Link the ParseUser object with the Stash object*/
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        Stash.put("user", ParseUser.getCurrentUser());     //create a user
+        Stash.put("user", ParseUser.getCurrentUser());
         // relation with the current user
         Stash.saveInBackground(new SaveCallback() {
 

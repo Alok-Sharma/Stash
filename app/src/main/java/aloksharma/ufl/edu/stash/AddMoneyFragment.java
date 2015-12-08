@@ -156,6 +156,7 @@ public class AddMoneyFragment extends DialogFragment {
                         } else if (repeatOnDateString.equals("") && repeatOnDate.getVisibility() != View.GONE) {
                             repeatOnDate.setError("Enter the target date.");
                         } else {
+                            // TODO send below data back to the calling activity.
                             double addAmount = Double.parseDouble(addAmountString);
                             Log.d("StashLog", "Alok " + addPeriod + " " + stashObjectId + " " + addAmount);
                             Intent serverIntent = new Intent(getActivity(), ServerAccess.class);
@@ -169,7 +170,6 @@ public class AddMoneyFragment extends DialogFragment {
                                 serverIntent.putExtra("repeatOnDate", repeatOnDateString);
                                 serverIntent.putExtra("endOnEvent", endEvent);
                             }
-
                             getActivity().startService(serverIntent);
                             dismiss();
                         }

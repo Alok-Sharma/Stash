@@ -117,6 +117,15 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold"/>
 
+            <TextView
+                android:id="@+id/moneyGoalsRule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No rule set yet."
+                android:layout_alignLeft="@+id/textView9"
+                android:layout_alignStart="@+id/textView9"
+                android:layout_alignParentBottom="true"/>
+
         </RelativeLayout>
     </FrameLayout>
 </RelativeLayout>

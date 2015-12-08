@@ -30,12 +30,11 @@ public class ViewStashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        viewStashFunctionality();
+        setContentView(R.layout.activity_view_stash);
+//        viewStashFunctionality();
     }
 
     private void viewStashFunctionality() {
-        setContentView(R.layout.activity_view_stash);
         Intent incomingIntent = getIntent();
         stashObjectId = incomingIntent.getStringExtra("objectId");
 
@@ -99,8 +98,15 @@ public class ViewStashActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter
                 (getSupportFragmentManager());
-        adapter.addFragment(new MoneyGoalsFragment(), "MONEY GOALS");
-        adapter.addFragment(new TimeGoalsFragment(), "TIME GOALS");
+        MoneyGoalsFragment moneyFragment = new MoneyGoalsFragment();
+        TimeGoalsFragment timeFragment = new TimeGoalsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("stashObjectId", stashObjectId);
+        moneyFragment.setArguments(bundle);
+        timeFragment.setArguments(bundle);
+
+        adapter.addFragment(moneyFragment, "MONEY GOALS");
+        adapter.addFragment(timeFragment, "TIME GOALS");
         viewPager.setAdapter(adapter);
     }
 
