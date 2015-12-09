@@ -167,6 +167,7 @@ public class ServerAccess extends IntentService {
                     // no banks associated yet.
                     outgoingIntent.putExtra("error", "no_bank");
                 } else {
+                    double savedAmount = 0, effectiveBal;
                     Double balance = getBalanceFromTokens(accessTokensAlarm);
                     List<ParseObject> stashes = getStashes();
                     // for each stash check if todays date is same as autoAddNext date.
@@ -195,7 +196,8 @@ public class ServerAccess extends IntentService {
                         }
                     }
                     Boolean status = sharedPreferences.getBoolean("notifyStatus", true);
-                    if (status == true) {
+                        effectiveBal = balance - savedAmount;
+                    if (status == true && effectiveBal < -1.0) {
                         NotificationCompat.Builder mBuilder =
                                 new NotificationCompat.Builder(this)
                                         .setSmallIcon(R.drawable.stashlogo)
