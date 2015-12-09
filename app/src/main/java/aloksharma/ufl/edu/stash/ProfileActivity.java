@@ -8,6 +8,12 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 /**
  * Created by khimya on 11/8/15.
  */
@@ -28,6 +34,23 @@ public class ProfileActivity extends DrawerActivity {
         user_name = (EditText) findViewById(R.id.edit_name);
         user_email = (EditText) findViewById(R.id.edit_email);
         user_password = (EditText) findViewById(R.id.edit_changepassword);
+
+
+        final ParseUser currentUser = ParseUser.getCurrentUser();
+        String email_from_server =  currentUser.getEmail();
+        String firstName_from_server = currentUser.getString("firstName");
+        String lastName_from_server = currentUser.getString("lastName");
+
+        if(email_from_server != null)
+            user_email.setText(email_from_server);
+        if(firstName_from_server!= null || lastName_from_server!= null){
+            if(firstName_from_server == null)
+                firstName_from_server = "";
+            if(lastName_from_server == null)
+                lastName_from_server = "";
+            String name_from_server = firstName_from_server + ' ' + lastName_from_server;
+            user_name.setText(name_from_server);
+        }
 
     }
 
