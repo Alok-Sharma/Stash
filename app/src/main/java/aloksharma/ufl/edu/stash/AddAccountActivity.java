@@ -10,16 +10,15 @@ import android.widget.Spinner;
 
 public class AddAccountActivity extends DrawerActivity {
 
+
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_account_activity);
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_account_activity);
-//        ParseUser.logInInBackground("nikita","nikita");
 
         final Intent serverIntent = new Intent(this, ServerAccess.class);
-        final BankMappingHelper bankMappingHelper = new BankMappingHelper(this);
+        final BankMappingHelper bankMappingHelper = new BankMappingHelper
+                (this);
 
         Button add_account = (Button) findViewById(R.id.add_account_btn);
         add_account.setOnClickListener(new View.OnClickListener() {
@@ -38,7 +37,8 @@ public class AddAccountActivity extends DrawerActivity {
                         .toString());
                 serverIntent.putExtra("bankPassword", bankPassword.getText()
                         .toString());
-                serverIntent.putExtra("bankName", bankMappingHelper.getBankCode(bank));
+                serverIntent.putExtra("bankName", bankMappingHelper
+                        .getBankCode(bank));
                 startService(serverIntent);
                 finish();
             }

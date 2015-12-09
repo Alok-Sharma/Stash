@@ -26,7 +26,8 @@ public class ServerAccess extends IntentService {
     PlaidHelper plaidHelper;
 
     public enum ServerAction {
-        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK,
+        DELETE_STASH, UPDATE_PROFILE
     }
 
     public ServerAccess() {
@@ -57,10 +58,13 @@ public class ServerAccess extends IntentService {
                         Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeActivity);
                 break;
+
             case UPDATE_PROFILE:
                 String User_Name = incomingIntent.getStringExtra("User_Name");
-                String User_Email = incomingIntent.getStringExtra("User_Email");
-                String User_Password = incomingIntent.getStringExtra("User_Password");
+                String User_Email = incomingIntent.getStringExtra
+                        ("User_Email");
+                String User_Password = incomingIntent.getStringExtra
+                        ("User_Password");
                 //Push data to your function
                 updateprofile(User_Name, User_Email, User_Password);
                 homeActivity = new Intent(this, HomeActivity.class);
@@ -68,30 +72,39 @@ public class ServerAccess extends IntentService {
                         Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeActivity);
                 break;
+
             case ADD_USER:
                 //GET_BALANCE creates a new bank account if the incoming
                 // intent has username, password and bank name.
+
             case ADD_MONEY:
                 //Add money to a stash.
-                String stashObjectId = incomingIntent.getStringExtra("stashObjectId");
-                final Double addAmount = incomingIntent.getDoubleExtra("addAmount", 0.0);
+                String stashObjectId = incomingIntent.getStringExtra
+                        ("stashObjectId");
+                final Double addAmount = incomingIntent.getDoubleExtra
+                        ("addAmount", 0.0);
 
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
-                query.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
-                    public void done(ParseObject stashObject, ParseException e) {
-                        if (e == null) {
-                            double currentValue = stashObject.getDouble("StashValue");
-                            double newValue = currentValue + addAmount;
-                            stashObject.put("StashValue", newValue);
-                            stashObject.saveInBackground();
-                        } else {
-                            // something went wrong
-                            Log.e("StashLog", e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                query.getInBackground(stashObjectId, new
+                        GetCallback<ParseObject>() {
+                            public void done(ParseObject stashObject,
+                                             ParseException
+                                                     e) {
+                                if (e == null) {
+                                    double currentValue = stashObject.getDouble
+                                            ("StashValue");
+                                    double newValue = currentValue + addAmount;
+                                    stashObject.put("StashValue", newValue);
+                                    stashObject.saveInBackground();
+                                } else {
+                                    // something went wrong
+                                    Log.e("StashLog", e.getMessage());
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                 break;
+
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
                 // username/password is available in the intent.
@@ -102,16 +115,20 @@ public class ServerAccess extends IntentService {
                 if (bankUsername == null) {
                     //no username, password. Use access token.
                     accessTokens = plaidHelper.getAccessTokenMapDecrypted();
-                    if(accessTokens == null) {
+                    if (accessTokens == null) {
                         // no banks associated yet.
                         outgoingIntent.putExtra("error", "no_bank");
                     } else {
                         try {
-                            String accessToken = accessTokens.get("wells"); // TODO: Only getting wells fargo balance. Iterate and get all (Alok)
+                            String accessToken = accessTokens.get("wells");
+                            // TODO: Only getting wells fargo balance.
+                            // Iterate and get all (Alok)
                             Double balance = plaidHelper.getBankBalance
                                     (accessToken);
-                            //making a copy of Map because I'm able to send only HashMap
-                            HashMap<String, String> banks = new HashMap<>(accessTokens);
+                            //making a copy of Map because I'm able to send
+                            // only HashMap
+                            HashMap<String, String> banks = new HashMap<>
+                                    (accessTokens);
                             outgoingIntent.putExtra("map", banks);
                             if (balance != null) {
                                 outgoingIntent.putExtra("balance", balance);
@@ -128,8 +145,9 @@ public class ServerAccess extends IntentService {
                             ("bankPassword");
                     String bankName = incomingIntent.getStringExtra
                             ("bankName");
-                    Double balance = plaidHelper.getBankBalance(bankUsername,
-                            bankPassword, bankName);
+                    Double balance = plaidHelper.getBankBalance
+                            (bankUsername, bankPassword, bankName);
+
                     Log.d("StashLog", "balance: " + balance);
                     outgoingIntent.putExtra("balance", balance);
                 }
@@ -138,26 +156,33 @@ public class ServerAccess extends IntentService {
             case DELETE_BANK:
                 String bankName = incomingIntent.getStringExtra("BankName");
                 String bankCode = bankMappingHelper.getBankCode(bankName);
-                HashMap<String, String> bankMap = new HashMap<>(plaidHelper.getAccessTokenMapEncrypted());
+                HashMap<String, String> bankMap = new HashMap<>(plaidHelper
+                        .getAccessTokenMapEncrypted());
                 bankMap.remove(bankCode);
                 ParseUser.getCurrentUser().put("BankMap", bankMap);
                 ParseUser.getCurrentUser().saveInBackground();
                 ParseUser.getCurrentUser().pinInBackground();
                 break;
+
             case DELETE_STASH:
-                String removeStashId = incomingIntent.getStringExtra("stashObjectId");
-                ParseQuery<ParseObject> removeQuery = ParseQuery.getQuery("Stash");
-                removeQuery.getInBackground(removeStashId, new GetCallback<ParseObject>() {
-                    public void done(ParseObject stashObject, ParseException e) {
-                        if (e == null) {
-                            try {
-                                stashObject.delete();
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
+                String removeStashId = incomingIntent.getStringExtra
+                        ("stashObjectId");
+                ParseQuery<ParseObject> removeQuery = ParseQuery.getQuery
+                        ("Stash");
+                removeQuery.getInBackground(removeStashId, new
+                        GetCallback<ParseObject>() {
+                            public void done(ParseObject stashObject,
+                                             ParseException
+                                                     e) {
+                                if (e == null) {
+                                    try {
+                                        stashObject.delete();
+                                    } catch (ParseException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
+                        });
                 break;
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
@@ -253,7 +278,8 @@ public class ServerAccess extends IntentService {
         Stash.deleteInBackground();
     }
 
-    public void updateprofile(String User_Name, String User_Email, String User_Password) {
+    public void updateprofile(String User_Name, String User_Email, String
+            User_Password) {
         /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
         ParseUser currentuser = ParseUser.getCurrentUser();
