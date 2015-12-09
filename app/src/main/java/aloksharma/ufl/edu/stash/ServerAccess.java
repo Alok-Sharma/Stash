@@ -27,7 +27,7 @@ public class ServerAccess extends IntentService {
 
     public enum ServerAction {
         ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK,
-        DELETE_STASH, UPDATE_PROFILE
+        DELETE_STASH, UPDATE_PROFILE, MFA_QUESTION
     }
 
     public ServerAccess() {
@@ -132,6 +132,7 @@ public class ServerAccess extends IntentService {
                             outgoingIntent.putExtra("map", banks);
                             if (balance != null) {
                                 outgoingIntent.putExtra("balance", balance);
+                                outgoingIntent.putExtra("finalBalance", "yes");
                             } else {
                                 outgoingIntent.putExtra("error", "no_keys");
                             }
@@ -147,11 +148,52 @@ public class ServerAccess extends IntentService {
                             ("bankName");
                     Double balance = plaidHelper.getBankBalance
                             (bankUsername, bankPassword, bankName);
-
                     Log.d("StashLog", "balance: " + balance);
-                    outgoingIntent.putExtra("balance", balance);
+                    if (balance == -2.0) {
+                        outgoingIntent.putExtra("mfaRequired", "yes");
+                        PlaidHelper.Response resp = plaidHelper.getMFAQuestion
+                                (bankUsername, bankPassword, bankName);
+                        outgoingIntent.putExtra("question", resp.question);
+                        outgoingIntent.putExtra("responseCode", String
+                                .valueOf(resp
+                                .responseCode));
+                        outgoingIntent.putExtra("access_token", resp
+                                .access_token);
+                        outgoingIntent.putExtra("username", bankUsername);
+                        outgoingIntent.putExtra("password", bankPassword);
+                        outgoingIntent.putExtra("type", bankName);
+                    } else {
+                        outgoingIntent.putExtra("balance", balance);
+                        outgoingIntent.putExtra("finalBalance", "yes");
+                    }
                 }
                 break;
+
+            case MFA_QUESTION:
+                String access_token = incomingIntent.getStringExtra
+                        ("access_token");
+                String answer = incomingIntent.getStringExtra("answer");
+                String username = incomingIntent.getStringExtra("username");
+                String password = incomingIntent.getStringExtra("password");
+                String type = incomingIntent.getStringExtra("type");
+                PlaidHelper.Response resp = plaidHelper.postMFAAnswer
+                        (username, password, type, access_token, answer);
+                if (resp.responseCode == 201) {
+                    outgoingIntent.putExtra("question", resp.question);
+                    outgoingIntent.putExtra("responseCode", String.valueOf(resp
+                            .responseCode));
+                    outgoingIntent.putExtra("access_token", resp
+                            .access_token);
+                    outgoingIntent.putExtra("username", username);
+                    outgoingIntent.putExtra("password", password);
+                    outgoingIntent.putExtra("type", type);
+                } else if (resp.responseCode == 200) {
+                    outgoingIntent.putExtra("responseCode", String.valueOf(resp
+                            .responseCode));
+                    outgoingIntent.putExtra("finalBalance", "yes");
+                    outgoingIntent.putExtra("balance", resp.balance);
+                }
+
 
             case DELETE_BANK:
                 String bankName = incomingIntent.getStringExtra("BankName");

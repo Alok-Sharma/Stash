@@ -1,8 +1,15 @@
 package aloksharma.ufl.edu.stash;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,10 +47,17 @@ public class AddAccountActivity extends DrawerActivity {
                 serverIntent.putExtra("bankName", bankMappingHelper
                         .getBankCode(bank));
                 startService(serverIntent);
-                finish();
+//                finish();
             }
         });
 
+        //Register to listen for the services response.
+        IntentFilter serviceFilter = new IntentFilter("server_response");
+        serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        ServiceBroadcastReceiver serviceListener = new
+                ServiceBroadcastReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver
+                (serviceListener, serviceFilter);
     }
 
     @Override
@@ -52,5 +66,144 @@ public class AddAccountActivity extends DrawerActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
         finish();
+    }
+
+    private class ServiceBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String response = intent.getStringExtra("server_response");
+            ServerAccess.ServerAction responseAction = ServerAccess
+                    .ServerAction.valueOf(response);
+
+            switch (responseAction) {
+                case GET_BALANCE:
+                    String mfaRequired = intent.getStringExtra("mfaRequired");
+                    if (mfaRequired != null && mfaRequired.equals("yes")) {
+
+                        final String access_token = intent.getStringExtra
+                                ("access_token");
+                        final String question = intent.getStringExtra
+                                ("question");
+                        final String username = intent.getStringExtra
+                                ("username");
+                        final String password = intent.getStringExtra
+                                ("password");
+                        final String type = intent.getStringExtra("type");
+
+                        final AlertDialog.Builder alert = new AlertDialog
+                                .Builder(AddAccountActivity.this);
+                        final EditText edittext = new EditText
+                                (AddAccountActivity.this);
+                        alert.setMessage(question);
+                        alert.setTitle("Please answer this question:");
+
+                        alert.setView(edittext);
+
+                        Log.d("dialog", "inside while 2");
+
+                        alert.setPositiveButton("Submit", new DialogInterface
+                                .OnClickListener() {
+                            public void onClick(DialogInterface dialog, int
+                                    whichButton) {
+                                String answer = edittext.getText().toString();
+                                final Intent serverIntent = new Intent
+                                        (AddAccountActivity.this,
+                                                ServerAccess.class);
+                                serverIntent.putExtra("server_action",
+                                        ServerAccess.ServerAction
+                                                .MFA_QUESTION.toString());
+                                serverIntent.putExtra("answer", answer);
+                                serverIntent.putExtra("access_token",
+                                        access_token);
+                                serverIntent.putExtra("username", username);
+                                serverIntent.putExtra("password", password);
+                                serverIntent.putExtra("type", type);
+
+                                startService(serverIntent);
+                            }
+                        });
+
+                        alert.setNegativeButton("Cancel", new DialogInterface
+                                .OnClickListener() {
+                            public void onClick(DialogInterface dialog, int
+                                    whichButton) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        Log.d("dialog", "inside while 3");
+
+                        alert.show();
+                    }
+                    break;
+
+                case MFA_QUESTION:
+                    String responseCode = intent.getStringExtra
+                            ("responseCode");
+                    if (responseCode != null && responseCode.equals("201")) {
+
+                        final String access_token = intent.getStringExtra
+                                ("access_token");
+                        final String question = intent.getStringExtra
+                                ("question");
+                        final String username = intent.getStringExtra
+                                ("username");
+                        final String password = intent.getStringExtra
+                                ("password");
+                        final String type = intent.getStringExtra("type");
+
+                        final AlertDialog.Builder alert = new AlertDialog
+                                .Builder(AddAccountActivity.this);
+                        final EditText edittext = new EditText
+                                (AddAccountActivity.this);
+                        alert.setMessage(question);
+                        alert.setTitle("Please answer this question:");
+
+                        alert.setView(edittext);
+
+                        Log.d("dialog", "inside while 2, mfa_question case");
+
+                        alert.setPositiveButton("Submit", new DialogInterface
+                                .OnClickListener() {
+                            public void onClick(DialogInterface dialog, int
+                                    whichButton) {
+                                String answer = edittext.getText().toString();
+                                final Intent serverIntent = new Intent
+                                        (AddAccountActivity.this,
+                                                ServerAccess.class);
+                                serverIntent.putExtra("server_action",
+                                        ServerAccess.ServerAction
+                                                .MFA_QUESTION.toString());
+                                serverIntent.putExtra("answer", answer);
+                                serverIntent.putExtra("access_token",
+                                        access_token);
+                                serverIntent.putExtra("username", username);
+                                serverIntent.putExtra("password", password);
+                                serverIntent.putExtra("type", type);
+
+                                startService(serverIntent);
+                            }
+                        });
+
+                        alert.setNegativeButton("Cancel", new DialogInterface
+                                .OnClickListener() {
+                            public void onClick(DialogInterface dialog, int
+                                    whichButton) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        Log.d("dialog", "inside while 3");
+
+                        alert.show();
+                    }
+                    else if (responseCode != null && responseCode.equals("200"))
+                        finish();
+
+                    break;
+            }
+        }
+
     }
 }

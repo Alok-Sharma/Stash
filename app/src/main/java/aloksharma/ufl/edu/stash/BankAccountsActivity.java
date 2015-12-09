@@ -40,11 +40,13 @@ public class BankAccountsActivity extends DrawerActivity {
         serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
         serviceListener = new ServiceBroadcastReceiver();
 
-        FloatingActionButton addAccountFAB = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton addAccountFAB = (FloatingActionButton)
+                findViewById(R.id.fab);
         addAccountFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(BankAccountsActivity.this, AddAccountActivity.class);
+                Intent myIntent = new Intent(BankAccountsActivity.this,
+                        AddAccountActivity.class);
                 startActivity(myIntent);
             }
         });
@@ -52,22 +54,31 @@ public class BankAccountsActivity extends DrawerActivity {
         ListView listView = (ListView) findViewById(R.id.BanksList);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            public void onItemClick(final AdapterView<?> parent, View view, final int listPosition, long id) {
+            public void onItemClick(final AdapterView<?> parent, View view,
+                                    final int listPosition, long id) {
 
                 AlertDialog dialog = new AlertDialog.Builder(context)
                         .setTitle("Delete Bank")
-                        .setMessage("Are you sure you want to delete this bank?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String bankName = (String)parent.getItemAtPosition(listPosition);
-                                serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_BANK.toString());
+                        .setMessage("Are you sure you want to delete this " +
+                                "bank?")
+                        .setPositiveButton(android.R.string.yes, new
+                                DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int
+                                    which) {
+                                String bankName = (String) parent
+                                        .getItemAtPosition(listPosition);
+                                serverIntent.putExtra("server_action",
+                                        ServerAccess.ServerAction
+                                                .DELETE_BANK.toString());
                                 serverIntent.putExtra("BankName", bankName);
                                 context.startService(serverIntent);
                                 fetchBanks();
                             }
                         })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+                        .setNegativeButton(android.R.string.no, new
+                                DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int
+                                    which) {
                                 // do nothing
                             }
                         })
@@ -79,21 +90,24 @@ public class BankAccountsActivity extends DrawerActivity {
     private void fetchBanks() {
         //creating an intent to talk to server access
         final Intent serverIntent = new Intent(this, ServerAccess.class);
-        serverIntent.putExtra("server_action", ServerAccess.ServerAction.GET_BALANCE.toString());
+        serverIntent.putExtra("server_action", ServerAccess.ServerAction
+                .GET_BALANCE.toString());
         startService(serverIntent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(serviceListener, serviceFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver
+                (serviceListener, serviceFilter);
         fetchBanks();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(serviceListener);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver
+                (serviceListener);
     }
 
     @Override
@@ -110,35 +124,48 @@ public class BankAccountsActivity extends DrawerActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String response = intent.getStringExtra("server_response");
-            ServerAccess.ServerAction responseAction = ServerAccess.ServerAction.valueOf(response);
-            BankMappingHelper bankMappingHelper = new BankMappingHelper(context);
+            ServerAccess.ServerAction responseAction = ServerAccess
+                    .ServerAction.valueOf(response);
+            BankMappingHelper bankMappingHelper = new BankMappingHelper
+                    (context);
 
             switch (responseAction) {
                 case GET_BALANCE:
+//                    if (intent.getStringExtra("finalBalance") != null &&
+//                            intent.getStringExtra("finalBalance").equals
+//                                    ("yes")) {
 
-                    ListView banksList = (ListView) findViewById(R.id.BanksList);
-                    ArrayList<String> list;
-                    String error = intent.getStringExtra("error");
-                    HashMap<String, String> map = (HashMap<String, String>) intent.getSerializableExtra("map");
+                        ListView banksList = (ListView) findViewById(R.id
+                                .BanksList);
+                        ArrayList<String> list;
+                        String error = intent.getStringExtra("error");
+                        HashMap<String, String> map = (HashMap<String,
+                                String>) intent.getSerializableExtra("map");
 
-                    if (error == null && map != null){
-                        Set<String> set = map.keySet();
-                        //passing ArrayList to ListView Adapter
-                        list = new ArrayList<>(set);
+                        if (error == null && map != null) {
+                            Set<String> set = map.keySet();
+                            //passing ArrayList to ListView Adapter
+                            list = new ArrayList<>(set);
 
-                        //for Enum to String conversion
-                        for (String bank : list) {
-                            String b = bankMappingHelper.getBankName(bank);
-                            list.remove(bank);  //remove Enum
-                            list.add(b);    //add full name of bank
+                            //for Enum to String conversion
+                            for (String bank : list) {
+                                String b = bankMappingHelper.getBankName(bank);
+                                list.remove(bank);  //remove Enum
+                                list.add(b);    //add full name of bank
+                            }
+                            //create list view adapter
+                            ArrayAdapter listAdapter = new ArrayAdapter<>
+                                    (context, R.layout.banks_list_row, list);
+                            banksList.setAdapter(listAdapter);
+                        } else if (error != null && error.equals("no_bank")) {
+                            ArrayAdapter listAdapter = new ArrayAdapter<>
+                                    (context, R.layout.banks_list_row, new
+                                            ArrayList<>());
+                            banksList.setAdapter(listAdapter);
                         }
-                        //create list view adapter
-                        ArrayAdapter listAdapter = new ArrayAdapter<>(context, R.layout.banks_list_row, list);
-                        banksList.setAdapter(listAdapter);
-                    } else if(error!= null && error.equals("no_bank")) {
-                        ArrayAdapter listAdapter = new ArrayAdapter<>(context, R.layout.banks_list_row, new ArrayList<>());
-                        banksList.setAdapter(listAdapter);
-                    }
+//                    }
+                    break;
+
             }
         }
     }

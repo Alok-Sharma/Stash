@@ -3,18 +3,16 @@ package aloksharma.ufl.edu.stash;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -22,8 +20,8 @@ import com.parse.ParseUser;
 public class DrawerActivity extends AppCompatActivity {
 
     private static int fromPosition = 0;
-    String TITLES[] = {"Profile", "Bank Accounts", "Add Stash", "Logout"};
-    int ICONS[] = {R.drawable.ic_person_black_18dp, R.drawable
+    String TITLES[] = {"Home","Profile", "Bank Accounts", "Add Stash", "Logout"};
+    int ICONS[] = {R.drawable.ic_home_black_18dp, R.drawable.ic_person_black_18dp, R.drawable
             .ic_account_balance_black_18dp, R.drawable
             .ic_add_circle_outline_black_18dp, R.drawable
             .ic_power_settings_new_black_18dp};
@@ -48,12 +46,8 @@ public class DrawerActivity extends AppCompatActivity {
         setContentView(resLayoutID);
 
         currentUser = ParseUser.getCurrentUser();
-        Log.d("Stash: DrawerActivity", "CurrentUser is: " + currentUser
-                .getUsername());
         NAME = currentUser.getUsername();
-        Log.d("Stash: Drawer Activity:", "User's Name: " + NAME);
         EMAIL = currentUser.getEmail();
-        Log.d("Stash: Drawer Activity:", "User's Email: " + EMAIL);
         try {
             ParseFile parseFile = currentUser.getParseFile("profileThumb");
             if (parseFile != null) {
@@ -100,24 +94,30 @@ public class DrawerActivity extends AppCompatActivity {
                     Drawer.closeDrawers();
                     if (recyclerView.getChildPosition(child) == 1) {
                         navigateTo = new Intent(DrawerActivity.this,
-                                ProfileActivity.class);
+                                HomeActivity.class);
                         navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
                     }
                     if (recyclerView.getChildPosition(child) == 2) {
+                        navigateTo = new Intent(DrawerActivity.this,
+                                ProfileActivity.class);
+                        navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(navigateTo);
+                    }
+                    if (recyclerView.getChildPosition(child) == 3) {
                         navigateTo = new Intent(DrawerActivity.this,
                                 BankAccountsActivity.class);
                         navigateTo.addFlags(Intent
                                 .FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
                     }
-                    if (recyclerView.getChildPosition(child) == 3) {
+                    if (recyclerView.getChildPosition(child) == 4) {
                         navigateTo = new Intent(DrawerActivity.this,
                                 AddStash.class);
                         navigateTo.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(navigateTo);
                     }
-                    if (recyclerView.getChildPosition(child) == 4) {
+                    if (recyclerView.getChildPosition(child) == 5) {
                         ParseUser.logOut();
                         navigateTo = new Intent(DrawerActivity.this,
                                 LoginActivity.class);

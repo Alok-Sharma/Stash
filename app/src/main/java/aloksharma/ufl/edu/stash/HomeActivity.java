@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -128,11 +127,13 @@ public class HomeActivity extends DrawerActivity {
                 } else {
                     mainCircleProgress = (float) savedAmount / toSaveAmount;
                 }
-                mainHoloCircularProgressBar.animate(null, mainCircleProgress, 2000);
+                mainHoloCircularProgressBar.animate(null,
+                        mainCircleProgress, 2000);
 
                 savedAmount = 0;
                 toSaveAmount = 0;
-                stashGridView = (ExpandableHeightGridView) findViewById(R.id.stashGridView);
+                stashGridView = (ExpandableHeightGridView) findViewById(R.id
+                        .stashGridView);
                 stashGridView.setFocusable(false);
                 stashGridView.setAdapter(new ProgressBarAdapter
                         (getApplicationContext()));
@@ -151,7 +152,8 @@ public class HomeActivity extends DrawerActivity {
                             e1.printStackTrace();
                         }
 
-                        TextView stashNameview = (TextView) v.findViewById(R.id.stashName);
+                        TextView stashNameview = (TextView) v.findViewById(R
+                                .id.stashName);
                         stashColor = stashNameview.getCurrentTextColor();
 
                         Calendar currentDateCalendar = new GregorianCalendar();
@@ -186,22 +188,50 @@ public class HomeActivity extends DrawerActivity {
                         if (monthsLeft >= 0) {
                             moneyGoalsMonthlySavings = "$" + String.valueOf
                                     (Math.round(((float) (gridObjectList.get
-                                                    (position).getInt("StashGoal") -
-                                                    gridObjectList.get(position)
+                                                    (position).getInt
+                                                    ("StashGoal") -
+                                                    gridObjectList.get
+                                                            (position)
                                                             .getInt("StashValue")) /
-                                                    (monthsLeft + 1)) * 100.0) / 100.0
+                                                    (monthsLeft + 1)) * 100.0)
+                                                    / 100.0
                                     ) + "/month";
                         } else {
                             moneyGoalsMonthlySavings = "$ 0";
                         }
 
 
-                        if ((stashTargetDate.getTime() - currentDate.getTime()) > 0 && ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000)) != 0) {
-                            timeGoalsProgressBar = (float) ((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000)) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000));
-                            timeGoalsPercentage = String.valueOf(Math.round((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))) * 100) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))) + "%";
-                            if ((((currentDate.getTime() - stashInitializationDate.getTime()) / (86400000))) == 0) {
-                                timeGoalsProgressBar = (float) (1) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000));
-                                timeGoalsPercentage = String.valueOf(Math.round(((1)) * 100) / ((stashTargetDate.getTime() - stashInitializationDate.getTime()) / (86400000))) + "%";
+                        if ((stashTargetDate.getTime() - currentDate.getTime
+                                ()) > 0 && ((stashTargetDate.getTime() -
+                                stashInitializationDate.getTime()) /
+                                (86400000)) != 0) {
+                            timeGoalsProgressBar = (float) ((currentDate
+                                    .getTime() - stashInitializationDate
+                                    .getTime()) / (86400000)) / (
+                                    (stashTargetDate.getTime() -
+                                            stashInitializationDate.getTime
+                                                    ()) / (86400000));
+                            timeGoalsPercentage = String.valueOf(Math.round(
+                                    (((currentDate.getTime() -
+                                            stashInitializationDate.getTime
+                                                    ()) / (86400000))) *
+                                            100) / ((stashTargetDate.getTime
+                                    () - stashInitializationDate.getTime())
+                                    / (86400000))) + "%";
+                            if ((((currentDate.getTime() -
+                                    stashInitializationDate.getTime()) /
+                                    (86400000))) == 0) {
+                                timeGoalsProgressBar = (float) (1) / (
+                                        (stashTargetDate.getTime() -
+                                                stashInitializationDate
+                                                        .getTime()) /
+                                                (86400000));
+                                timeGoalsPercentage = String.valueOf(Math
+                                        .round(((1)) * 100) / (
+                                        (stashTargetDate.getTime() -
+                                                stashInitializationDate
+                                                        .getTime()) /
+                                                (86400000))) + "%";
                             }
                         } else {
                             timeGoalsProgressBar = (float) 1.00f;
@@ -265,19 +295,26 @@ public class HomeActivity extends DrawerActivity {
                             }
                         }
 
-                        Intent toViewStash = new Intent(getApplicationContext(),
+                        Intent toViewStash = new Intent
+                                (getApplicationContext(),
                                 ViewStashActivity.class);
-                        toViewStash.putExtra("objectId", gridObjectList.get(position).getObjectId());
+                        toViewStash.putExtra("objectId", gridObjectList.get
+                                (position).getObjectId());
                         startActivity(toViewStash);
                     }
                 });
 
-//                stashGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//                stashGridView.setOnItemLongClickListener(new AdapterView
+// .OnItemLongClickListener() {
 //                    @Override
-//                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                        String objectId = gridObjectList.get(i).getObjectId();
-//                        Intent serverIntent = new Intent(context, ServerAccess.class);
-//                        serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_STASH.toString());
+//                    public boolean onItemLongClick(AdapterView<?>
+// adapterView, View view, int i, long l) {
+//                        String objectId = gridObjectList.get(i)
+// .getObjectId();
+//                        Intent serverIntent = new Intent(context,
+// ServerAccess.class);
+//                        serverIntent.putExtra("server_action",
+// ServerAccess.ServerAction.DELETE_STASH.toString());
 //                        serverIntent.putExtra("stashObjectId", objectId);
 //                        context.startService(serverIntent);
 //                        return false;
@@ -285,17 +322,22 @@ public class HomeActivity extends DrawerActivity {
 //                });
             }
 
-            private void textViewAnimate(final TextView view, int countTo, int duration) {
+            private void textViewAnimate(final TextView view, int countTo,
+                                         int duration) {
                 ValueAnimator animator = new ValueAnimator();
                 animator.setObjectValues(0, countTo);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                animator.addUpdateListener(new ValueAnimator
+                        .AnimatorUpdateListener() {
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        view.setText("$" + String.valueOf(animation.getAnimatedValue()));
+                        view.setText("$" + String.valueOf(animation
+                                .getAnimatedValue()));
                     }
                 });
                 animator.setEvaluator(new TypeEvaluator<Integer>() {
-                    public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-                        return Math.round(startValue + (endValue - startValue) * fraction);
+                    public Integer evaluate(float fraction, Integer
+                            startValue, Integer endValue) {
+                        return Math.round(startValue + (endValue -
+                                startValue) * fraction);
                     }
                 });
                 animator.setDuration(duration);
@@ -331,7 +373,8 @@ public class HomeActivity extends DrawerActivity {
             switch (responseAction) {
                 case GET_BALANCE:
                     Double balance = intent.getDoubleExtra("balance", -1.0);
-                    Double effectiveBalance = Math.floor((balance - savedAmount) * 100) / 100;
+                    Double effectiveBalance = Math.floor((balance -
+                            savedAmount) * 100) / 100;
 
                     TextView effectiveBalanceView = (TextView) findViewById
                             (R.id.effectiveBalance);
@@ -346,9 +389,37 @@ public class HomeActivity extends DrawerActivity {
                     }
 
                     if (error != null && error.equals("no_keys")) {
-                        Toast.makeText(context, "Unable to decrypt, please remove all Bank accounts and add again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Unable to decrypt, please " +
+                                "remove all Bank accounts and add again.",
+                                Toast.LENGTH_SHORT).show();
                     }
+                    break;
+
+//                case MFA_QUESTION:
+//                    Double balance1 = intent.getDoubleExtra("balance", -1.0);
+//                    Double effectiveBalance1 = Math.floor((balance1 -
+//                            savedAmount) * 100) / 100;
+//
+//                    TextView effectiveBalanceView1 = (TextView) findViewById
+//                            (R.id.effectiveBalance);
+//                    effectiveBalanceView1.setText("Effective Balance: $" +
+//                            effectiveBalance1);
+//
+//                    String error1 = intent.getStringExtra("error");
+//                    if (error1 != null && error1.equals("no_bank")) {
+//                        Toast.makeText(context, "Please add at least one " +
+//                                "bank account from the menu.", Toast
+//                                .LENGTH_LONG).show();
+//                    }
+//
+//                    if (error1 != null && error1.equals("no_keys")) {
+//                        Toast.makeText(context, "Unable to decrypt, please " +
+//                                "remove all Bank accounts and add again.",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                    break;
             }
+//        }
         }
     }
 }
