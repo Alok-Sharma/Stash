@@ -16,6 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +35,11 @@ public class ViewStashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        viewStashFunctionality();
+        setContentView(R.layout.activity_view_stash);
+//        viewStashFunctionality();
     }
 
     private void viewStashFunctionality() {
-        setContentView(R.layout.activity_view_stash);
         Intent incomingIntent = getIntent();
         stashObjectId = incomingIntent.getStringExtra("objectId");
 
@@ -74,11 +78,30 @@ public class ViewStashActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_deleteStash:
-                Intent serverIntent = new Intent(this, ServerAccess.class);
+                ParseQuery<ParseObject> removeQuery = ParseQuery.getQuery("Stash");
+                removeQuery.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
+                    public void done(ParseObject stashObject, ParseException e) {
+                        if (e == null) {
+                            try {
+                                stashObject.delete();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                /*Intent serverIntent = new Intent(this, ServerAccess.class);
                 serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_STASH.toString());
                 serverIntent.putExtra("stashObjectId", stashObjectId);
-                startService(serverIntent);
-                finish();
+                startService(serverIntent);*/
+                try {
+                    Thread.sleep(350);
+                    Intent homeActivity = new Intent(this, HomeActivity.class);
+                    homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(homeActivity);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return true;
             case android.R.id.home:
                 Intent intent = new Intent(this, HomeActivity.class);
@@ -99,8 +122,15 @@ public class ViewStashActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter
                 (getSupportFragmentManager());
-        adapter.addFragment(new MoneyGoalsFragment(), "MONEY GOALS");
-        adapter.addFragment(new TimeGoalsFragment(), "TIME GOALS");
+        MoneyGoalsFragment moneyFragment = new MoneyGoalsFragment();
+        TimeGoalsFragment timeFragment = new TimeGoalsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("stashObjectId", stashObjectId);
+        moneyFragment.setArguments(bundle);
+        timeFragment.setArguments(bundle);
+
+        adapter.addFragment(moneyFragment, "MONEY GOALS");
+        adapter.addFragment(timeFragment, "TIME GOALS");
         viewPager.setAdapter(adapter);
     }
 
