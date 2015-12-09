@@ -25,11 +25,6 @@
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
-        <activity
-            android:name=".alertDialogMFA">
-            <!--android:theme="@android:style/Theme.Dialog" -->
-
-        </activity>
 
         <service
             android:name=".ServerAccess"
