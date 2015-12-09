@@ -1,11 +1,8 @@
 package aloksharma.ufl.edu.stash;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -22,7 +19,6 @@ public class ProfileActivity extends DrawerActivity {
     EditText user_password;
     SharedPreferences sharedPref;
     SharedPreferences.Editor sharedPrefEditor;
-    Context context;
     Switch notif;
 
 
@@ -58,7 +54,7 @@ public class ProfileActivity extends DrawerActivity {
                 .UPDATE_PROFILE.toString());
 
         //Adding notification switch case status to shared Preferences
-        sharedPref = context.getSharedPreferences("stashData", 0);
+        sharedPref = this.getSharedPreferences("stashData", 0);
         sharedPrefEditor = sharedPref.edit();
 
         //event listener for switch status change

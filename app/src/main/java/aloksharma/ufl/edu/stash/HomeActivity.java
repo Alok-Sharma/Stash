@@ -150,8 +150,11 @@ public class HomeActivity extends DrawerActivity {
                     String autoAddOn = stash.getString("AutoAddOn");
                     Double autoAddValue = stash.getDouble("AutoAddValue");
                     String autoAddEnd = stash.getString("AutoAddEnd");
-                    String ruleAsString = "$" + autoAddValue + " will be added on " + autoAddOn + ", repeating every month " +
-                            "until the " + autoAddEnd.toLowerCase();
+                    String ruleAsString = "No repeating add-money set up.";
+                    if(autoAddOn != null && autoAddValue != null && autoAddEnd != null) {
+                        ruleAsString = "$" + autoAddValue + " will be added on " + autoAddOn + ", repeating every month " +
+                                "until the " + autoAddEnd.toLowerCase();
+                    }
                     editor = sharedPreferences.edit();
                     editor.putString("rule-"+stash.getObjectId(), ruleAsString);
                     editor.commit();

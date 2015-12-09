@@ -43,11 +43,11 @@ public class ServerAccess extends IntentService {
 
     public ServerAccess() {
         super("ServerAccess");
-        sharedPreferences = getSharedPreferences("stashData", 0);
     }
 
     @Override
     protected void onHandleIntent(Intent incomingIntent) {
+        sharedPreferences = getSharedPreferences("stashData", 0);
         String action = incomingIntent.getStringExtra("server_action");
         ServerAction serverAction = ServerAction.valueOf(action);
         Intent outgoingIntent = new Intent("server_response");
