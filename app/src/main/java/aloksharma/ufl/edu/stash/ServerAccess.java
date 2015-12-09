@@ -1,8 +1,14 @@
 package aloksharma.ufl.edu.stash;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.parse.FindCallback;
@@ -13,7 +19,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +33,12 @@ import java.util.Map;
 public class ServerAccess extends IntentService {
 
     PlaidHelper plaidHelper;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     public enum ServerAction {
-        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE
+        ADD_USER, ADD_STASH, GET_BALANCE, ADD_MONEY, DELETE_BANK, DELETE_STASH, UPDATE_PROFILE, ALARM,
+        ADD_RULE
     }
 
     public ServerAccess() {
@@ -35,6 +47,7 @@ public class ServerAccess extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent incomingIntent) {
+        sharedPreferences = getSharedPreferences("stashData", 0);
         String action = incomingIntent.getStringExtra("server_action");
         ServerAction serverAction = ServerAction.valueOf(action);
         Intent outgoingIntent = new Intent("server_response");
@@ -48,10 +61,9 @@ public class ServerAccess extends IntentService {
                 String StashTargetDate = incomingIntent.getStringExtra
                         ("StashTargetDate");
                 int StashGoal = incomingIntent.getIntExtra("StashGoal", 0);
-                int StashValue = incomingIntent.getIntExtra("StashValue", 0);
 
                 //Push data to your function
-                addStash(StashName, StashTargetDate, StashGoal, StashValue);
+                addStash(StashName, StashTargetDate, StashGoal);
                 Intent homeActivity = new Intent(this, HomeActivity.class);
                 homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -74,23 +86,15 @@ public class ServerAccess extends IntentService {
             case ADD_MONEY:
                 //Add money to a stash.
                 String stashObjectId = incomingIntent.getStringExtra("stashObjectId");
-                final Double addAmount = incomingIntent.getDoubleExtra("addAmount", 0.0);
-
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
-                query.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
-                    public void done(ParseObject stashObject, ParseException e) {
-                        if (e == null) {
-                            double currentValue = stashObject.getDouble("StashValue");
-                            double newValue = currentValue + addAmount;
-                            stashObject.put("StashValue", newValue);
-                            stashObject.saveInBackground();
-                        } else {
-                            // something went wrong
-                            Log.e("StashLog", e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                Double addAmount = incomingIntent.getDoubleExtra("addAmount", 0.0);
+                addMoneyToStash(stashObjectId, addAmount);
+                break;
+            case ADD_RULE:
+                String stashObjectIdAddRule = incomingIntent.getStringExtra("stashObjectId");
+                Double addAmountRule = incomingIntent.getDoubleExtra("addAmount", 0.0);
+                String repeatOnDateString = incomingIntent.getStringExtra("repeatOnDate");
+                String endOnEvent = incomingIntent.getStringExtra("endOnEvent");
+                addRule(stashObjectIdAddRule, addAmountRule, repeatOnDateString, endOnEvent);
                 break;
             case GET_BALANCE:
                 //Make appropriate getBankBalance call depending if
@@ -102,18 +106,16 @@ public class ServerAccess extends IntentService {
                 if (bankUsername == null) {
                     //no username, password. Use access token.
                     accessTokens = plaidHelper.getAccessTokenMapDecrypted();
-                    if(accessTokens == null) {
+                    if (accessTokens == null) {
                         // no banks associated yet.
                         outgoingIntent.putExtra("error", "no_bank");
                     } else {
                         try {
-                            String accessToken = accessTokens.get("wells"); // TODO: Only getting wells fargo balance. Iterate and get all (Alok)
-                            Double balance = plaidHelper.getBankBalance
-                                    (accessToken);
+                            double balance = getBalanceFromTokens(accessTokens);
                             //making a copy of Map because I'm able to send only HashMap
                             HashMap<String, String> banks = new HashMap<>(accessTokens);
                             outgoingIntent.putExtra("map", banks);
-                            if (balance != null) {
+                            if (balance != -1.0) {
                                 outgoingIntent.putExtra("balance", balance);
                             } else {
                                 outgoingIntent.putExtra("error", "no_keys");
@@ -159,6 +161,70 @@ public class ServerAccess extends IntentService {
                     }
                 });
                 break;
+            case ALARM:
+                Log.d("StashLog", "Alarm case");
+                Map<String, String> accessTokensAlarm = plaidHelper.getAccessTokenMapDecrypted();
+                if (accessTokensAlarm == null) {
+                    // no banks associated yet.
+                    Log.d("StashLog", "alarm no banks");
+                    outgoingIntent.putExtra("error", "no_bank");
+                } else {
+                    Log.d("StashLog", "Alarm bank found");
+                    double savedAmount = 0, effectiveBal;
+                    Double balance = getBalanceFromTokens(accessTokensAlarm);
+                    List<ParseObject> stashes = getStashes();
+                    //Functionality for auto add money.------
+                    // for each stash check if todays date is same as autoAddNext date.
+                    for (ParseObject stash : stashes) {
+                        Log.d("StashLog", "Alarm auto add for loop");
+                        savedAmount = savedAmount + stash.getInt("StashValue");
+                        if (isAutoAddDate(stash) && isEndConditionMet(stash)) {
+                            // Today is the date for auto adding money and the end condition is being met.
+                            // Delete all auto add fields.
+                            stash.remove("AutoAddValue");
+                            stash.remove("AutoAddEnd");
+                            stash.remove("AutoAddOn");
+                            stash.saveInBackground();
+                            stash.pinInBackground();
+                        } else if (isAutoAddDate(stash) && !isEndConditionMet(stash)) {
+                            // Today is the date for adding money, but the end condition is not met.
+                            // Add money to stash. Update AutoAddOn date.
+                            String objectId = stash.getObjectId();
+                            Double autoAddValue = stash.getDouble("AutoAddValue");
+                            String autoAddOn = stash.getString("AutoAddOn");
+
+                            addMoneyToStash(objectId, autoAddValue);
+
+                            String newAutoAddOn = incrementMonth(autoAddOn);
+                            stash.put("AutoAddOn", newAutoAddOn);
+                            stash.saveInBackground();
+                            stash.pinInBackground();
+                        }
+                    }
+
+                    //Functionality for notifications----
+                    Boolean status = sharedPreferences.getBoolean("notifyStatus", true);
+                        effectiveBal = balance - savedAmount;
+                    if (effectiveBal < -1.0) {
+                        Log.d("StashLog", "Alarm notif if case");
+                        NotificationCompat.Builder mBuilder =
+                                new NotificationCompat.Builder(this)
+                                        .setSmallIcon(R.drawable.logo_white)
+                                        .setContentTitle("You're out of cash!")
+                                        .setContentText("Your effective balance is less than zero.");
+                        // Creates an explicit intent for an Activity in your app
+
+                        Intent resultIntent = new Intent(this, HomeActivity.class);
+                        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
+
+                        mBuilder.setContentIntent(resultPendingIntent);
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        // mId allows you to update the notification later on.
+                        mNotificationManager.notify(1, mBuilder.build());
+                    }
+                }
+                break;
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
     }
@@ -171,27 +237,161 @@ public class ServerAccess extends IntentService {
         //Stub to get the Parse user object.
     }
 
+    private List<ParseObject> getStashes(){
+        ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
+        stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+        List<ParseObject> stashList = null;
+        try {
+            stashList = stashQuery.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return stashList;
+    }
+
+    /**
+     * Get bank balance of all banks within the input map of access tokens.
+     * @param accessTokens map of accesstokens for every bank associated with the user.
+     * @return total balance.
+     */
+    private double getBalanceFromTokens(Map<String, String> accessTokens) {
+        String accessToken = accessTokens.get("wells"); // TODO: Only getting wells fargo balance. Iterate and get all (Alok)
+        Double balance = plaidHelper.getBankBalance(accessToken);
+        if(balance != null){
+            return balance;
+        }
+        return -1.0;
+    }
+
+    /**
+     * Add specified amount of money to the specified stash. The stash here is identified by its object id on Parse.
+     * @param stashObjectId Parse object id of the stash to which you want to add money to.
+     * @param addAmount Amount to add.
+     */
+    private void addMoneyToStash(String stashObjectId, final Double addAmount) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
+        query.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
+            public void done(ParseObject stashObject, ParseException e) {
+                if (e == null) {
+                    double currentValue = stashObject.getDouble("StashValue");
+                    double newValue = currentValue + addAmount;
+                    stashObject.put("StashValue", newValue);
+                    stashObject.saveInBackground();
+                    stashObject.pinInBackground();
+                } else {
+                    // something went wrong
+                    Log.e("StashLog", e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * For a specific stash, create a new rule for when to automatically add money to tat stash.
+     * @param stashObjectId
+     * @param amount
+     * @param addMoneyOnString
+     * @param endOnString
+     */
+    private void addRule(String stashObjectId, final Double amount, final String addMoneyOnString, final String endOnString) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Stash");
+        query.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject stashObject, ParseException e) {
+                // TODO: check if e is null first.
+                stashObject.put("AutoAddOn", addMoneyOnString);
+                stashObject.put("AutoAddValue", amount);
+                stashObject.put("AutoAddEnd", endOnString);
+                stashObject.saveInBackground();
+                stashObject.pinInBackground();
+            }
+        });
+        String ruleAsString = "$" + amount + " will be added on " + addMoneyOnString + ", repeating every month " +
+                "until the " + endOnString.toLowerCase();
+        editor = sharedPreferences.edit();
+        editor.putString("rule-"+stashObjectId, ruleAsString);
+        editor.commit();
+    }
+
+    /**
+     * Checks if todays date is the same as the argument date. Returns true if it is.
+     * @param stash The stash to check against today's
+     * @return boolean
+     */
+    private boolean isAutoAddDate(ParseObject stash) {
+        String autoAddOn = stash.getString("AutoAddOn");
+        if (autoAddOn != null) {
+            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            Date autoAddOnDate;
+            try {
+                autoAddOnDate = dateFormat.parse(autoAddOn);
+                return DateUtils.isToday(autoAddOnDate.getTime());
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if end condition was met.
+     * @param stash
+     * @return
+     */
+    private boolean isEndConditionMet(ParseObject stash) {
+        String endEvent = stash.getString("AutoAddEnd");
+        if(endEvent != null) {
+            String[] endEventOptions = getResources().getStringArray(R.array.endEventOptions);
+            if(endEvent.equals(endEventOptions[0])) {
+                //Check if goal amount reached
+                Double stashGoal = stash.getDouble("StashGoal");
+                Double stashValue = stash.getDouble("StashValue");
+                return stashGoal == stashValue;
+            } else if(endEvent.equals(endEventOptions[1])) {
+                //Check if goal date reached
+                DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                String targetDateString = stash.getString("StashTargetDate");
+                try {
+                    Date targetDate = dateFormat.parse(targetDateString);
+                    return DateUtils.isToday(targetDate.getTime());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
+    private String incrementMonth(String autoAddOn) {
+        String[] dateSplit = autoAddOn.split("/");
+        String monthString = dateSplit[0];
+        Integer month = Integer.parseInt(monthString);
+        Integer newMonth = month + 1;
+        String newMonthString = newMonth + "";
+        String newDate = newMonthString + "/" + dateSplit[1] + "/" + dateSplit[2];
+        return newDate;
+    }
+
     /**
      * Add Stash Functionality
      */
     public void addStash(String StashName, String StashTargetDate, int
-            StashGoal, int StashValue) {
+            StashGoal) {
         //Stub to create Stash
         Log.d("CreateStashLog1", StashName);
         Log.d("CreateStashLog2", StashTargetDate);
         Log.d("CreateStashLog3", "" + StashGoal);
-        Log.d("CreateStashLog4", "" + StashValue);
 
         /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
         Stash.put("StashName", StashName);
         Stash.put("StashTargetDate", StashTargetDate);
         Stash.put("StashGoal", StashGoal);
-        Stash.put("StashValue", StashValue);
+        Stash.put("StashValue", 0); //A new stash will have an initial value of 0.
 
         /*Link the ParseUser object with the Stash object*/
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        Stash.put("user", ParseUser.getCurrentUser());     //create a user
+        Stash.put("user", ParseUser.getCurrentUser());
         // relation with the current user
         Stash.saveInBackground(new SaveCallback() {
 
@@ -244,13 +444,6 @@ public class ServerAccess extends IntentService {
         }
         //Log.i("CreateStashLog6", Stash_List.size()+"");
         //removeStash(Stash);                 //Removes the object Stash
-    }
-
-    /**
-     * Remove Stash Functionality
-     */
-    public void removeStash(ParseObject Stash) {
-        Stash.deleteInBackground();
     }
 
     public void updateprofile(String User_Name, String User_Email, String User_Password) {

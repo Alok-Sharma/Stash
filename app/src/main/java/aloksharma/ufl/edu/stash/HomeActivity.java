@@ -3,16 +3,21 @@ package aloksharma.ufl.edu.stash;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +38,21 @@ import java.util.List;
 
 public class HomeActivity extends DrawerActivity {
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     private HoloCircularProgressBar mainHoloCircularProgressBar;
     private ExpandableHeightGridView stashGridView;
+    private ScrollView homeScrollView;
     int savedAmount = 0;
+    int savedAmountCopy = 0;
     int toSaveAmount = 0;
     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     Date currentDate = new Date();
+
+    //alarms for notifications and automated adding money to a stash
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     static ArrayList<ParseObject> gridObjectList = new ArrayList<>();
     static int saveAmount;
@@ -70,12 +84,6 @@ public class HomeActivity extends DrawerActivity {
             finish();
         }
 
-        //Start the service and get the balance.
-        Intent serverIntent = new Intent(this, ServerAccess.class);
-        serverIntent.putExtra("server_action", ServerAccess.ServerAction
-                .GET_BALANCE.toString());
-        this.startService(serverIntent);
-
         //Register to listen for the services response.
         IntentFilter serviceFilter = new IntentFilter("server_response");
         serviceFilter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -84,12 +92,43 @@ public class HomeActivity extends DrawerActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver
                 (serviceListener, serviceFilter);
 
-        homeScreenFunctionality();
+        stashGridView = (ExpandableHeightGridView) findViewById(R.id.stashGridView);
+        homeScrollView = (ScrollView)findViewById(R.id.homeScrollView);
+
+        homeScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (homeScrollView.getScrollY() > 10) {
+                    getSupportActionBar().setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
+                } else {
+                    getSupportActionBar().setElevation(0);
+                }
+            }
+        });
+
+//        homeScreenFunctionality(); //Dont need to call this function in onCreate and onResume. Only in onResume should be fine.
+
+        //an alarm manager which will go off every 24 hours
+        //it checks the effective balance and checks if money needs to be added to a stash
+        alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ServerAccess.class);
+        intent.putExtra("server_action", ServerAccess.ServerAction.ALARM.toString());
+        alarmIntent = PendingIntent.getService(context, 0, intent, 0);
+        //TODO: change frequency to 24 hours after testing
+        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 5000, 5000, alarmIntent);
     }
 
     protected void homeScreenFunctionality() {
+        sharedPreferences = this.getSharedPreferences("stashData", 0);
         mainHoloCircularProgressBar = (HoloCircularProgressBar) findViewById
                 (R.id.simple);
+
+        //Get balance from service
+        Intent serverIntent = new Intent(this, ServerAccess.class);
+        serverIntent.putExtra("server_action", ServerAccess.ServerAction
+                .GET_BALANCE.toString());
+        this.startService(serverIntent);
+
 
         ParseQuery<ParseObject> stashQuery = ParseQuery.getQuery("Stash");
         stashQuery.whereEqualTo("user", ParseUser.getCurrentUser());
@@ -112,6 +151,17 @@ public class HomeActivity extends DrawerActivity {
                             stash.getInt("StashValue");
                     stashNameList.add(stash.getString("StashName") + " :\t"
                             + String.valueOf(stashDifferential) + "$ to save");
+                    String autoAddOn = stash.getString("AutoAddOn");
+                    Double autoAddValue = stash.getDouble("AutoAddValue");
+                    String autoAddEnd = stash.getString("AutoAddEnd");
+                    String ruleAsString = "No repeating add-money set up.";
+                    if(autoAddOn != null && autoAddValue != null && autoAddEnd != null) {
+                        ruleAsString = "$" + autoAddValue + " will be added on " + autoAddOn + ", repeating every month " +
+                                "until the " + autoAddEnd.toLowerCase();
+                    }
+                    editor = sharedPreferences.edit();
+                    editor.putString("rule-"+stash.getObjectId(), ruleAsString);
+                    editor.commit();
                 }
                 TextView toSaveText = (TextView) findViewById(R.id
                         .toSaveAmount);
@@ -130,9 +180,9 @@ public class HomeActivity extends DrawerActivity {
                 }
                 mainHoloCircularProgressBar.animate(null, mainCircleProgress, 2000);
 
+                savedAmountCopy = savedAmount;
                 savedAmount = 0;
                 toSaveAmount = 0;
-                stashGridView = (ExpandableHeightGridView) findViewById(R.id.stashGridView);
                 stashGridView.setFocusable(false);
                 stashGridView.setAdapter(new ProgressBarAdapter
                         (getApplicationContext()));
@@ -271,18 +321,6 @@ public class HomeActivity extends DrawerActivity {
                         startActivity(toViewStash);
                     }
                 });
-
-//                stashGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//                    @Override
-//                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                        String objectId = gridObjectList.get(i).getObjectId();
-//                        Intent serverIntent = new Intent(context, ServerAccess.class);
-//                        serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_STASH.toString());
-//                        serverIntent.putExtra("stashObjectId", objectId);
-//                        context.startService(serverIntent);
-//                        return false;
-//                    }
-//                });
             }
 
             private void textViewAnimate(final TextView view, int countTo, int duration) {
@@ -330,19 +368,19 @@ public class HomeActivity extends DrawerActivity {
 
             switch (responseAction) {
                 case GET_BALANCE:
+                    Log.d("StashLog", "eff balance saved: " + savedAmountCopy);
                     Double balance = intent.getDoubleExtra("balance", -1.0);
-                    Double effectiveBalance = Math.floor((balance - savedAmount) * 100) / 100;
+                    Double effectiveBalance = Math.floor((balance - savedAmountCopy) * 100) / 100;
 
                     TextView effectiveBalanceView = (TextView) findViewById
                             (R.id.effectiveBalance);
                     effectiveBalanceView.setText("Effective Balance: $" +
                             effectiveBalance);
-
                     String error = intent.getStringExtra("error");
                     if (error != null && error.equals("no_bank")) {
                         Toast.makeText(context, "Please add at least one " +
                                 "bank account from the menu.", Toast
-                                .LENGTH_LONG).show();
+                                .LENGTH_SHORT).show();
                     }
 
                     if (error != null && error.equals("no_keys")) {

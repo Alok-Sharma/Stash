@@ -72,10 +72,9 @@
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/moneyGoalsTextView"
-                android:layout_alignStart="@+id/moneyGoalsTextView"
-                android:layout_below="@+id/moneyGoalsGoalValue"
-                android:layout_centerVertical="true"
+                android:layout_below="@+id/moneyGoalsPercentage"
+                android:layout_toRightOf="@+id/moneyGoalsProgressBar"
+
                 android:layout_marginTop="30dp"
                 android:text="TO SAVE"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -97,9 +96,9 @@
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/moneyGoalsToSaveAmount"
-                android:layout_alignStart="@+id/moneyGoalsToSaveAmount"
-                android:layout_below="@+id/moneyGoalsToSaveAmount"
+                android:layout_alignLeft="@+id/moneyGoalsGoalValue"
+                android:layout_alignStart="@+id/moneyGoalsGoalValue"
+                android:layout_below="@+id/moneyGoalsGoalValue"
                 android:layout_marginTop="30dp"
                 android:text="MONTHLY SAVINGS REQUIRED"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -116,6 +115,18 @@
                 android:text="$340/month"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/moneyGoalsRule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No rule set yet."
+                android:layout_alignLeft="@+id/textView9"
+                android:layout_alignStart="@+id/textView9"
+                android:layout_below="@+id/moneyGoalsMonthlySavings"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingEnd="20dp"/>
 
         </RelativeLayout>
     </FrameLayout>

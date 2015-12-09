@@ -37,13 +37,12 @@ public class AddMoneyFragment extends DialogFragment {
     TextView currentBalanceText;
     TextView repeatOnDateText;
     TextView endEventText;
+    View addMoneyView;
 
     final Calendar calendar = Calendar.getInstance();
     int year = calendar.get(Calendar.YEAR);
     int month = calendar.get(Calendar.MONTH);
     int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-    View addMoneyView;
 
     public AddMoneyFragment() {
     }
@@ -71,6 +70,7 @@ public class AddMoneyFragment extends DialogFragment {
 
         sharedPref = getActivity().getSharedPreferences("stashData", 0);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         addMoneyView = inflater.inflate(R.layout.fragment_add_money, null);
@@ -149,33 +149,38 @@ public class AddMoneyFragment extends DialogFragment {
                         String repeatOnDateString = repeatOnDate.getText().toString().trim();
                         String addPeriod = addPeriodSpinner.getSelectedItem().toString();
                         String endEvent = endEventSpinner.getSelectedItem().toString();
+//                        String[] endEventOptions = getResources().getStringArray(R.array.endEventOptions);
 
                         if (addAmountString.equals("")) {
                             amountValueField.setError("Enter the amount to add.");
                         } else if (repeatOnDateString.equals("") && repeatOnDate.getVisibility() != View.GONE) {
                             repeatOnDate.setError("Enter the target date.");
                         } else {
+                            // TODO send below data back to the calling activity.
                             double addAmount = Double.parseDouble(addAmountString);
                             Log.d("StashLog", "Alok " + addPeriod + " " + stashObjectId + " " + addAmount);
+                            Intent serverIntent = new Intent(getActivity(), ServerAccess.class);
+                            serverIntent.putExtra("stashObjectId", stashObjectId);
+                            serverIntent.putExtra("addAmount", addAmount);
+
                             if(addPeriod.equals("One Time")) {
-                                Intent serverIntent = new Intent(getActivity(), ServerAccess.class);
-                                serverIntent.putExtra("server_action", ServerAccess.ServerAction
-                                        .ADD_MONEY.toString());
-                                serverIntent.putExtra("stashObjectId", stashObjectId);
-                                serverIntent.putExtra("addAmount", addAmount);
-                                getActivity().startService(serverIntent);
+                                serverIntent.putExtra("server_action", ServerAccess.ServerAction.ADD_MONEY.toString());
+                            } else if(addPeriod.equals("Monthly")) {
+                                serverIntent.putExtra("server_action", ServerAccess.ServerAction.ADD_RULE.toString());
+                                serverIntent.putExtra("repeatOnDate", repeatOnDateString);
+                                serverIntent.putExtra("endOnEvent", endEvent);
+                            }
+                            getActivity().startService(serverIntent);
                                 try {
                                     Thread.sleep(350);
                                     Intent homeActivity = new Intent(getActivity().getApplicationContext(), HomeActivity.class);
-                                    homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(homeActivity);
                                     dismiss();
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                            } else {
-
-                            }
+                            dismiss();
                         }
                     }
                 });

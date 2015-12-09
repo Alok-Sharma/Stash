@@ -7,7 +7,6 @@ package aloksharma.ufl.edu.stash;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import java.util.Calendar;
 
 
@@ -30,7 +30,6 @@ public class AddStash extends DrawerActivity {
     EditText stashname;
     ImageView calendarImage;
     EditText goal;
-    EditText stashvlaue;
     final Calendar calendar = Calendar.getInstance();
     int year = calendar.get(Calendar.YEAR);
     int month = calendar.get(Calendar.MONTH);
@@ -43,11 +42,10 @@ public class AddStash extends DrawerActivity {
         super.onCreate(savedInstanceState, R.layout.activity_addstash);
         stashname = (EditText) findViewById(R.id.edit_stashname);
         goal = (EditText) findViewById(R.id.edit_goal);
-        calendarImage = (ImageView)findViewById(R.id.calendarImageAddStash);
+//        calendarImage = (ImageView)findViewById(R.id.calendarImageAddStash);
         int color = Color.parseColor("#939393");
-        calendarImage.setColorFilter(color);
+//        calendarImage.setColorFilter(color);
         targetdate = (EditText) findViewById(R.id.edit_targetdate);
-        stashvlaue = (EditText) findViewById(R.id.edit_stashvalue);
         targetdate.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -103,8 +101,6 @@ public class AddStash extends DrawerActivity {
         String message_stashname = stashname.getText().toString();
         String message_targetdate = targetdate.getText().toString();
         int message_goal = Integer.parseInt(goal.getText().toString());
-        int message_stashvalue = Integer.parseInt(stashvlaue.getText()
-                .toString());
 
         /**Create an intent*/
         Intent addstash_intent = new Intent(this, ServerAccess.class);
@@ -113,9 +109,7 @@ public class AddStash extends DrawerActivity {
         addstash_intent.putExtra("StashName", message_stashname);
         addstash_intent.putExtra("StashTargetDate", message_targetdate);
         addstash_intent.putExtra("StashGoal", message_goal);
-        addstash_intent.putExtra("StashValue", message_stashvalue);
-        addstash_intent.putExtra("server_action", ServerAccess.ServerAction
-                .ADD_STASH.toString());
+        addstash_intent.putExtra("server_action", ServerAccess.ServerAction.ADD_STASH.toString());
 
         /**Launching that intent*/
         this.startService(addstash_intent);
@@ -127,11 +121,5 @@ public class AddStash extends DrawerActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
         finish();
-    }
-
-    public void showAddMoneyDialog(View view) {
-        FragmentManager fm = getFragmentManager();
-        AddMoneyFragment addMoneyDialog = new AddMoneyFragment();
-        addMoneyDialog.show(fm, "fragment_edit_name");
     }
 }

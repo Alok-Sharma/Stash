@@ -1,11 +1,12 @@
 package aloksharma.ufl.edu.stash;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -22,6 +23,9 @@ public class ProfileActivity extends DrawerActivity {
     EditText user_name;
     EditText user_email;
     EditText user_password;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor sharedPrefEditor;
+    Switch notif;
 
 
     @Override
@@ -71,6 +75,20 @@ public class ProfileActivity extends DrawerActivity {
         updateprofile_intent.putExtra("User_Password", message_user_password);
         updateprofile_intent.putExtra("server_action", ServerAccess.ServerAction
                 .UPDATE_PROFILE.toString());
+
+        //Adding notification switch case status to shared Preferences
+        sharedPref = this.getSharedPreferences("stashData", 0);
+        sharedPrefEditor = sharedPref.edit();
+
+        //event listener for switch status change
+        notif = (Switch) findViewById(R.id.switch1);
+        notif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Boolean status = (isChecked == true) ? true : false;
+                sharedPrefEditor.putBoolean("notifyStatus", status);
+                sharedPrefEditor.commit();
+            }
+        });
 
         /**Launching that intent*/
         this.startService(updateprofile_intent);
