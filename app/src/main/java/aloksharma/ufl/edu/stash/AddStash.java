@@ -42,9 +42,9 @@ public class AddStash extends DrawerActivity {
         super.onCreate(savedInstanceState, R.layout.activity_addstash);
         stashname = (EditText) findViewById(R.id.edit_stashname);
         goal = (EditText) findViewById(R.id.edit_goal);
-        calendarImage = (ImageView)findViewById(R.id.calendarImageAddStash);
+//        calendarImage = (ImageView)findViewById(R.id.calendarImageAddStash);
         int color = Color.parseColor("#939393");
-        calendarImage.setColorFilter(color);
+//        calendarImage.setColorFilter(color);
         targetdate = (EditText) findViewById(R.id.edit_targetdate);
         targetdate.setOnTouchListener(new View.OnTouchListener() {
             @Override
