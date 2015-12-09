@@ -93,7 +93,7 @@ public class ServerAccess extends IntentService {
                 String stashObjectIdAddRule = incomingIntent.getStringExtra("stashObjectId");
                 Double addAmountRule = incomingIntent.getDoubleExtra("addAmount", 0.0);
                 String repeatOnDateString = incomingIntent.getStringExtra("repeatOnDate");
-                String endOnEvent = incomingIntent.getStringExtra("endOn");
+                String endOnEvent = incomingIntent.getStringExtra("endOnEvent");
                 addRule(stashObjectIdAddRule, addAmountRule, repeatOnDateString, endOnEvent);
                 break;
             case GET_BALANCE:
@@ -162,6 +162,7 @@ public class ServerAccess extends IntentService {
                 });
                 break;
             case ALARM:
+                Log.d("StashLog", "Alarm case");
                 Map<String, String> accessTokensAlarm = plaidHelper.getAccessTokenMapDecrypted();
                 if (accessTokensAlarm == null) {
                     // no banks associated yet.
@@ -170,6 +171,7 @@ public class ServerAccess extends IntentService {
                     double savedAmount = 0, effectiveBal;
                     Double balance = getBalanceFromTokens(accessTokensAlarm);
                     List<ParseObject> stashes = getStashes();
+                    //Functionality for auto add money.------
                     // for each stash check if todays date is same as autoAddNext date.
                     for (ParseObject stash : stashes) {
                         if (isAutoAddDate(stash) && isEndConditionMet(stash)) {
@@ -195,6 +197,8 @@ public class ServerAccess extends IntentService {
                             stash.pinInBackground();
                         }
                     }
+
+                    //Functionality for notifications----
                     Boolean status = sharedPreferences.getBoolean("notifyStatus", true);
                         effectiveBal = balance - savedAmount;
                     if (status == true && effectiveBal < -1.0) {
@@ -312,13 +316,15 @@ public class ServerAccess extends IntentService {
      */
     private boolean isAutoAddDate(ParseObject stash) {
         String autoAddOn = stash.getString("AutoAddOn");
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        Date autoAddOnDate;
-        try {
-            autoAddOnDate = dateFormat.parse(autoAddOn);
-            return DateUtils.isToday(autoAddOnDate.getTime());
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
+        if (autoAddOn != null) {
+            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            Date autoAddOnDate;
+            try {
+                autoAddOnDate = dateFormat.parse(autoAddOn);
+                return DateUtils.isToday(autoAddOnDate.getTime());
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
@@ -330,21 +336,23 @@ public class ServerAccess extends IntentService {
      */
     private boolean isEndConditionMet(ParseObject stash) {
         String endEvent = stash.getString("AutoAddEnd");
-        String[] endEventOptions = getResources().getStringArray(R.array.endEventOptions);
-        if(endEvent.equals(endEventOptions[0])) {
-            //Check if goal amount reached
-            Double stashGoal = stash.getDouble("StashGoal");
-            Double stashValue = stash.getDouble("StashValue");
-            return stashGoal == stashValue;
-        } else if(endEvent.equals(endEventOptions[1])) {
-            //Check if goal date reached
-            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            String targetDateString = stash.getString("StashTargetDate");
-            try {
-                Date targetDate = dateFormat.parse(targetDateString);
-                return DateUtils.isToday(targetDate.getTime());
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
+        if(endEvent != null) {
+            String[] endEventOptions = getResources().getStringArray(R.array.endEventOptions);
+            if(endEvent.equals(endEventOptions[0])) {
+                //Check if goal amount reached
+                Double stashGoal = stash.getDouble("StashGoal");
+                Double stashValue = stash.getDouble("StashValue");
+                return stashGoal == stashValue;
+            } else if(endEvent.equals(endEventOptions[1])) {
+                //Check if goal date reached
+                DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                String targetDateString = stash.getString("StashTargetDate");
+                try {
+                    Date targetDate = dateFormat.parse(targetDateString);
+                    return DateUtils.isToday(targetDate.getTime());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return false;
