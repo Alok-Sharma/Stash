@@ -165,8 +165,10 @@ public class AddMoneyFragment extends DialogFragment {
                                 serverIntent.putExtra("addAmount", addAmount);
                                 getActivity().startService(serverIntent);
                                 try {
-                                    Thread.sleep(250);
-                                    getActivity().startActivity(new Intent(getActivity().getApplicationContext(), HomeActivity.class));
+                                    Thread.sleep(350);
+                                    Intent homeActivity = new Intent(getActivity().getApplicationContext(), HomeActivity.class);
+                                    homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(homeActivity);
                                     dismiss();
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
