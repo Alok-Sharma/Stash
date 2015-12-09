@@ -380,7 +380,7 @@ public class HomeActivity extends DrawerActivity {
                     if (error != null && error.equals("no_bank")) {
                         Toast.makeText(context, "Please add at least one " +
                                 "bank account from the menu.", Toast
-                                .LENGTH_LONG).show();
+                                .LENGTH_SHORT).show();
                     }
 
                     if (error != null && error.equals("no_keys")) {
