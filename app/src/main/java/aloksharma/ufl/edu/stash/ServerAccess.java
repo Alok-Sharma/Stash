@@ -166,14 +166,18 @@ public class ServerAccess extends IntentService {
                 Map<String, String> accessTokensAlarm = plaidHelper.getAccessTokenMapDecrypted();
                 if (accessTokensAlarm == null) {
                     // no banks associated yet.
+                    Log.d("StashLog", "alarm no banks");
                     outgoingIntent.putExtra("error", "no_bank");
                 } else {
+                    Log.d("StashLog", "Alarm bank found");
                     double savedAmount = 0, effectiveBal;
                     Double balance = getBalanceFromTokens(accessTokensAlarm);
                     List<ParseObject> stashes = getStashes();
                     //Functionality for auto add money.------
                     // for each stash check if todays date is same as autoAddNext date.
                     for (ParseObject stash : stashes) {
+                        Log.d("StashLog", "Alarm auto add for loop");
+                        savedAmount = savedAmount + stash.getInt("StashValue");
                         if (isAutoAddDate(stash) && isEndConditionMet(stash)) {
                             // Today is the date for auto adding money and the end condition is being met.
                             // Delete all auto add fields.
@@ -201,10 +205,11 @@ public class ServerAccess extends IntentService {
                     //Functionality for notifications----
                     Boolean status = sharedPreferences.getBoolean("notifyStatus", true);
                         effectiveBal = balance - savedAmount;
-                    if (status == true && effectiveBal < -1.0) {
+                    if (effectiveBal < -1.0) {
+                        Log.d("StashLog", "Alarm notif if case");
                         NotificationCompat.Builder mBuilder =
                                 new NotificationCompat.Builder(this)
-                                        .setSmallIcon(R.drawable.stashlogo)
+                                        .setSmallIcon(R.drawable.logo_white)
                                         .setContentTitle("You're out of cash!")
                                         .setContentText("Your effective balance is less than zero.");
                         // Creates an explicit intent for an Activity in your app

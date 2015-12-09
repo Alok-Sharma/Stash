@@ -45,6 +45,7 @@ public class HomeActivity extends DrawerActivity {
     private ExpandableHeightGridView stashGridView;
     private ScrollView homeScrollView;
     int savedAmount = 0;
+    int savedAmountCopy = 0;
     int toSaveAmount = 0;
     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     Date currentDate = new Date();
@@ -176,6 +177,7 @@ public class HomeActivity extends DrawerActivity {
                 }
                 mainHoloCircularProgressBar.animate(null, mainCircleProgress, 2000);
 
+                savedAmountCopy = savedAmount;
                 savedAmount = 0;
                 toSaveAmount = 0;
                 stashGridView.setFocusable(false);
@@ -363,14 +365,14 @@ public class HomeActivity extends DrawerActivity {
 
             switch (responseAction) {
                 case GET_BALANCE:
+                    Log.d("StashLog", "eff balance saved: " + savedAmountCopy);
                     Double balance = intent.getDoubleExtra("balance", -1.0);
-                    Double effectiveBalance = Math.floor((balance - savedAmount) * 100) / 100;
+                    Double effectiveBalance = Math.floor((balance - savedAmountCopy) * 100) / 100;
 
                     TextView effectiveBalanceView = (TextView) findViewById
                             (R.id.effectiveBalance);
                     effectiveBalanceView.setText("Effective Balance: $" +
                             effectiveBalance);
-
                     String error = intent.getStringExtra("error");
                     if (error != null && error.equals("no_bank")) {
                         Toast.makeText(context, "Please add at least one " +
