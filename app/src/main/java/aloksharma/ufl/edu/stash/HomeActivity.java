@@ -101,6 +101,9 @@ public class HomeActivity extends DrawerActivity {
 
             @Override
             public void done(List<ParseObject> stashes, ParseException e) {
+                if(stashes == null){
+                    stashes = new ArrayList<ParseObject>();
+                }
                 for (ParseObject stash : stashes) {
                     toSaveAmount = toSaveAmount + stash.getInt("StashGoal");
                     savedAmount = savedAmount + stash.getInt("StashValue");
