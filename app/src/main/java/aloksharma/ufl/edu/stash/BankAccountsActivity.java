@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -100,6 +101,7 @@ public class BankAccountsActivity extends DrawerActivity {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver
                 (serviceListener, serviceFilter);
+        Log.d("BAA", "on resume called");
         fetchBanks();
     }
 
@@ -108,6 +110,8 @@ public class BankAccountsActivity extends DrawerActivity {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver
                 (serviceListener);
+        Log.d("BAA", "on pause called");
+
     }
 
     @Override
@@ -117,6 +121,8 @@ public class BankAccountsActivity extends DrawerActivity {
         View empty = findViewById(R.id.empty);
         ListView list = (ListView) findViewById(R.id.BanksList);
         list.setEmptyView(empty);
+        Log.d("BAA", "onContentChanged called");
+
     }
 
     private class ServiceBroadcastReceiver extends BroadcastReceiver {
@@ -143,21 +149,26 @@ public class BankAccountsActivity extends DrawerActivity {
                                 String>) intent.getSerializableExtra("map");
 
                         if (error == null && map != null) {
+                            Log.d("BAA", "bank found");
                             Set<String> set = map.keySet();
                             //passing ArrayList to ListView Adapter
                             list = new ArrayList<>(set);
 
                             //for Enum to String conversion
                             for (String bank : list) {
+
                                 String b = bankMappingHelper.getBankName(bank);
                                 list.remove(bank);  //remove Enum
                                 list.add(b);    //add full name of bank
+                                Log.d("BAA", "found: "+b);
+
                             }
                             //create list view adapter
                             ArrayAdapter listAdapter = new ArrayAdapter<>
                                     (context, R.layout.banks_list_row, list);
                             banksList.setAdapter(listAdapter);
                         } else if (error != null && error.equals("no_bank")) {
+                            Log.d("BAA", "no bank found");
                             ArrayAdapter listAdapter = new ArrayAdapter<>
                                     (context, R.layout.banks_list_row, new
                                             ArrayList<>());

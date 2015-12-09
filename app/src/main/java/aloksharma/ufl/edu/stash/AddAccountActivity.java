@@ -81,6 +81,7 @@ public class AddAccountActivity extends DrawerActivity {
                     String mfaRequired = intent.getStringExtra("mfaRequired");
                     if (mfaRequired != null && mfaRequired.equals("yes")) {
 
+                        Log.d("AddAc: GET", "mfa req is yes");
                         final String access_token = intent.getStringExtra
                                 ("access_token");
                         final String question = intent.getStringExtra
@@ -142,6 +143,7 @@ public class AddAccountActivity extends DrawerActivity {
                     String responseCode = intent.getStringExtra
                             ("responseCode");
                     if (responseCode != null && responseCode.equals("201")) {
+                        Log.d("AddAc: MFA", "code is 201");
 
                         final String access_token = intent.getStringExtra
                                 ("access_token");
@@ -197,9 +199,32 @@ public class AddAccountActivity extends DrawerActivity {
                         Log.d("dialog", "inside while 3");
 
                         alert.show();
+                    } else if (responseCode != null && responseCode.equals
+                            ("200")) {
+                        Log.d("AddAc: MFA", "code is 200");
+                        final String username = intent.getStringExtra
+                                ("username");
+                        final String password = intent.getStringExtra
+                                ("password");
+                        final String type = intent.getStringExtra("type");
+                        final Intent serverIntent = new Intent
+                                (AddAccountActivity.this,
+                                        ServerAccess.class);
+                        serverIntent.putExtra("server_action",
+                                ServerAccess.ServerAction
+                                        .GET_BALANCE.toString());
+//                        serverIntent.putExtra("username", username);
+//                        serverIntent.putExtra("password", password);
+//                        serverIntent.putExtra("type", type);
+
+//                        serverIntent.putExtra("bankUsername", username);
+//                        serverIntent.putExtra("bankPassword", password);
+//                        serverIntent.putExtra("bankName", type);
+                        startService(serverIntent);
+
+                        startService(serverIntent);
+//                        finish();
                     }
-                    else if (responseCode != null && responseCode.equals("200"))
-                        finish();
 
                     break;
             }

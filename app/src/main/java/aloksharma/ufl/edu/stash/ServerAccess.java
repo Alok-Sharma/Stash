@@ -111,7 +111,7 @@ public class ServerAccess extends IntentService {
                 String bankUsername = incomingIntent.getStringExtra
                         ("bankUsername");
 
-                Map<String, String> accessTokens = null;
+                Map<String, String> accessTokens;
                 if (bankUsername == null) {
                     //no username, password. Use access token.
                     accessTokens = plaidHelper.getAccessTokenMapDecrypted();
@@ -123,8 +123,13 @@ public class ServerAccess extends IntentService {
                             String accessToken = accessTokens.get("wells");
                             // TODO: Only getting wells fargo balance.
                             // Iterate and get all (Alok)
-                            Double balance = plaidHelper.getBankBalance
-                                    (accessToken);
+                            Double balance=0.0;
+                            for (Map.Entry<String, String> entry : accessTokens.entrySet())
+                            {
+                                Log.d("SA", "fetching balance:"+entry.getValue());
+                            balance += plaidHelper.getBankBalance
+                                    (entry.getValue());
+                            }
                             //making a copy of Map because I'm able to send
                             // only HashMap
                             HashMap<String, String> banks = new HashMap<>
@@ -132,8 +137,11 @@ public class ServerAccess extends IntentService {
                             outgoingIntent.putExtra("map", banks);
                             if (balance != null) {
                                 outgoingIntent.putExtra("balance", balance);
+                                outgoingIntent.removeExtra("mfaRequired");
+                                outgoingIntent.putExtra("mfaRequired", "no");
                                 outgoingIntent.putExtra("finalBalance", "yes");
                             } else {
+                                Log.d("SA", "no-keys:balance null");
                                 outgoingIntent.putExtra("error", "no_keys");
                             }
                         } catch (Exception e) {
@@ -150,6 +158,7 @@ public class ServerAccess extends IntentService {
                             (bankUsername, bankPassword, bankName);
                     Log.d("StashLog", "balance: " + balance);
                     if (balance == -2.0) {
+                        Log.d("SA", "mfa bank");
                         outgoingIntent.putExtra("mfaRequired", "yes");
                         PlaidHelper.Response resp = plaidHelper.getMFAQuestion
                                 (bankUsername, bankPassword, bankName);
@@ -163,6 +172,13 @@ public class ServerAccess extends IntentService {
                         outgoingIntent.putExtra("password", bankPassword);
                         outgoingIntent.putExtra("type", bankName);
                     } else {
+                        Log.d("SA", "non-mfa bank");
+                        accessTokens = plaidHelper.getAccessTokenMapDecrypted();
+                        HashMap<String, String> banks = new HashMap<>
+                                (accessTokens);
+                        outgoingIntent.putExtra("map", banks);
+                        outgoingIntent.removeExtra("mfaRequired");
+                        outgoingIntent.putExtra("mfaRequired", "no");
                         outgoingIntent.putExtra("balance", balance);
                         outgoingIntent.putExtra("finalBalance", "yes");
                     }
@@ -179,6 +195,7 @@ public class ServerAccess extends IntentService {
                 PlaidHelper.Response resp = plaidHelper.postMFAAnswer
                         (username, password, type, access_token, answer);
                 if (resp.responseCode == 201) {
+                    Log.d("SA", "got question yet again");
                     outgoingIntent.putExtra("question", resp.question);
                     outgoingIntent.putExtra("responseCode", String.valueOf(resp
                             .responseCode));
@@ -186,12 +203,23 @@ public class ServerAccess extends IntentService {
                             .access_token);
                     outgoingIntent.putExtra("username", username);
                     outgoingIntent.putExtra("password", password);
+                    outgoingIntent.putExtra("mfaRequired", "yes");
                     outgoingIntent.putExtra("type", type);
                 } else if (resp.responseCode == 200) {
+                    Log.d("SA", "final question went through");
                     outgoingIntent.putExtra("responseCode", String.valueOf(resp
                             .responseCode));
+                    outgoingIntent.putExtra("username", username);
+                    outgoingIntent.putExtra("password", password);
+                    outgoingIntent.putExtra("type", type);
                     outgoingIntent.putExtra("finalBalance", "yes");
                     outgoingIntent.putExtra("balance", resp.balance);
+                    outgoingIntent.removeExtra("mfaRequired");
+                    outgoingIntent.putExtra("mfaRequired", "no");
+                    accessTokens = plaidHelper.getAccessTokenMapDecrypted();
+                    HashMap<String, String> banks = new HashMap<>
+                            (accessTokens);
+                    outgoingIntent.putExtra("map", banks);
                 }
 
 

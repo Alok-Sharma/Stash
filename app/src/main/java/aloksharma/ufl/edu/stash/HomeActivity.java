@@ -372,26 +372,32 @@ public class HomeActivity extends DrawerActivity {
 
             switch (responseAction) {
                 case GET_BALANCE:
-                    Double balance = intent.getDoubleExtra("balance", -1.0);
-                    Double effectiveBalance = Math.floor((balance -
-                            savedAmount) * 100) / 100;
+                    if (intent.getStringExtra("finalBalance") != null &&
+                            intent.getStringExtra("finalBalance").equals
+                                    ("yes")) {
+                        Double balance = intent.getDoubleExtra("balance", -1.0);
 
-                    TextView effectiveBalanceView = (TextView) findViewById
-                            (R.id.effectiveBalance);
-                    effectiveBalanceView.setText("Effective Balance: $" +
-                            effectiveBalance);
+                        Double effectiveBalance = Math.floor((balance -
+                                savedAmount) * 100) / 100;
 
-                    String error = intent.getStringExtra("error");
-                    if (error != null && error.equals("no_bank")) {
-                        Toast.makeText(context, "Please add at least one " +
-                                "bank account from the menu.", Toast
-                                .LENGTH_LONG).show();
-                    }
+                        TextView effectiveBalanceView = (TextView) findViewById
+                                (R.id.effectiveBalance);
+                        effectiveBalanceView.setText("Effective Balance: $" +
+                                effectiveBalance);
 
-                    if (error != null && error.equals("no_keys")) {
-                        Toast.makeText(context, "Unable to decrypt, please " +
-                                "remove all Bank accounts and add again.",
-                                Toast.LENGTH_SHORT).show();
+                        String error = intent.getStringExtra("error");
+                        if (error != null && error.equals("no_bank")) {
+                            Toast.makeText(context, "Please add at least one" +
+                                    " " +
+                                    "bank account from the menu.", Toast
+                                    .LENGTH_LONG).show();
+                        }
+
+                        if (error != null && error.equals("no_keys")) {
+                            Toast.makeText(context, "Unable to decrypt, please " +
+                                            "remove all Bank accounts and add again.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                     break;
 
