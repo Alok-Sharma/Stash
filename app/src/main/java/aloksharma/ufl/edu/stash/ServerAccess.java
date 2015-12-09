@@ -1,10 +1,15 @@
 package aloksharma.ufl.edu.stash;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.parse.FindCallback;
@@ -102,7 +107,7 @@ public class ServerAccess extends IntentService {
                 if (bankUsername == null) {
                     //no username, password. Use access token.
                     accessTokens = plaidHelper.getAccessTokenMapDecrypted();
-                    if(accessTokens == null) {
+                    if (accessTokens == null) {
                         // no banks associated yet.
                         outgoingIntent.putExtra("error", "no_bank");
                     } else {
@@ -159,15 +164,15 @@ public class ServerAccess extends IntentService {
                 break;
             case ALARM:
                 Map<String, String> accessTokensAlarm = plaidHelper.getAccessTokenMapDecrypted();
-                if(accessTokensAlarm == null) {
+                if (accessTokensAlarm == null) {
                     // no banks associated yet.
                     outgoingIntent.putExtra("error", "no_bank");
                 } else {
                     Double balance = getBalanceFromTokens(accessTokensAlarm);
                     List<ParseObject> stashes = getStashes();
                     // for each stash check if todays date is same as autoAddNext date.
-                    for(ParseObject stash : stashes) {
-                        if(isAutoAddDate(stash) && isEndConditionMet(stash)) {
+                    for (ParseObject stash : stashes) {
+                        if (isAutoAddDate(stash) && isEndConditionMet(stash)) {
                             // Today is the date for auto adding money and the end condition is being met.
                             // Delete all auto add fields.
                             stash.remove("AutoAddValue");
@@ -175,7 +180,7 @@ public class ServerAccess extends IntentService {
                             stash.remove("AutoAddOn");
                             stash.saveInBackground();
                             stash.pinInBackground();
-                        } else if(isAutoAddDate(stash) && !isEndConditionMet(stash)) {
+                        } else if (isAutoAddDate(stash) && !isEndConditionMet(stash)) {
                             // Today is the date for adding money, but the end condition is not met.
                             // Add money to stash. Update AutoAddOn date.
                             String objectId = stash.getObjectId();
@@ -190,9 +195,26 @@ public class ServerAccess extends IntentService {
                             stash.pinInBackground();
                         }
                     }
+                    Boolean status = sharedPreferences.getBoolean("notifyStatus", true);
+                    if (status == true) {
+                        NotificationCompat.Builder mBuilder =
+                                new NotificationCompat.Builder(this)
+                                        .setSmallIcon(R.drawable.stashlogo)
+                                        .setContentTitle("You're out of cash!")
+                                        .setContentText("Your effective balance is less than zero.");
+                        // Creates an explicit intent for an Activity in your app
+
+                        Intent resultIntent = new Intent(this, HomeActivity.class);
+                        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
+
+                        mBuilder.setContentIntent(resultPendingIntent);
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        // mId allows you to update the notification later on.
+                        mNotificationManager.notify(1, mBuilder.build());
+                    }
                 }
                 break;
-            //Nikita
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(outgoingIntent);
     }
