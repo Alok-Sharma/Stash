@@ -163,7 +163,6 @@ public class AddMoneyFragment extends DialogFragment {
                             serverIntent.putExtra("stashObjectId", stashObjectId);
                             serverIntent.putExtra("addAmount", addAmount);
 
-
                             if(addPeriod.equals("One Time")) {
                                 serverIntent.putExtra("server_action", ServerAccess.ServerAction.ADD_MONEY.toString());
                             } else if(addPeriod.equals("Monthly")) {
@@ -172,13 +171,15 @@ public class AddMoneyFragment extends DialogFragment {
                                 serverIntent.putExtra("endOnEvent", endEvent);
                             }
                             getActivity().startService(serverIntent);
-                            try {
-                                Thread.sleep(250);
-                                getActivity().startActivity(new Intent(getActivity().getApplicationContext(), HomeActivity.class));
-                                dismiss();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                                try {
+                                    Thread.sleep(350);
+                                    Intent homeActivity = new Intent(getActivity().getApplicationContext(), HomeActivity.class);
+                                    homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(homeActivity);
+                                    dismiss();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             dismiss();
                         }
                     }
