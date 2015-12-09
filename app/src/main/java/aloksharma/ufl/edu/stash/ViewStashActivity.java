@@ -16,6 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,11 +78,30 @@ public class ViewStashActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_deleteStash:
-                Intent serverIntent = new Intent(this, ServerAccess.class);
+                ParseQuery<ParseObject> removeQuery = ParseQuery.getQuery("Stash");
+                removeQuery.getInBackground(stashObjectId, new GetCallback<ParseObject>() {
+                    public void done(ParseObject stashObject, ParseException e) {
+                        if (e == null) {
+                            try {
+                                stashObject.delete();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                /*Intent serverIntent = new Intent(this, ServerAccess.class);
                 serverIntent.putExtra("server_action", ServerAccess.ServerAction.DELETE_STASH.toString());
                 serverIntent.putExtra("stashObjectId", stashObjectId);
-                startService(serverIntent);
-                finish();
+                startService(serverIntent);*/
+                try {
+                    Thread.sleep(350);
+                    Intent homeActivity = new Intent(this, HomeActivity.class);
+                    homeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(homeActivity);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return true;
             case android.R.id.home:
                 Intent intent = new Intent(this, HomeActivity.class);

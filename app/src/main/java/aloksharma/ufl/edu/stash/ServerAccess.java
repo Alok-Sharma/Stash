@@ -3,13 +3,12 @@ package aloksharma.ufl.edu.stash;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.parse.FindCallback;
@@ -436,8 +435,12 @@ public class ServerAccess extends IntentService {
         /**Send to Parse Database*/
         final ParseObject Stash = new ParseObject("Stash");
         ParseUser currentuser = ParseUser.getCurrentUser();
-        currentuser.put("firstName",User_Name);
-        currentuser.put("lastName",User_Name);
+        int firstSpace = User_Name.indexOf(" ");
+        String firstName = User_Name.substring(0, firstSpace);
+        String lastName = User_Name.substring(firstSpace).trim();
+
+        currentuser.put("firstName",firstName);
+        currentuser.put("lastName",lastName);
         currentuser.setPassword(User_Password);
         currentuser.setEmail(User_Email);
         currentuser.saveInBackground();
